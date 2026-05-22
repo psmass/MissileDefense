@@ -1,0 +1,23 @@
+# Build output
+build/
+out/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.aps
+*.ncb
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+
+# RTI generated type-support (regenerated from IDL via rtiddsgen)
+idl/generated/
+idl/generated_test/
+idl/generated_test2/
+
+# Temporary / scratch files
+tmp_*.txt
+map_rti_symbols_result.txt

@@ -1,0 +1,26 @@
+module ship {
+    struct Threat {
+        long id;
+        double x;
+        double y;
+        double heading;
+        double speed;
+        long severity;
+    };
+
+    struct SensorDetection {
+        long sensor_id;
+        long threat_id;
+        double x;
+        double y;
+        long confidence;
+    };
+
+    struct EffectorAction {
+        long effector_id;
+        long threat_id;
+        boolean destroyed;
+        double x;
+        double y;
+    };
+};
