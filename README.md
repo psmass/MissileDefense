@@ -147,17 +147,20 @@ Open **three separate terminals** from `C:\RTI\Demos\MissileDefense` and launch 
 
 **Terminal 1 — Command & Control (SDL2 display):**
 ```powershell
-.\build\apps\command_control\Debug\command_control.exe
+cd .\build\apps\command_control\Debug
+command_control.exe
 ```
 
 **Terminal 2 — Sensor Suite:**
 ```powershell
-.\build\apps\sensor\Debug\sensor.exe
+cd .\build\apps\sensor\Debug
+sensor.exe
 ```
 
 **Terminal 3 — Weapons / Effectors:**
 ```powershell
-.\build\apps\effector\Debug\effector.exe
+cd .\build\apps\effector\Debug
+effector.exe
 ```
 
 Once all three are running:
