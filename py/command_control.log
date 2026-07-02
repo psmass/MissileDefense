@@ -1,0 +1,316 @@
+2026-07-02 Thursday 13:58:09 root:INFO:Command & Control Powering Up
+2026-07-02 Thursday 13:58:38 root:INFO:Command & Control Powering Up
+2026-07-02 Thursday 13:58:38 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 13:58:38 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 13:58:38 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 13:58:38 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 13:58:38 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 13:58:40 root:INFO:Command & Control Starting – domain 0
+2026-07-02 Thursday 13:58:40 root:INFO:C2 STATE: INIT
+2026-07-02 Thursday 13:58:48 root:INFO:Spawned Threat id=1 severity=3 at (9.3, 772.2)
+2026-07-02 Thursday 13:58:56 root:INFO:Spawned Threat id=2 severity=2 at (-61.8, 810.4)
+2026-07-02 Thursday 14:02:44 root:INFO:Command & Control Powering Up
+2026-07-02 Thursday 14:03:41 root:INFO:Command & Control Powering Up
+2026-07-02 Thursday 14:03:41 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 14:03:41 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 14:03:41 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 14:03:41 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 14:03:41 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 14:03:43 root:INFO:Command & Control Starting – domain 0
+2026-07-02 Thursday 14:03:43 root:INFO:C2 STATE: INIT
+2026-07-02 Thursday 14:03:51 root:INFO:Spawned Threat id=1 severity=2 at (211.2, 1052.9)
+2026-07-02 Thursday 14:03:59 root:INFO:Spawned Threat id=2 severity=1 at (102.1, 238.5)
+2026-07-02 Thursday 14:04:07 root:INFO:Spawned Threat id=3 severity=2 at (264.5, 160.0)
+2026-07-02 Thursday 14:04:11 root:WARNING:Threat 1 reached hull – removing
+2026-07-02 Thursday 14:04:15 root:INFO:Spawned Threat id=4 severity=1 at (30.9, 906.7)
+2026-07-02 Thursday 14:04:16 root:WARNING:Threat 2 reached hull – removing
+2026-07-02 Thursday 14:04:23 root:INFO:Spawned Threat id=5 severity=2 at (938.1, 631.4)
+2026-07-02 Thursday 14:04:24 root:WARNING:Threat 3 reached hull – removing
+2026-07-02 Thursday 14:04:31 root:INFO:Spawned Threat id=6 severity=1 at (237.0, 105.0)
+2026-07-02 Thursday 14:04:35 root:WARNING:Threat 4 reached hull – removing
+2026-07-02 Thursday 14:04:39 root:INFO:Spawned Threat id=7 severity=2 at (-20.8, 687.5)
+2026-07-02 Thursday 14:04:45 root:WARNING:Threat 5 reached hull – removing
+2026-07-02 Thursday 14:04:48 root:INFO:Spawned Threat id=8 severity=3 at (202.1, 990.5)
+2026-07-02 Thursday 14:04:51 root:WARNING:Threat 6 reached hull – removing
+2026-07-02 Thursday 14:04:56 root:INFO:Spawned Threat id=9 severity=2 at (831.2, 806.3)
+2026-07-02 Thursday 14:04:56 root:WARNING:Threat 7 reached hull – removing
+2026-07-02 Thursday 14:05:04 root:INFO:Spawned Threat id=10 severity=3 at (684.8, 1033.0)
+2026-07-02 Thursday 14:05:05 root:WARNING:Threat 8 reached hull – removing
+2026-07-02 Thursday 14:05:12 root:INFO:Spawned Threat id=11 severity=3 at (561.9, 51.7)
+2026-07-02 Thursday 14:05:15 root:WARNING:Threat 9 reached hull – removing
+2026-07-02 Thursday 14:05:15 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:05:15 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-02 Thursday 14:05:15 root:INFO:Received EffectorAction effector=1 threat=10 destroyed=0
+2026-07-02 Thursday 14:05:15 root:INFO:Received EffectorAction effector=2 threat=10 destroyed=1
+2026-07-02 Thursday 14:05:15 root:INFO:Received EffectorAction effector=3 threat=10 destroyed=1
+2026-07-02 Thursday 14:05:15 root:INFO:Received EffectorAction effector=4 threat=10 destroyed=0
+2026-07-02 Thursday 14:05:15 root:INFO:Received EffectorAction effector=5 threat=10 destroyed=0
+2026-07-02 Thursday 14:05:19 root:INFO:Received EffectorAction effector=1 threat=11 destroyed=0
+2026-07-02 Thursday 14:05:19 root:INFO:Received EffectorAction effector=2 threat=11 destroyed=1
+2026-07-02 Thursday 14:05:19 root:INFO:Received EffectorAction effector=3 threat=11 destroyed=1
+2026-07-02 Thursday 14:05:19 root:INFO:Received EffectorAction effector=4 threat=11 destroyed=0
+2026-07-02 Thursday 14:05:19 root:INFO:Received EffectorAction effector=5 threat=11 destroyed=0
+2026-07-02 Thursday 14:05:20 root:INFO:Spawned Threat id=12 severity=1 at (843.0, 796.9)
+2026-07-02 Thursday 14:05:25 root:INFO:Received EffectorAction effector=1 threat=12 destroyed=1
+2026-07-02 Thursday 14:05:25 root:INFO:Received EffectorAction effector=2 threat=12 destroyed=1
+2026-07-02 Thursday 14:05:25 root:INFO:Received EffectorAction effector=3 threat=12 destroyed=1
+2026-07-02 Thursday 14:05:25 root:INFO:Received EffectorAction effector=4 threat=12 destroyed=0
+2026-07-02 Thursday 14:05:25 root:WARNING:Threat 10 reached hull – removing
+2026-07-02 Thursday 14:05:28 root:INFO:Spawned Threat id=13 severity=1 at (-41.1, 825.9)
+2026-07-02 Thursday 14:05:33 root:WARNING:Threat 11 reached hull – removing
+2026-07-02 Thursday 14:05:34 root:INFO:Received EffectorAction effector=1 threat=13 destroyed=1
+2026-07-02 Thursday 14:05:34 root:INFO:Received EffectorAction effector=2 threat=13 destroyed=1
+2026-07-02 Thursday 14:05:34 root:INFO:Received EffectorAction effector=3 threat=13 destroyed=1
+2026-07-02 Thursday 14:05:34 root:INFO:Received EffectorAction effector=4 threat=13 destroyed=0
+2026-07-02 Thursday 14:05:36 root:INFO:Spawned Threat id=14 severity=3 at (-36.6, 462.5)
+2026-07-02 Thursday 14:05:39 root:INFO:Received EffectorAction effector=1 threat=14 destroyed=1
+2026-07-02 Thursday 14:05:39 root:INFO:Received EffectorAction effector=2 threat=14 destroyed=1
+2026-07-02 Thursday 14:05:39 root:INFO:Received EffectorAction effector=3 threat=14 destroyed=1
+2026-07-02 Thursday 14:05:39 root:INFO:Received EffectorAction effector=4 threat=14 destroyed=0
+2026-07-02 Thursday 14:05:39 root:INFO:Received EffectorAction effector=5 threat=14 destroyed=0
+2026-07-02 Thursday 14:05:39 root:WARNING:Threat 12 reached hull – removing
+2026-07-02 Thursday 14:05:44 root:INFO:Spawned Threat id=15 severity=2 at (228.7, 148.3)
+2026-07-02 Thursday 14:05:48 root:WARNING:Threat 13 reached hull – removing
+2026-07-02 Thursday 14:05:48 root:INFO:Received EffectorAction effector=1 threat=15 destroyed=1
+2026-07-02 Thursday 14:05:48 root:INFO:Received EffectorAction effector=2 threat=15 destroyed=1
+2026-07-02 Thursday 14:05:48 root:INFO:Received EffectorAction effector=3 threat=15 destroyed=1
+2026-07-02 Thursday 14:05:48 root:INFO:Received EffectorAction effector=4 threat=15 destroyed=1
+2026-07-02 Thursday 14:05:52 root:INFO:Spawned Threat id=16 severity=3 at (832.6, 845.7)
+2026-07-02 Thursday 14:05:53 root:WARNING:Threat 14 reached hull – removing
+2026-07-02 Thursday 14:05:58 root:INFO:Received EffectorAction effector=1 threat=16 destroyed=1
+2026-07-02 Thursday 14:05:58 root:INFO:Received EffectorAction effector=2 threat=16 destroyed=1
+2026-07-02 Thursday 14:05:58 root:INFO:Received EffectorAction effector=3 threat=16 destroyed=1
+2026-07-02 Thursday 14:05:58 root:INFO:Received EffectorAction effector=4 threat=16 destroyed=0
+2026-07-02 Thursday 14:05:58 root:INFO:Received EffectorAction effector=5 threat=16 destroyed=0
+2026-07-02 Thursday 14:06:00 root:INFO:Spawned Threat id=17 severity=1 at (793.2, 810.3)
+2026-07-02 Thursday 14:06:02 root:WARNING:Threat 15 reached hull – removing
+2026-07-02 Thursday 14:06:04 root:INFO:Received EffectorAction effector=1 threat=17 destroyed=1
+2026-07-02 Thursday 14:06:04 root:INFO:Received EffectorAction effector=2 threat=17 destroyed=1
+2026-07-02 Thursday 14:06:04 root:INFO:Received EffectorAction effector=3 threat=17 destroyed=1
+2026-07-02 Thursday 14:06:04 root:INFO:Received EffectorAction effector=4 threat=17 destroyed=1
+2026-07-02 Thursday 14:06:08 root:INFO:Spawned Threat id=18 severity=2 at (234.4, 1035.9)
+2026-07-02 Thursday 14:06:12 root:WARNING:Threat 16 reached hull – removing
+2026-07-02 Thursday 14:06:14 root:INFO:Received EffectorAction effector=1 threat=18 destroyed=1
+2026-07-02 Thursday 14:06:14 root:INFO:Received EffectorAction effector=2 threat=18 destroyed=1
+2026-07-02 Thursday 14:06:14 root:INFO:Received EffectorAction effector=3 threat=18 destroyed=1
+2026-07-02 Thursday 14:06:14 root:INFO:Received EffectorAction effector=4 threat=18 destroyed=1
+2026-07-02 Thursday 14:06:16 root:INFO:Spawned Threat id=19 severity=2 at (886.8, 605.0)
+2026-07-02 Thursday 14:06:18 root:WARNING:Threat 17 reached hull – removing
+2026-07-02 Thursday 14:06:22 root:INFO:Received EffectorAction effector=1 threat=19 destroyed=1
+2026-07-02 Thursday 14:06:22 root:INFO:Received EffectorAction effector=2 threat=19 destroyed=1
+2026-07-02 Thursday 14:06:22 root:INFO:Received EffectorAction effector=3 threat=19 destroyed=1
+2026-07-02 Thursday 14:06:22 root:INFO:Received EffectorAction effector=4 threat=19 destroyed=0
+2026-07-02 Thursday 14:06:24 root:INFO:Spawned Threat id=20 severity=1 at (902.4, 471.5)
+2026-07-02 Thursday 14:06:28 root:WARNING:Threat 18 reached hull – removing
+2026-07-02 Thursday 14:06:31 root:INFO:Received EffectorAction effector=1 threat=20 destroyed=1
+2026-07-02 Thursday 14:06:31 root:INFO:Received EffectorAction effector=2 threat=20 destroyed=1
+2026-07-02 Thursday 14:06:31 root:INFO:Received EffectorAction effector=3 threat=20 destroyed=0
+2026-07-02 Thursday 14:06:31 root:INFO:Received EffectorAction effector=4 threat=20 destroyed=1
+2026-07-02 Thursday 14:06:33 root:INFO:Spawned Threat id=21 severity=1 at (763.4, 854.0)
+2026-07-02 Thursday 14:06:35 root:WARNING:Threat 19 reached hull – removing
+2026-07-02 Thursday 14:06:37 root:INFO:Received EffectorAction effector=1 threat=21 destroyed=1
+2026-07-02 Thursday 14:06:37 root:INFO:Received EffectorAction effector=2 threat=21 destroyed=1
+2026-07-02 Thursday 14:06:37 root:INFO:Received EffectorAction effector=3 threat=21 destroyed=1
+2026-07-02 Thursday 14:06:37 root:INFO:Received EffectorAction effector=4 threat=21 destroyed=0
+2026-07-02 Thursday 14:06:37 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:06:37 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-02 Thursday 14:06:37 root:INFO:Received SensorDetection sensor=1 threat=20 conf=93%
+2026-07-02 Thursday 14:06:37 root:INFO:Received SensorDetection sensor=1 threat=21 conf=91%
+2026-07-02 Thursday 14:06:38 root:INFO:Received SensorDetection sensor=1 threat=20 conf=92%
+2026-07-02 Thursday 14:06:38 root:INFO:Received SensorDetection sensor=1 threat=21 conf=100%
+2026-07-02 Thursday 14:06:38 root:INFO:Received SensorDetection sensor=1 threat=20 conf=90%
+2026-07-02 Thursday 14:06:38 root:INFO:Received SensorDetection sensor=1 threat=21 conf=96%
+2026-07-02 Thursday 14:06:39 root:INFO:Received SensorDetection sensor=1 threat=20 conf=99%
+2026-07-02 Thursday 14:06:39 root:INFO:Received SensorDetection sensor=1 threat=21 conf=100%
+2026-07-02 Thursday 14:06:39 root:INFO:Received SensorDetection sensor=1 threat=20 conf=95%
+2026-07-02 Thursday 14:06:39 root:INFO:Received SensorDetection sensor=4 threat=20 conf=77%
+2026-07-02 Thursday 14:06:39 root:INFO:Received SensorDetection sensor=1 threat=21 conf=97%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=1 threat=20 conf=98%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=4 threat=20 conf=71%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=1 threat=21 conf=100%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=1 threat=20 conf=92%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=4 threat=20 conf=75%
+2026-07-02 Thursday 14:06:40 root:INFO:Received SensorDetection sensor=1 threat=21 conf=96%
+2026-07-02 Thursday 14:06:41 root:INFO:Spawned Threat id=22 severity=3 at (100.9, 887.8)
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=1 threat=20 conf=94%
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=4 threat=20 conf=83%
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=1 threat=21 conf=92%
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=1 threat=20 conf=97%
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=4 threat=20 conf=66%
+2026-07-02 Thursday 14:06:41 root:INFO:Received SensorDetection sensor=1 threat=21 conf=97%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=20 conf=97%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=4 threat=20 conf=82%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=21 conf=98%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=22 conf=93%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=20 conf=99%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=4 threat=20 conf=66%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=21 conf=88%
+2026-07-02 Thursday 14:06:42 root:INFO:Received SensorDetection sensor=1 threat=22 conf=90%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=20 conf=100%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=4 threat=20 conf=83%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=21 conf=99%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=22 conf=96%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=20 conf=91%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=4 threat=20 conf=80%
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=21 conf=91%
+2026-07-02 Thursday 14:06:43 root:INFO:Received EffectorAction effector=1 threat=22 destroyed=1
+2026-07-02 Thursday 14:06:43 root:INFO:Received SensorDetection sensor=1 threat=22 conf=91%
+2026-07-02 Thursday 14:06:43 root:INFO:Received EffectorAction effector=2 threat=22 destroyed=0
+2026-07-02 Thursday 14:06:43 root:INFO:Received EffectorAction effector=3 threat=22 destroyed=1
+2026-07-02 Thursday 14:06:43 root:INFO:Received EffectorAction effector=4 threat=22 destroyed=0
+2026-07-02 Thursday 14:06:43 root:INFO:Received EffectorAction effector=5 threat=22 destroyed=0
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=20 conf=88%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=4 threat=20 conf=84%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=21 conf=91%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=22 conf=99%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=20 conf=97%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=2 threat=20 conf=73%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=4 threat=20 conf=75%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=21 conf=91%
+2026-07-02 Thursday 14:06:44 root:INFO:Received SensorDetection sensor=1 threat=22 conf=97%
+2026-07-02 Thursday 14:06:45 root:WARNING:Threat 20 reached hull – removing
+2026-07-02 Thursday 14:06:45 root:INFO:Received SensorDetection sensor=1 threat=21 conf=99%
+2026-07-02 Thursday 14:06:45 root:INFO:Received SensorDetection sensor=1 threat=22 conf=92%
+2026-07-02 Thursday 14:06:45 root:INFO:Received SensorDetection sensor=1 threat=21 conf=91%
+2026-07-02 Thursday 14:06:45 root:INFO:Received SensorDetection sensor=4 threat=21 conf=69%
+2026-07-02 Thursday 14:06:45 root:INFO:Received SensorDetection sensor=1 threat=22 conf=88%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=1 threat=21 conf=89%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=4 threat=21 conf=66%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=1 threat=22 conf=99%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=1 threat=21 conf=100%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=4 threat=21 conf=70%
+2026-07-02 Thursday 14:06:46 root:INFO:Received SensorDetection sensor=1 threat=22 conf=94%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=1 threat=21 conf=97%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=4 threat=21 conf=69%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=1 threat=22 conf=99%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=1 threat=21 conf=90%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=4 threat=21 conf=65%
+2026-07-02 Thursday 14:06:47 root:INFO:Received SensorDetection sensor=1 threat=22 conf=96%
+2026-07-02 Thursday 14:06:48 root:INFO:Received SensorDetection sensor=1 threat=21 conf=99%
+2026-07-02 Thursday 14:06:48 root:INFO:Received SensorDetection sensor=4 threat=21 conf=71%
+2026-07-02 Thursday 14:06:48 root:INFO:Received SensorDetection sensor=1 threat=22 conf=89%
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=1 threat=21 conf=97%
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=4 threat=21 conf=75%
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=1 threat=22 conf=90%
+2026-07-02 Thursday 14:06:49 root:INFO:Spawned Threat id=23 severity=2 at (854.6, 543.6)
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=1 threat=21 conf=97%
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=4 threat=21 conf=81%
+2026-07-02 Thursday 14:06:49 root:INFO:Received SensorDetection sensor=1 threat=22 conf=97%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=1 threat=21 conf=94%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=4 threat=21 conf=69%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=1 threat=22 conf=99%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=1 threat=21 conf=90%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=2 threat=21 conf=86%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=4 threat=21 conf=74%
+2026-07-02 Thursday 14:06:50 root:INFO:Received SensorDetection sensor=1 threat=22 conf=90%
+2026-07-02 Thursday 14:06:50 root:WARNING:Threat 21 reached hull – removing
+2026-07-02 Thursday 14:06:51 root:INFO:Received SensorDetection sensor=1 threat=22 conf=90%
+2026-07-02 Thursday 14:06:51 root:INFO:Received SensorDetection sensor=1 threat=23 conf=91%
+2026-07-02 Thursday 14:06:51 root:INFO:Received SensorDetection sensor=1 threat=22 conf=99%
+2026-07-02 Thursday 14:06:51 root:INFO:Received SensorDetection sensor=1 threat=23 conf=100%
+2026-07-02 Thursday 14:06:52 root:INFO:Received SensorDetection sensor=1 threat=22 conf=96%
+2026-07-02 Thursday 14:06:52 root:INFO:Received SensorDetection sensor=1 threat=23 conf=97%
+2026-07-02 Thursday 14:06:52 root:INFO:Received EffectorAction effector=1 threat=23 destroyed=1
+2026-07-02 Thursday 14:06:52 root:INFO:Received SensorDetection sensor=1 threat=22 conf=96%
+2026-07-02 Thursday 14:06:52 root:INFO:Received EffectorAction effector=2 threat=23 destroyed=0
+2026-07-02 Thursday 14:06:52 root:INFO:Received SensorDetection sensor=4 threat=22 conf=69%
+2026-07-02 Thursday 14:06:52 root:INFO:Received EffectorAction effector=3 threat=23 destroyed=1
+2026-07-02 Thursday 14:06:52 root:INFO:Received SensorDetection sensor=1 threat=23 conf=100%
+2026-07-02 Thursday 14:06:52 root:INFO:Received EffectorAction effector=4 threat=23 destroyed=0
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=1 threat=22 conf=91%
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=4 threat=22 conf=77%
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=1 threat=23 conf=92%
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=1 threat=22 conf=88%
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=4 threat=22 conf=85%
+2026-07-02 Thursday 14:06:53 root:INFO:Received SensorDetection sensor=1 threat=23 conf=96%
+2026-07-02 Thursday 14:06:53 root:INFO:C2 STATE: SHUT_DOWN
+2026-07-02 Thursday 14:06:57 root:INFO:Command & Control Exiting
+2026-07-02 Thursday 14:40:33 root:INFO:C&C GUI starting on domain 0
+2026-07-02 Thursday 14:40:35 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 14:40:35 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 14:40:35 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 14:40:35 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 14:40:35 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 14:40:40 root:INFO:Threat id=1 at (488,302)
+2026-07-02 Thursday 14:40:43 root:INFO:Threat id=2 at (286,273)
+2026-07-02 Thursday 14:40:52 root:INFO:Threat id=3 at (566,332)
+2026-07-02 Thursday 14:40:53 root:INFO:Threat id=4 at (337,301)
+2026-07-02 Thursday 14:40:54 root:INFO:Threat id=5 at (202,315)
+2026-07-02 Thursday 14:41:10 root:INFO:C&C GUI starting on domain 0
+2026-07-02 Thursday 14:41:11 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 14:41:11 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 14:41:11 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 14:41:11 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 14:41:11 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 14:41:13 root:INFO:Threat id=1 at (176,240)
+2026-07-02 Thursday 14:41:14 root:INFO:Threat id=2 at (412,234)
+2026-07-02 Thursday 14:41:27 root:INFO:Threat id=3 at (418,281)
+2026-07-02 Thursday 14:41:28 root:INFO:Threat id=4 at (306,287)
+2026-07-02 Thursday 14:42:02 root:INFO:C&C GUI exiting
+2026-07-02 Thursday 14:42:05 root:INFO:C&C GUI exiting
+2026-07-02 Thursday 14:42:27 root:INFO:C&C GUI starting on domain 0
+2026-07-02 Thursday 14:42:28 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 14:42:28 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 14:42:28 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 14:42:28 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 14:42:28 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 14:42:36 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:42:36 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-02 Thursday 14:42:44 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:42:44 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-02 Thursday 14:42:46 root:INFO:Threat id=1 at (309,245)
+2026-07-02 Thursday 14:42:47 root:INFO:Threat id=2 at (204,241)
+2026-07-02 Thursday 14:42:48 root:INFO:Threat id=3 at (672,326)
+2026-07-02 Thursday 14:43:37 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:43:37 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-02 Thursday 14:43:43 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:43:43 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-02 Thursday 14:43:48 root:INFO:Threat id=4 at (515,292)
+2026-07-02 Thursday 14:43:49 root:INFO:Threat id=5 at (344,246)
+2026-07-02 Thursday 14:43:50 root:INFO:Threat id=6 at (166,211)
+2026-07-02 Thursday 14:43:51 root:INFO:Threat id=7 at (677,249)
+2026-07-02 Thursday 14:44:03 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:44:03 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-02 Thursday 14:44:11 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 14:44:11 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-02 Thursday 14:44:16 root:INFO:C&C GUI exiting
+2026-07-02 Thursday 17:34:22 root:INFO:C&C GUI starting on domain 0
+2026-07-02 Thursday 17:34:25 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 17:34:25 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 17:34:25 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 17:34:25 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 17:34:25 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 17:34:47 root:INFO:Threat id=1 at (208,159)
+2026-07-02 Thursday 17:34:48 root:INFO:Threat id=2 at (474,157)
+2026-07-02 Thursday 17:34:56 root:INFO:Threat id=3 at (390,357)
+2026-07-02 Thursday 17:34:56 root:INFO:Threat id=4 at (545,433)
+2026-07-02 Thursday 17:34:57 root:INFO:Threat id=5 at (252,418)
+2026-07-02 Thursday 17:35:01 root:INFO:C&C GUI exiting
+2026-07-02 Thursday 17:39:13 root:INFO:C&C GUI starting on domain 0
+2026-07-02 Thursday 17:39:14 root:INFO:Writer created for type Threat
+2026-07-02 Thursday 17:39:14 root:INFO:Reader created for type SensorDetection
+2026-07-02 Thursday 17:39:14 root:INFO:Reader created for type EffectorAction
+2026-07-02 Thursday 17:39:14 root:INFO:Reader Thread running for SensorDetection
+2026-07-02 Thursday 17:39:14 root:INFO:Reader Thread running for EffectorAction
+2026-07-02 Thursday 17:39:22 root:INFO:Threat id=1 at (207,296)
+2026-07-02 Thursday 17:39:22 root:INFO:Threat id=2 at (554,402)
+2026-07-02 Thursday 17:39:23 root:INFO:Threat id=3 at (637,420)
+2026-07-02 Thursday 17:39:42 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 17:39:42 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-02 Thursday 17:39:49 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-02 Thursday 17:39:49 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-02 Thursday 17:39:57 root:INFO:Threat id=4 at (516,258)
+2026-07-02 Thursday 17:39:57 root:INFO:Threat id=5 at (301,245)
+2026-07-02 Thursday 17:39:58 root:INFO:Threat id=6 at (120,302)
+2026-07-02 Thursday 17:40:00 root:INFO:Threat id=7 at (718,403)
+2026-07-02 Thursday 17:40:03 root:INFO:Threat id=8 at (585,346)
+2026-07-02 Thursday 17:40:05 root:INFO:Threat id=9 at (480,252)
+2026-07-02 Thursday 17:40:06 root:INFO:Threat id=10 at (292,261)
+2026-07-02 Thursday 17:40:08 root:INFO:Threat id=11 at (620,305)
+2026-07-02 Thursday 17:40:46 root:INFO:Threat id=12 at (327,303)
+2026-07-02 Thursday 17:40:47 root:INFO:Threat id=13 at (230,287)
+2026-07-02 Thursday 17:40:47 root:INFO:Threat id=14 at (480,320)
+2026-07-02 Thursday 17:40:58 root:INFO:Threat id=15 at (468,333)
+2026-07-02 Thursday 17:40:58 root:INFO:Threat id=16 at (316,292)
+2026-07-02 Thursday 17:40:59 root:INFO:Threat id=17 at (633,410)
+2026-07-02 Thursday 17:41:00 root:INFO:Threat id=18 at (138,345)

@@ -24,15 +24,23 @@ if(DEFINED USE_CONNEXT AND USE_CONNEXT)
     if(DEFINED RTI_CONNEXTDDS_DIR)
       target_include_directories(ship_types PRIVATE ${RTI_CONNEXTDDS_DIR}/include ${RTI_CONNEXTDDS_DIR}/include/ndds)
     endif()
-    # Required for __declspec(dllimport) on data symbols when linking against dynamic RTI libs
-    target_compile_definitions(ship_types PRIVATE
-      RTI_WIN32
-      RTI_dds_c_DLL_VARIABLE
-      RTI_dds_cpp_DLL_VARIABLE
-      RTI_osapi_DLL_VARIABLE
-      RTI_cdr_DLL_VARIABLE
-      RTI_log_DLL_VARIABLE
-    )
+    # Required for __declspec(dllimport) data symbols when linking RTI DLLs on Windows
+    if(WIN32)
+      target_compile_definitions(ship_types PRIVATE
+        RTI_WIN32
+        RTI_dds_c_DLL_VARIABLE
+        RTI_dds_cpp_DLL_VARIABLE
+        RTI_osapi_DLL_VARIABLE
+        RTI_cdr_DLL_VARIABLE
+        RTI_log_DLL_VARIABLE
+      )
+    elseif(APPLE)
+      target_compile_definitions(ship_types PRIVATE
+        RTI_UNIX
+        RTI_DARWIN
+        RTI_64BIT
+      )
+    endif()
     set_target_properties(ship_types PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES)
   endif()
 endif()

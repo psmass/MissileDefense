@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <cstdio>
 #include <cmath>
+#include <random>
+#include <set>
 
 #ifdef USE_CONNEXT
 #include <ndds/ndds_cpp.h>
@@ -636,7 +638,7 @@ int main(int argc, char **argv)
     while (running) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) running = false;
-            if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x < 800 && e.button.y < 460) {
+            if (e.type == SDL_MOUSEBUTTONDOWN && e.button.x < 800 && e.button.y < 560) {
                 int x = e.button.x;
                 int y = e.button.y;
                 ship::Threat t;
@@ -680,7 +682,7 @@ int main(int argc, char **argv)
         threats.erase(std::remove_if(threats.begin(), threats.end(), [&](const ship::Threat &t){
             double dx = cx - t.x; double dy = cy - t.y; return (dx*dx+dy*dy) < 4900.0; }), threats.end());
 
-        // Drain new effect events from effector listener
+    // Drain new effect events from effector listener
 #ifdef USE_CONNEXT
         {
             std::lock_guard<std::mutex> lk(effector_listener.mtx);
@@ -698,6 +700,73 @@ int main(int argc, char **argv)
                 interceptors.push_back({ev.lx, ev.ly, ev.target_id, spd, 0.0f, 20.0f, ev.will_kill, false});
             }
             effector_listener.pending_fx.clear();
+        }
+#else
+        {
+            // Local fallback (no DDS): emulate sensor detections and layered weapon engagements.
+            static std::mt19937 rng{(unsigned)std::chrono::system_clock::now().time_since_epoch().count()};
+            static std::uniform_int_distribution<int> conf_dist_spy(88, 100);
+            static std::uniform_int_distribution<int> conf_dist_spq(72, 90);
+            static std::uniform_int_distribution<int> conf_dist_sps(55, 75);
+            static std::uniform_int_distribution<int> conf_dist_slq(65, 85);
+            static std::uniform_int_distribution<int> chance(1, 100);
+            static std::set<int> engaged_ids;
+
+            const auto now2 = std::chrono::steady_clock::now();
+
+            for (const auto& t : threats) {
+                const float dx = float(t.x) - float(SHIP_X);
+                const float dy = float(t.y) - float(SHIP_Y);
+                const float dist = sqrtf(dx*dx + dy*dy);
+
+                // Sensor rings (same radii used in sensor app comments)
+                struct SensorCfg { int id; float range_px; std::uniform_int_distribution<int>* conf; };
+                SensorCfg sensors[] = {
+                    {1, 412.0f, &conf_dist_spy}, // AN/SPY-1D
+                    {2,  75.0f, &conf_dist_spq}, // AN/SPQ-9B
+                    {3,  47.0f, &conf_dist_sps}, // AN/SPS-67
+                    {4, 187.0f, &conf_dist_slq}, // AN/SLQ-32
+                };
+                for (const auto& s : sensors) {
+                    if (dist <= s.range_px) {
+                        ship::SensorDetection d;
+                        d.sensor_id = s.id;
+                        d.threat_id = t.id;
+                        d.x = t.x;
+                        d.y = t.y;
+                        d.confidence = (*(s.conf))(rng);
+                        (void)d; // retained for parity with DDS path; currently visuals are interceptor-driven
+                    }
+                }
+
+                // Engage once when threat crosses in-range boundary.
+                if (dist <= 380.0f && engaged_ids.insert(t.id).second) {
+                    struct EffectorCfg { int id; int pk; float speed; bool surface_only; };
+                    EffectorCfg effectors[] = {
+                        {1, 75, 150.0f, false}, // SM-2 MR
+                        {2, 87, 175.0f, false}, // SM-6
+                        {3, 68, 130.0f, false}, // ESSM
+                        {4, 52, 210.0f, false}, // CIWS
+                        {5, 36, 100.0f, true }, // MK45/62
+                    };
+
+                    for (const auto& efx : effectors) {
+                        if (efx.surface_only && t.severity < 3) continue;
+                        const bool will_kill = (chance(rng) <= efx.pk);
+                        plumes.push_back({float(SHIP_X + 40), float(SHIP_Y - 26), 0.0f, 1.4f});
+                        interceptors.push_back({
+                            float(SHIP_X + 40),
+                            float(SHIP_Y - 26),
+                            t.id,
+                            efx.speed,
+                            0.0f,
+                            20.0f,
+                            will_kill,
+                            false
+                        });
+                    }
+                }
+            }
         }
 #endif
         // Age and expire effects
@@ -795,7 +864,22 @@ int main(int argc, char **argv)
             float tdx = float(cx)      - float(t.x);
             float tdy = float(cy - 16) - float(t.y);
             draw_threat(ren, int(t.x), int(t.y), atan2f(tdy, tdx), t.id % 3);
+
+            // Extra visibility: yellow blip ring + small T# label
+            SDL_SetRenderDrawColor(ren, 245, 220, 70, 255);
+            SDL_Rect blip = {int(t.x) - 6, int(t.y) - 6, 12, 12};
+            SDL_RenderDrawRect(ren, &blip);
+            char tbuf[16];
+            std::snprintf(tbuf, sizeof(tbuf), "T#%d", t.id);
+            draw_text(ren, int(t.x) + 8, int(t.y) - 8, tbuf, 1);
         }
+
+        // Operator hint + live threat count
+        SDL_SetRenderDrawColor(ren, 180, 190, 210, 255);
+        draw_text(ren, 10, 8, "Click in map (left side) to spawn inbound threats", 1);
+        char th_count[32];
+        std::snprintf(th_count, sizeof(th_count), "Active threats: %zu", threats.size());
+        draw_text(ren, 10, 20, th_count, 1);
 
         // Interceptor missiles (above threats, below blasts)
         for (const auto& ic : interceptors) {

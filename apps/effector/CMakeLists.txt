@@ -9,7 +9,13 @@ target_include_directories(effector PRIVATE
 )
 
 if(USE_CONNEXT)
-    set(RTI_LIB_DIR ${RTI_CONNEXTDDS_DIR}/lib/x64Win64VS2017)
+    if(WIN32)
+        set(RTI_LIB_DIR ${RTI_CONNEXTDDS_DIR}/lib/x64Win64VS2017)
+    elseif(APPLE)
+        set(RTI_LIB_DIR ${RTI_CONNEXTDDS_DIR}/lib/arm64Darwin23clang16.0)
+    else()
+        set(RTI_LIB_DIR ${RTI_CONNEXTDDS_DIR}/lib)
+    endif()
 
     find_path(RTI_CONNEXTDDS_INCLUDE ndds/ndds_cpp.h PATHS ${RTI_CONNEXTDDS_DIR}/include)
 
@@ -22,15 +28,23 @@ if(USE_CONNEXT)
     if(NOT RTI_CONNEXTDDS_INCLUDE OR NOT RTI_LIB_NDDSCPP OR NOT RTI_LIB_NDDSC OR NOT RTI_LIB_NDDSCORE)
         message(FATAL_ERROR "RTI Connext headers or dynamic libraries not found. Set RTI_CONNEXTDDS_DIR to the RTI install root.")
     endif()
-    target_compile_definitions(effector PRIVATE
-        USE_CONNEXT
-        RTI_WIN32
-        RTI_dds_c_DLL_VARIABLE
-        RTI_dds_cpp_DLL_VARIABLE
-        RTI_osapi_DLL_VARIABLE
-        RTI_cdr_DLL_VARIABLE
-        RTI_log_DLL_VARIABLE
-    )
+    target_compile_definitions(effector PRIVATE USE_CONNEXT)
+    if(WIN32)
+        target_compile_definitions(effector PRIVATE
+            RTI_WIN32
+            RTI_dds_c_DLL_VARIABLE
+            RTI_dds_cpp_DLL_VARIABLE
+            RTI_osapi_DLL_VARIABLE
+            RTI_cdr_DLL_VARIABLE
+            RTI_log_DLL_VARIABLE
+        )
+    elseif(APPLE)
+        target_compile_definitions(effector PRIVATE
+            RTI_UNIX
+            RTI_DARWIN
+            RTI_64BIT
+        )
+    endif()
     target_include_directories(effector PRIVATE
         ${RTI_CONNEXTDDS_INCLUDE}
         ${RTI_CONNEXTDDS_DIR}/include/ndds
