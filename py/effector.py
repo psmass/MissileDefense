@@ -27,7 +27,7 @@
 
  Programming patterns mirror the TMS device.py application:
    - Compiled IDL types registered via ddsEntities.register_ship_types()
-   - Writer / Reader base classes from ship_ddsEntities.py
+   - Writer / Reader base classes from ddsEntities.py
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
    - Ctrl-C handled via application.run_flag
@@ -48,7 +48,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import ship_ddsEntities as ddsEntities
+import ddsEntities
 import ship_topics
 
 

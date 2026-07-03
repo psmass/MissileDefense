@@ -45,7 +45,7 @@ from typing import Any, Dict, List, Optional
 _VN_DIR = os.path.normpath(
     os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'vector_nav_py'))
 if os.path.isdir(_VN_DIR) and _VN_DIR not in sys.path:
-    sys.path.append(_VN_DIR)   # append so local ship_ddsEntities.py takes precedence
+    sys.path.append(_VN_DIR)   # append so local ddsEntities.py takes precedence
 try:
     from umaa_types import GlobalPoseReportType, GlobalPoseReportTypeTopic  # type: ignore
     import vn_constants as _vn                                               # type: ignore
@@ -58,7 +58,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import ship_ddsEntities as ddsEntities
+import ddsEntities
 import ship_topics
 
 

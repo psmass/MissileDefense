@@ -41,7 +41,7 @@ import random
 
 import application    # noqa: F401  (imported for run_flag side-effects in base classes)
 import shipConstants
-import ship_ddsEntities as ddsEntities
+import ddsEntities
 import rti.connextdds as dds
 
 
@@ -123,7 +123,7 @@ class ThreatWtr(ddsEntities.Writer):
                  app_state_obj: ApplicationStateObj) -> None:
         ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.Threat,
-            periodic=False, period=1.0)
+            False, 1.0)
         self._app_state_obj = app_state_obj
 
     def write_threat(self, threat: shipConstants.Threat) -> None:
@@ -188,7 +188,7 @@ class SensorDetectionWtr(ddsEntities.Writer):
                  app_state_obj: ApplicationStateObj) -> None:
         ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.SensorDetection,
-            periodic=False, period=1.0)
+            False, 1.0)
         self._app_state_obj = app_state_obj
 
     def write_detection(self, sensor_id: int, threat_id: int,
@@ -303,7 +303,7 @@ class EffectorActionWtr(ddsEntities.Writer):
                  app_state_obj: ApplicationStateObj) -> None:
         ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.EffectorAction,
-            periodic=False, period=1.0)
+            False, 1.0)
         self._app_state_obj = app_state_obj
 
     def write_action(self, effector_id: int, threat_id: int,
