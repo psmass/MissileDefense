@@ -25,3 +25,6 @@ map_rti_symbols_result.txt
 # Python bytecode cache
 __pycache__/
 *.py[cod]
+
+# Application log files
+*.log
