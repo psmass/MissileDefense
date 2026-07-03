@@ -27,6 +27,7 @@ import logging
 import math
 import time
 
+import rti.types as idl
 import ddsEntities
 import vn_constants
 from umaa_types import (
@@ -44,6 +45,16 @@ from umaa_types import (
     YawZNEDType,
     set_timestamp,
 )
+
+
+# ===========================================================================
+# SpeedCommand  —  published by Dashboard slider, subscribed by Publisher
+# ===========================================================================
+
+@idl.struct
+class SpeedCommand:
+    """Speed multiplier command.  multiplier=1.0 → normal speed, 10.0 → 10× faster."""
+    multiplier: float = 1.0
 
 
 # ===========================================================================
@@ -72,6 +83,9 @@ class VectorNavState:
         self._lat0 = 32.7157     # degrees N
         self._lon0 = -117.1611   # degrees E
 
+        # Speed multiplier — updated live by SpeedCommand_Rdr from Dashboard slider
+        self.speed_multiplier: float = 1.0
+
         # IdentifierType source field — set once, shared by all writers
         self.source = GUIDUtil.make_source_id(vn_constants.VECNAV_GUID)
 
@@ -88,8 +102,8 @@ class VectorNavState:
 
     @property
     def sog(self) -> float:
-        """Speed Over Ground  m/s  (~5–7 knot band)."""
-        return 3.0 + 0.4 * math.sin(0.08 * self._t())
+        """Speed Over Ground  m/s  – scaled by speed_multiplier."""
+        return (3.0 + 0.4 * math.sin(0.08 * self._t())) * self.speed_multiplier
 
     @property
     def stw(self) -> float:
@@ -108,14 +122,14 @@ class VectorNavState:
 
     @property
     def lat(self) -> float:
-        """Geodetic latitude  degrees  (dead-reckoning from _lat0)."""
-        return self._lat0 + (3.0 * self._t() / 111_111.0) * math.cos(self.course_r)
+        """Geodetic latitude  degrees  (dead-reckoning, speed_multiplier applied)."""
+        return self._lat0 + (3.0 * self.speed_multiplier * self._t() / 111_111.0) * math.cos(self.course_r)
 
     @property
     def lon(self) -> float:
-        """Geodetic longitude  degrees  (dead-reckoning from _lon0)."""
+        """Geodetic longitude  degrees  (dead-reckoning, speed_multiplier applied)."""
         lat_cos = math.cos(math.radians(self._lat0))
-        return self._lon0 + (3.0 * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
+        return self._lon0 + (3.0 * self.speed_multiplier * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
 
 
 # ===========================================================================
@@ -305,3 +319,32 @@ class GlobalPoseReport_Rdr(ddsEntities.Reader):
         logging.info('GlobalPose rx  Lat=%.6f  Lon=%.7f',
                      data.position.geodeticLatitude,
                      data.position.geodeticLongitude)
+
+
+# ===========================================================================
+# SpeedMultiplierCommand  —  Reader (used by VectorNav_Publisher)
+#                            Writer (used by VectorNav_Dashboard)
+# ===========================================================================
+
+class SpeedCommand_Rdr(ddsEntities.Reader):
+    """Receives speed multiplier commands from the Dashboard slider.
+
+    handler() updates vn_state.speed_multiplier so that the next
+    write() call from SpeedReport_Wtr / GlobalPoseReport_Wtr picks
+    up the new value immediately.
+    """
+
+    def __init__(self, participant, vn_state: VectorNavState) -> None:
+        ddsEntities.Reader.__init__(
+            self,
+            participant,
+            SpeedCommand,
+            vn_constants.SPEED_COMMAND_TOPIC)
+        self._vn_state = vn_state
+
+    def handler(self, data: SpeedCommand) -> None:
+        mult = max(float(vn_constants.SPEED_MULTIPLIER_MIN),
+                   min(float(vn_constants.SPEED_MULTIPLIER_MAX), data.multiplier))
+        self._vn_state.speed_multiplier = mult
+        print(f'[VN] Speed multiplier → {mult:.0f}×', flush=True)
+        logging.info('SpeedCommand rx  multiplier=%.1f', mult)

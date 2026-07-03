@@ -38,3 +38,12 @@ VECNAV_GUID: str = "AA010000-0000-0000-0000-000000000000"
 
 SPEED_TOPIC: str = "UMAA::SA::SpeedStatus::SpeedReportType"
 POSE_TOPIC:  str = "UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"
+
+# ---------------------------------------------------------------------------
+# Speed multiplier command topic
+# Published by VectorNav_Dashboard slider; subscribed by VectorNav_Publisher.
+# ---------------------------------------------------------------------------
+
+SPEED_COMMAND_TOPIC: str  = "VectorNav::SpeedMultiplierCommand"
+SPEED_MULTIPLIER_MIN: int = 1
+SPEED_MULTIPLIER_MAX: int = 20

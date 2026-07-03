@@ -49,9 +49,11 @@ from PyQt6.QtGui import (
 from PyQt6.QtCore import QPointF, QRectF
 from PyQt6.QtWidgets import (
     QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QMainWindow, QSizePolicy, QVBoxLayout, QWidget,
+    QLabel, QMainWindow, QSizePolicy, QSlider, QVBoxLayout, QWidget,
 )
 
+import vn_constants
+import vn_topics
 from umaa_types import (
     GlobalPoseReportType,
     GlobalPoseReportTypeTopic,
@@ -420,6 +422,56 @@ class Dashboard(QMainWindow):
         compass_row.addStretch()
         root.addLayout(compass_row)
 
+        # ── speed multiplier slider ───────────────────────────────────
+        spd_row = QHBoxLayout()
+        spd_row.setSpacing(10)
+
+        spd_icon = QLabel("⚙ Sim Speed:")
+        spd_icon.setFont(QFont("Helvetica", 10, QFont.Weight.Bold))
+        spd_icon.setStyleSheet(f"color: {ACCENT.name()};")
+        spd_row.addWidget(spd_icon)
+
+        slow_lbl = QLabel(f"{vn_constants.SPEED_MULTIPLIER_MIN}×")
+        slow_lbl.setFont(QFont("Helvetica", 9))
+        slow_lbl.setStyleSheet(f"color: {TEXT_SEC.name()};")
+        spd_row.addWidget(slow_lbl)
+
+        self._speed_slider = QSlider(Qt.Orientation.Horizontal)
+        self._speed_slider.setMinimum(vn_constants.SPEED_MULTIPLIER_MIN)
+        self._speed_slider.setMaximum(vn_constants.SPEED_MULTIPLIER_MAX)
+        self._speed_slider.setValue(vn_constants.SPEED_MULTIPLIER_MIN)
+        self._speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
+        self._speed_slider.setTickInterval(1)
+        self._speed_slider.setMinimumWidth(300)
+        self._speed_slider.setStyleSheet("""
+            QSlider::groove:horizontal {
+                height: 6px; background: #334155; border-radius: 3px;
+            }
+            QSlider::handle:horizontal {
+                background: #38bdf8; width: 18px; height: 18px;
+                margin: -6px 0; border-radius: 9px;
+            }
+            QSlider::sub-page:horizontal {
+                background: #38bdf8; border-radius: 3px;
+            }
+        """)
+        spd_row.addWidget(self._speed_slider)
+
+        fast_lbl = QLabel(f"{vn_constants.SPEED_MULTIPLIER_MAX}×")
+        fast_lbl.setFont(QFont("Helvetica", 9))
+        fast_lbl.setStyleSheet(f"color: {TEXT_SEC.name()};")
+        spd_row.addWidget(fast_lbl)
+
+        self._speed_val_lbl = QLabel("1×")
+        self._speed_val_lbl.setFont(QFont("Courier New", 14, QFont.Weight.Bold))
+        self._speed_val_lbl.setStyleSheet(f"color: {WARN.name()}; min-width: 44px;")
+        spd_row.addWidget(self._speed_val_lbl)
+
+        spd_row.addStretch()
+        root.addLayout(spd_row)
+
+        self._speed_slider.valueChanged.connect(self._on_speed_changed)
+
         # ── refresh timer ─────────────────────────────────────────────
         self._timer = QTimer(self)
         self._timer.setInterval(REFRESH_MS)
@@ -436,6 +488,11 @@ class Dashboard(QMainWindow):
         self._age_timer.start()
 
     # ------------------------------------------------------------------
+
+    def _on_speed_changed(self, value: int) -> None:
+        """Slider moved — publish new speed multiplier to VectorNav_Publisher."""
+        self._speed_val_lbl.setText(f"{value}×")
+        _publish_speed_command(float(value))
 
     def _tick_age(self) -> None:
         with _state._lock:
@@ -500,7 +557,20 @@ class Dashboard(QMainWindow):
 # DDS setup (runs once, readers stay alive for the app lifetime)
 # ---------------------------------------------------------------------------
 
+# Speed command writer — initialised in _start_dds(), used by Dashboard slider
+_speed_writer = None
+_speed_sample = None
+
+
+def _publish_speed_command(multiplier: float) -> None:
+    """Write a SpeedCommand sample to the DDS bus."""
+    if _speed_writer is None or _speed_sample is None:
+        return
+    _speed_sample.multiplier = multiplier
+    _speed_writer.write(_speed_sample)
+
 def _start_dds() -> None:
+    global _speed_writer, _speed_sample
     qos = dds.DomainParticipantQos()
     qos.participant_name.name = "VectorNav_Dashboard"
     participant = dds.DomainParticipant(domain_id=DOMAIN_ID, qos=qos)
@@ -514,8 +584,15 @@ def _start_dds() -> None:
     pose_reader = dds.DataReader(subscriber, pose_topic)
     pose_reader.set_listener(PoseListener(), dds.StatusMask.DATA_AVAILABLE)
 
+    # Speed multiplier command writer — published when slider moves
+    speed_cmd_topic  = dds.Topic(participant, vn_constants.SPEED_COMMAND_TOPIC,
+                                 vn_topics.SpeedCommand)
+    _speed_writer    = dds.DataWriter(dds.Publisher(participant), speed_cmd_topic)
+    _speed_sample    = vn_topics.SpeedCommand()
+
     # Keep references alive for the process lifetime
-    _start_dds._refs = (participant, subscriber, speed_reader, pose_reader)
+    _start_dds._refs = (participant, subscriber, speed_reader, pose_reader,
+                        _speed_writer)
 
 
 # ---------------------------------------------------------------------------

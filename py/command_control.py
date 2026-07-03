@@ -321,9 +321,23 @@ def draw_blast(surf, b):
         pygame.draw.line(surf, (255,220,50), p1, p2)
 
 
-# ---------------------------------------------------------------------------
-# VectorNav GPS reader  (updates ship position from GlobalPoseReportType)
-# ---------------------------------------------------------------------------
+def draw_buoy(surf, x, y, font):
+    """Draw a static orange navigation buoy at world-fixed position (x, y).
+
+    The buoy marks the ship's starting position (CX, CY+20) so that GPS-driven
+    movement is immediately visible relative to a fixed reference point.
+    """
+    bx, by = int(x), int(y)
+    # Buoy body – orange filled circle with darker outline
+    pygame.draw.circle(surf, (255, 140,   0), (bx, by), 7)
+    pygame.draw.circle(surf, (200,  90,   0), (bx, by), 7, 1)
+    # Vertical mast
+    pygame.draw.line(surf, (255, 200, 50), (bx, by - 7), (bx, by - 18))
+    # Small flag at top
+    pygame.draw.polygon(surf, (255, 200, 50),
+                        [(bx, by - 18), (bx + 7, by - 14), (bx, by - 10)])
+    # Label
+    surf.blit(font.render("HOME", True, (255, 160, 40)), (bx + 9, by - 8))
 if _HAVE_VN:
     class GUIPoseRdr(ddsEntities.Reader):
         """Subscribes to VectorNav GlobalPoseReportType and updates ship position.
@@ -647,6 +661,9 @@ def command_control_main(domain_id: int) -> None:
 
         # Radar rings follow the ship (pre-built surface centred on CX,CY → offset)
         screen.blit(radar_surf, (int(ship_cx - CX), int(ship_cy - CY)))
+
+        # Static home buoy — fixed world position, always at (CX, CY+20)
+        draw_buoy(screen, CX, CY + 20, fsm)
 
         for p in plumes: draw_plume(screen, p)
 

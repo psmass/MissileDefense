@@ -49,16 +49,19 @@ def vecnav_main(domain_id: int) -> None:
     speed_wtr = vn_topics.SpeedReport_Wtr(participant, vn_state)
     pose_wtr  = vn_topics.GlobalPoseReport_Wtr(participant, vn_state)
 
+    # *** SUBSCRIBE TO SPEED MULTIPLIER COMMANDS (from Dashboard slider)
+    speed_cmd_r = vn_topics.SpeedCommand_Rdr(participant, vn_state)
+
     # *** ATTACH WRITER LISTENERS (optional publication-match logging)
     speed_wtr.writer.set_listener(
         ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
     pose_wtr.writer.set_listener(
         ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
 
-    # *** START WRITER THREADS
-    # Each thread blocks on its WaitSet and calls write() when the timer fires.
+    # *** START WRITER AND READER THREADS
     speed_wtr.start()
     pose_wtr.start()
+    speed_cmd_r.start()
 
     sleep(1)  # allow threads to begin their first WaitSet wait
 
@@ -82,6 +85,7 @@ def vecnav_main(domain_id: int) -> None:
     logging.info('Shutting down writer threads')
     speed_wtr.join(timeout=3)
     pose_wtr.join(timeout=3)
+    speed_cmd_r.join(timeout=3)
 
     print("VectorNav Component Exiting")
     logging.info('VectorNav Component Exiting')
