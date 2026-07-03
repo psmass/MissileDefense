@@ -423,3 +423,139 @@
 2026-07-03 Friday 09:21:25 root:INFO:Threat id=3 at (167,357)
 2026-07-03 Friday 09:21:26 root:INFO:Threat id=4 at (669,348)
 2026-07-03 Friday 09:21:27 root:INFO:Threat id=5 at (418,579)
+2026-07-03 Friday 09:28:30 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:29:06 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:29:06 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:29:06 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:29:06 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:29:06 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:29:06 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:29:17 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:29:17 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:29:25 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:29:25 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:29:27 root:INFO:Threat id=1 at (502,330)
+2026-07-03 Friday 09:29:27 root:INFO:Threat id=2 at (302,291)
+2026-07-03 Friday 09:29:28 root:INFO:Threat id=3 at (192,314)
+2026-07-03 Friday 09:29:29 root:INFO:Threat id=4 at (726,497)
+2026-07-03 Friday 09:29:29 root:INFO:Threat id=5 at (420,565)
+2026-07-03 Friday 09:36:30 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:36:30 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:36:30 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:36:30 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-03 Friday 09:36:32 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:55:59 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:57:11 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:58:00 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:58:01 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:58:01 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:58:01 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:58:01 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:58:01 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:58:01 root:INFO:Reader created for type UMAA_SA_GlobalPoseStatus_GlobalPoseReportType
+2026-07-03 Friday 09:58:01 root:INFO:Reader Thread running for UMAA_SA_GlobalPoseStatus_GlobalPoseReportType
+2026-07-03 Friday 09:58:40 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:58:40 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:58:59 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:58:59 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:59:24 root:INFO:Threat id=1 at (538,279)
+2026-07-03 Friday 09:59:24 root:INFO:Threat id=2 at (538,279)
+2026-07-03 Friday 09:59:26 root:INFO:Threat id=3 at (213,302)
+2026-07-03 Friday 09:59:26 root:INFO:Threat id=4 at (100,379)
+2026-07-03 Friday 09:59:27 root:INFO:Threat id=5 at (410,565)
+2026-07-03 Friday 09:59:38 root:INFO:[C2] Pose Lat=32.715719 Lon=-117.1610771 → px=(400.4,569.6)
+2026-07-03 Friday 09:59:39 root:INFO:[C2] Pose Lat=32.715738 Lon=-117.1610543 → px=(400.9,569.1)
+2026-07-03 Friday 09:59:40 root:INFO:[C2] Pose Lat=32.715758 Lon=-117.1610315 → px=(401.3,568.7)
+2026-07-03 Friday 09:59:41 root:INFO:[C2] Pose Lat=32.715777 Lon=-117.1610087 → px=(401.7,568.3)
+2026-07-03 Friday 09:59:42 root:INFO:[C2] Pose Lat=32.715796 Lon=-117.1609859 → px=(402.1,567.9)
+2026-07-03 Friday 09:59:43 root:INFO:[C2] Pose Lat=32.715815 Lon=-117.1609631 → px=(402.6,567.4)
+2026-07-03 Friday 09:59:44 root:INFO:[C2] Pose Lat=32.715834 Lon=-117.1609403 → px=(403.0,567.0)
+2026-07-03 Friday 09:59:45 root:INFO:[C2] Pose Lat=32.715854 Lon=-117.1609176 → px=(403.4,566.6)
+2026-07-03 Friday 09:59:46 root:INFO:[C2] Pose Lat=32.715873 Lon=-117.1608948 → px=(403.8,566.2)
+2026-07-03 Friday 09:59:47 root:INFO:[C2] Pose Lat=32.715892 Lon=-117.1608720 → px=(404.3,565.7)
+2026-07-03 Friday 09:59:48 root:INFO:[C2] Pose Lat=32.715911 Lon=-117.1608492 → px=(404.7,565.3)
+2026-07-03 Friday 09:59:49 root:INFO:[C2] Pose Lat=32.715930 Lon=-117.1608265 → px=(405.1,564.9)
+2026-07-03 Friday 09:59:50 root:INFO:[C2] Pose Lat=32.715949 Lon=-117.1608037 → px=(405.5,564.5)
+2026-07-03 Friday 09:59:51 root:INFO:[C2] Pose Lat=32.715968 Lon=-117.1607810 → px=(406.0,564.0)
+2026-07-03 Friday 09:59:52 root:INFO:[C2] Pose Lat=32.715988 Lon=-117.1607582 → px=(406.4,563.6)
+2026-07-03 Friday 09:59:53 root:INFO:[C2] Pose Lat=32.716007 Lon=-117.1607355 → px=(406.8,563.2)
+2026-07-03 Friday 09:59:54 root:INFO:[C2] Pose Lat=32.716026 Lon=-117.1607127 → px=(407.2,562.8)
+2026-07-03 Friday 09:59:55 root:INFO:[C2] Pose Lat=32.716045 Lon=-117.1606900 → px=(407.7,562.3)
+2026-07-03 Friday 09:59:56 root:INFO:[C2] Pose Lat=32.716064 Lon=-117.1606672 → px=(408.1,561.9)
+2026-07-03 Friday 09:59:57 root:INFO:[C2] Pose Lat=32.716083 Lon=-117.1606444 → px=(408.5,561.5)
+2026-07-03 Friday 09:59:58 root:INFO:[C2] Pose Lat=32.716103 Lon=-117.1606216 → px=(408.9,561.1)
+2026-07-03 Friday 09:59:59 root:INFO:[C2] Pose Lat=32.716122 Lon=-117.1605988 → px=(409.4,560.6)
+2026-07-03 Friday 10:00:00 root:INFO:[C2] Pose Lat=32.716141 Lon=-117.1605761 → px=(409.8,560.2)
+2026-07-03 Friday 10:00:01 root:INFO:[C2] Pose Lat=32.716160 Lon=-117.1605532 → px=(410.2,559.8)
+2026-07-03 Friday 10:00:02 root:INFO:[C2] Pose Lat=32.716179 Lon=-117.1605305 → px=(410.6,559.4)
+2026-07-03 Friday 10:00:03 root:INFO:[C2] Pose Lat=32.716198 Lon=-117.1605077 → px=(411.1,558.9)
+2026-07-03 Friday 10:00:04 root:INFO:[C2] Pose Lat=32.716217 Lon=-117.1604850 → px=(411.5,558.5)
+2026-07-03 Friday 10:00:05 root:INFO:[C2] Pose Lat=32.716237 Lon=-117.1604622 → px=(411.9,558.1)
+2026-07-03 Friday 10:00:06 root:INFO:[C2] Pose Lat=32.716256 Lon=-117.1604395 → px=(412.3,557.7)
+2026-07-03 Friday 10:00:07 root:INFO:[C2] Pose Lat=32.716275 Lon=-117.1604167 → px=(412.8,557.2)
+2026-07-03 Friday 10:00:08 root:INFO:[C2] Pose Lat=32.716294 Lon=-117.1603939 → px=(413.2,556.8)
+2026-07-03 Friday 10:00:09 root:INFO:[C2] Pose Lat=32.716313 Lon=-117.1603712 → px=(413.6,556.4)
+2026-07-03 Friday 10:00:10 root:INFO:[C2] Pose Lat=32.716332 Lon=-117.1603484 → px=(414.1,555.9)
+2026-07-03 Friday 10:00:11 root:INFO:[C2] Pose Lat=32.716352 Lon=-117.1603256 → px=(414.5,555.5)
+2026-07-03 Friday 10:00:12 root:INFO:[C2] Pose Lat=32.716371 Lon=-117.1603029 → px=(414.9,555.1)
+2026-07-03 Friday 10:00:13 root:INFO:[C2] Pose Lat=32.716390 Lon=-117.1602801 → px=(415.3,554.7)
+2026-07-03 Friday 10:00:14 root:INFO:[C2] Pose Lat=32.716409 Lon=-117.1602573 → px=(415.8,554.2)
+2026-07-03 Friday 10:00:15 root:INFO:[C2] Pose Lat=32.716428 Lon=-117.1602346 → px=(416.2,553.8)
+2026-07-03 Friday 10:00:16 root:INFO:[C2] Pose Lat=32.716447 Lon=-117.1602118 → px=(416.6,553.4)
+2026-07-03 Friday 10:00:17 root:INFO:[C2] Pose Lat=32.716467 Lon=-117.1601890 → px=(417.0,553.0)
+2026-07-03 Friday 10:00:18 root:INFO:[C2] Pose Lat=32.716486 Lon=-117.1601662 → px=(417.5,552.5)
+2026-07-03 Friday 10:00:19 root:INFO:[C2] Pose Lat=32.716505 Lon=-117.1601434 → px=(417.9,552.1)
+2026-07-03 Friday 10:00:20 root:INFO:Threat id=6 at (564,350)
+2026-07-03 Friday 10:00:20 root:INFO:[C2] Pose Lat=32.716524 Lon=-117.1601206 → px=(418.3,551.7)
+2026-07-03 Friday 10:00:21 root:INFO:[C2] Pose Lat=32.716543 Lon=-117.1600978 → px=(418.7,551.3)
+2026-07-03 Friday 10:00:21 root:INFO:Threat id=7 at (319,317)
+2026-07-03 Friday 10:00:22 root:INFO:[C2] Pose Lat=32.716562 Lon=-117.1600750 → px=(419.2,550.8)
+2026-07-03 Friday 10:00:23 root:INFO:[C2] Pose Lat=32.716582 Lon=-117.1600522 → px=(419.6,550.4)
+2026-07-03 Friday 10:00:24 root:INFO:Threat id=8 at (472,357)
+2026-07-03 Friday 10:00:24 root:INFO:[C2] Pose Lat=32.716601 Lon=-117.1600294 → px=(420.0,550.0)
+2026-07-03 Friday 10:00:25 root:INFO:[C2] Pose Lat=32.716620 Lon=-117.1600066 → px=(420.4,549.6)
+2026-07-03 Friday 10:00:26 root:INFO:Threat id=9 at (169,430)
+2026-07-03 Friday 10:00:26 root:INFO:[C2] Pose Lat=32.716639 Lon=-117.1599837 → px=(420.9,549.1)
+2026-07-03 Friday 10:00:27 root:INFO:[C2] Pose Lat=32.716658 Lon=-117.1599610 → px=(421.3,548.7)
+2026-07-03 Friday 10:00:27 root:INFO:Threat id=10 at (432,547)
+2026-07-03 Friday 10:00:28 root:INFO:Threat id=11 at (430,537)
+2026-07-03 Friday 10:00:28 root:INFO:[C2] Pose Lat=32.716677 Lon=-117.1599383 → px=(421.7,548.3)
+2026-07-03 Friday 10:00:29 root:INFO:Threat id=12 at (442,538)
+2026-07-03 Friday 10:00:29 root:INFO:[C2] Pose Lat=32.716697 Lon=-117.1599155 → px=(422.1,547.9)
+2026-07-03 Friday 10:00:30 root:INFO:[C2] Pose Lat=32.716716 Lon=-117.1598927 → px=(422.6,547.4)
+2026-07-03 Friday 10:00:30 root:INFO:Threat id=13 at (400,532)
+2026-07-03 Friday 10:00:31 root:INFO:Threat id=14 at (230,377)
+2026-07-03 Friday 10:00:31 root:INFO:[C2] Pose Lat=32.716735 Lon=-117.1598699 → px=(423.0,547.0)
+2026-07-03 Friday 10:00:32 root:INFO:[C2] Pose Lat=32.716754 Lon=-117.1598471 → px=(423.4,546.6)
+2026-07-03 Friday 10:00:33 root:INFO:[C2] Pose Lat=32.716773 Lon=-117.1598243 → px=(423.9,546.1)
+2026-07-03 Friday 10:00:34 root:INFO:[C2] Pose Lat=32.716792 Lon=-117.1598015 → px=(424.3,545.7)
+2026-07-03 Friday 10:00:35 root:INFO:[C2] Pose Lat=32.716812 Lon=-117.1597788 → px=(424.7,545.3)
+2026-07-03 Friday 10:00:36 root:INFO:[C2] Pose Lat=32.716831 Lon=-117.1597561 → px=(425.1,544.9)
+2026-07-03 Friday 10:00:37 root:INFO:[C2] Pose Lat=32.716850 Lon=-117.1597333 → px=(425.6,544.4)
+2026-07-03 Friday 10:00:38 root:INFO:[C2] Pose Lat=32.716869 Lon=-117.1597105 → px=(426.0,544.0)
+2026-07-03 Friday 10:00:39 root:INFO:[C2] Pose Lat=32.716888 Lon=-117.1596878 → px=(426.4,543.6)
+2026-07-03 Friday 10:00:40 root:INFO:[C2] Pose Lat=32.716907 Lon=-117.1596650 → px=(426.8,543.2)
+2026-07-03 Friday 10:00:41 root:INFO:[C2] Pose Lat=32.716927 Lon=-117.1596422 → px=(427.3,542.7)
+2026-07-03 Friday 10:00:42 root:INFO:[C2] Pose Lat=32.716946 Lon=-117.1596194 → px=(427.7,542.3)
+2026-07-03 Friday 10:00:43 root:INFO:[C2] Pose Lat=32.716965 Lon=-117.1595967 → px=(428.1,541.9)
+2026-07-03 Friday 10:00:44 root:INFO:[C2] Pose Lat=32.716984 Lon=-117.1595739 → px=(428.5,541.5)
+2026-07-03 Friday 10:00:45 root:INFO:[C2] Pose Lat=32.717003 Lon=-117.1595511 → px=(429.0,541.0)
+2026-07-03 Friday 10:00:46 root:INFO:[C2] Pose Lat=32.717022 Lon=-117.1595284 → px=(429.4,540.6)
+2026-07-03 Friday 10:00:47 root:INFO:[C2] Pose Lat=32.717041 Lon=-117.1595056 → px=(429.8,540.2)
+2026-07-03 Friday 10:00:48 root:INFO:[C2] Pose Lat=32.717061 Lon=-117.1594828 → px=(430.2,539.8)
+2026-07-03 Friday 10:00:49 root:INFO:[C2] Pose Lat=32.717080 Lon=-117.1594599 → px=(430.7,539.3)
+2026-07-03 Friday 10:00:50 root:INFO:[C2] Pose Lat=32.717099 Lon=-117.1594372 → px=(431.1,538.9)
+2026-07-03 Friday 10:00:51 root:INFO:[C2] Pose Lat=32.717118 Lon=-117.1594144 → px=(431.5,538.5)
+2026-07-03 Friday 10:00:52 root:INFO:[C2] Pose Lat=32.717137 Lon=-117.1593917 → px=(431.9,538.1)
+2026-07-03 Friday 10:00:53 root:INFO:[C2] Pose Lat=32.717156 Lon=-117.1593689 → px=(432.4,537.6)
+2026-07-03 Friday 10:00:54 root:INFO:[C2] Pose Lat=32.717176 Lon=-117.1593461 → px=(432.8,537.2)
+2026-07-03 Friday 10:00:55 root:INFO:[C2] Pose Lat=32.717195 Lon=-117.1593233 → px=(433.2,536.8)
+2026-07-03 Friday 10:00:56 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 10:00:56 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 10:00:56 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 10:00:56 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-03 Friday 10:00:56 root:INFO:[C2] Pose Lat=32.717214 Lon=-117.1593005 → px=(433.6,536.4)
+2026-07-03 Friday 10:00:57 root:INFO:[C2] Pose Lat=32.717233 Lon=-117.1592778 → px=(434.1,535.9)
+2026-07-03 Friday 10:00:58 root:INFO:[C2] Pose Lat=32.717252 Lon=-117.1592550 → px=(434.5,535.5)
+2026-07-03 Friday 10:00:59 root:INFO:[C2] Pose Lat=32.717271 Lon=-117.1592322 → px=(434.9,535.1)
+2026-07-03 Friday 10:01:11 root:INFO:C&C GUI exiting

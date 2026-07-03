@@ -1,0 +1,307 @@
+"""
+vn_topics.py — UMAA VectorNav topic Writers and Readers
+=========================================================
+Mirrors the role of pyCompiledTypes/topics.py in the TMS example.
+
+Contains:
+  VectorNavState          — simulation / sensor state object (shared by writers)
+  SpeedReport_Wtr         — periodic writer for SpeedReportType   (1 Hz)
+  GlobalPoseReport_Wtr    — periodic writer for GlobalPoseReportType (1 Hz)
+  SpeedReport_Rdr         — WaitSet reader for SpeedReportType
+  GlobalPoseReport_Rdr    — WaitSet reader for GlobalPoseReportType
+
+Each Writer / Reader inherits from ddsEntities.Writer / ddsEntities.Reader and
+overrides only the methods that are topic-specific:
+  Writer  →  write()      (update dynamic fields then write sample)
+  Reader  →  handler()    (process one received typed sample)
+
+Key differences from TMS topics.py:
+  - No ApplicationStateObj state machine — just a lightweight VectorNavState
+    that drives a simulated USV sensor.
+  - Static sample fields are set in __init__; dynamic fields in write().
+  - VectorNavState is time-based (uses time.monotonic()) so that both writer
+    threads always produce consistent, synchronised values without locking.
+"""
+
+import logging
+import math
+import time
+
+import ddsEntities
+import vn_constants
+from umaa_types import (
+    GlobalPoseReportType,
+    GlobalPoseReportTypeTopic,
+    GUIDUtil,
+    GeoPosition2D,
+    NavigationSolutionEnumType,
+    Orientation3DNEDType,
+    PitchYNEDType,
+    RollXNEDType,
+    SpeedReportType,
+    SpeedReportTypeTopic,
+    VehicleSpeedModeEnumType,
+    YawZNEDType,
+    set_timestamp,
+)
+
+
+# ===========================================================================
+# VectorNavState  —  equivalent of ApplicationStateObj in TMS
+# ===========================================================================
+
+class VectorNavState:
+    """
+    Shared simulation state for the VectorNav component.
+
+    All sensor values are computed from ``time.monotonic()`` so that both the
+    SpeedReport and GlobalPose writers always read consistent data without
+    requiring any mutual exclusion.
+
+    Starting position: San Diego Bay, heading 045° True North.
+    """
+
+    def __init__(self):
+        self._t0       = time.monotonic()
+
+        # Static / slowly-changing values
+        self.alt       = 0.3                       # m MSL (antenna height)
+        self.course_r  = math.radians(45.0)        # 045° True North
+
+        # Starting geodetic position (San Diego Bay, 32°N 117°W)
+        self._lat0 = 32.7157     # degrees N
+        self._lon0 = -117.1611   # degrees E
+
+        # IdentifierType source field — set once, shared by all writers
+        self.source = GUIDUtil.make_source_id(vn_constants.VECNAV_GUID)
+
+    # ------------------------------------------------------------------
+    # Internal elapsed time helper
+    # ------------------------------------------------------------------
+
+    def _t(self) -> float:
+        return time.monotonic() - self._t0
+
+    # ------------------------------------------------------------------
+    # Dynamic sensor properties (computed from elapsed time)
+    # ------------------------------------------------------------------
+
+    @property
+    def sog(self) -> float:
+        """Speed Over Ground  m/s  (~5–7 knot band)."""
+        return 3.0 + 0.4 * math.sin(0.08 * self._t())
+
+    @property
+    def stw(self) -> float:
+        """Speed Through Water  m/s  (SOG + small current offset)."""
+        return self.sog + 0.05
+
+    @property
+    def roll_r(self) -> float:
+        """Roll  radians  (±2.5° wave-induced)."""
+        return math.radians(2.5 * math.sin(0.20 * self._t()))
+
+    @property
+    def pitch_r(self) -> float:
+        """Pitch  radians  (±1.2° wave-induced)."""
+        return math.radians(1.2 * math.sin(0.13 * self._t()))
+
+    @property
+    def lat(self) -> float:
+        """Geodetic latitude  degrees  (dead-reckoning from _lat0)."""
+        return self._lat0 + (3.0 * self._t() / 111_111.0) * math.cos(self.course_r)
+
+    @property
+    def lon(self) -> float:
+        """Geodetic longitude  degrees  (dead-reckoning from _lon0)."""
+        lat_cos = math.cos(math.radians(self._lat0))
+        return self._lon0 + (3.0 * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
+
+
+# ===========================================================================
+# SpeedStatus — Writer
+# ===========================================================================
+
+class SpeedReport_Wtr(ddsEntities.Writer):
+    """
+    Periodic writer for UMAA::SA::SpeedStatus::SpeedReportType.
+
+    Static fields (set in __init__):
+        mode, source
+
+    Dynamic fields (updated each write() call from VectorNavState):
+        speedOverGround, speedThroughWater, timeStamp
+    """
+
+    def __init__(self, participant, vn_state: VectorNavState):
+        ddsEntities.Writer.__init__(
+            self,
+            participant,
+            True,                          # periodic
+            vn_constants.PUBLISH_RATE_HZ,  # period (seconds)
+            SpeedReportType,               # compiled type class
+            SpeedReportTypeTopic)          # DDS topic name
+
+        self._vn_state = vn_state
+
+        # *** Set static sample fields (handler() pattern from TMS) ***
+        self._sample.mode   = VehicleSpeedModeEnumType.MRC
+        self._sample.source = vn_state.source
+
+    def write(self):
+        """Update dynamic fields and write one SpeedReportType sample."""
+        s = self._vn_state
+
+        self._sample.speedOverGround   = s.sog
+        self._sample.speedThroughWater = s.stw
+        set_timestamp(self._sample)
+
+        self._writer.write(self._sample)
+
+        ts = self._sample.timeStamp
+        print(
+            f'[VN][Speed ][{ts.seconds}.{ts.nanoseconds:09d}]'
+            f'  SOG={s.sog:.3f} m/s'
+            f'  STW={s.stw:.3f} m/s'
+            f'  Mode={self._sample.mode.name}',
+            flush=True)
+        logging.info('SpeedReport  SOG=%.3f  STW=%.3f', s.sog, s.stw)
+
+
+# ===========================================================================
+# GlobalPoseStatus — Writer
+# ===========================================================================
+
+class GlobalPoseReport_Wtr(ddsEntities.Writer):
+    """
+    Periodic writer for UMAA::SA::GlobalPoseStatus::GlobalPoseReportType.
+
+    Static fields (set in __init__):
+        navigationSolution, source
+
+    Dynamic fields (updated each write() call from VectorNavState):
+        position, altitude, attitude, course, timeStamp
+    """
+
+    def __init__(self, participant, vn_state: VectorNavState):
+        ddsEntities.Writer.__init__(
+            self,
+            participant,
+            True,
+            vn_constants.PUBLISH_RATE_HZ,
+            GlobalPoseReportType,
+            GlobalPoseReportTypeTopic)
+
+        self._vn_state = vn_state
+
+        # *** Set static sample fields ***
+        self._sample.navigationSolution = NavigationSolutionEnumType.MEASURED
+        self._sample.source             = vn_state.source
+
+    def write(self):
+        """Update dynamic fields and write one GlobalPoseReportType sample."""
+        s = self._vn_state
+
+        self._sample.position = GeoPosition2D(
+            geodeticLatitude=s.lat,
+            geodeticLongitude=s.lon)
+
+        self._sample.altitude = s.alt
+        self._sample.course   = s.course_r
+
+        self._sample.attitude = Orientation3DNEDType(
+            pitch=PitchYNEDType(pitch=s.pitch_r),
+            roll=RollXNEDType(roll=s.roll_r),
+            yaw=YawZNEDType(yaw=s.course_r))
+
+        set_timestamp(self._sample)
+
+        self._writer.write(self._sample)
+
+        ts = self._sample.timeStamp
+        print(
+            f'[VN][Pose  ][{ts.seconds}.{ts.nanoseconds:09d}]'
+            f'  Lat={s.lat:+.6f}°'
+            f'  Lon={s.lon:+.7f}°'
+            f'  Alt={s.alt:.1f}m'
+            f'  Course={math.degrees(s.course_r):.1f}°TN'
+            f'  Roll={math.degrees(s.roll_r):+.2f}°'
+            f'  Pitch={math.degrees(s.pitch_r):+.2f}°',
+            flush=True)
+        logging.info('GlobalPose  Lat=%.6f  Lon=%.7f  Alt=%.1f',
+                     s.lat, s.lon, s.alt)
+
+
+# ===========================================================================
+# SpeedStatus — Reader
+# ===========================================================================
+
+class SpeedReport_Rdr(ddsEntities.Reader):
+    """
+    WaitSet-based reader for UMAA::SA::SpeedStatus::SpeedReportType.
+
+    handler() is called once per valid received sample by the reader thread.
+    """
+
+    def __init__(self, participant):
+        ddsEntities.Reader.__init__(
+            self,
+            participant,
+            SpeedReportType,
+            SpeedReportTypeTopic)
+
+    def handler(self, data: SpeedReportType):
+        ts       = data.timeStamp
+        mode_str = data.mode.name if data.mode is not None else 'N/A'
+        sog = f'{data.speedOverGround:.3f} m/s'    if data.speedOverGround   is not None else '---'
+        stw = f'{data.speedThroughWater:.3f} m/s'  if data.speedThroughWater is not None else '---'
+        sta = f'{data.speedThroughAir:.3f} m/s'    if data.speedThroughAir   is not None else '---'
+
+        print(
+            f'[HSMST][Speed ] t={ts.seconds}.{ts.nanoseconds:09d}'
+            f'  SOG={sog:>14}  STW={stw:>14}  STA={sta:>14}'
+            f'  Mode={mode_str}',
+            flush=True)
+        logging.info('SpeedReport rx  SOG=%s  STW=%s  Mode=%s', sog, stw, mode_str)
+
+
+# ===========================================================================
+# GlobalPoseStatus — Reader
+# ===========================================================================
+
+class GlobalPoseReport_Rdr(ddsEntities.Reader):
+    """
+    WaitSet-based reader for UMAA::SA::GlobalPoseStatus::GlobalPoseReportType.
+
+    handler() is called once per valid received sample by the reader thread.
+    """
+
+    def __init__(self, participant):
+        ddsEntities.Reader.__init__(
+            self,
+            participant,
+            GlobalPoseReportType,
+            GlobalPoseReportTypeTopic)
+
+    def handler(self, data: GlobalPoseReportType):
+        ts        = data.timeStamp
+        att       = data.attitude
+        roll_deg  = math.degrees(att.roll.roll)
+        pitch_deg = math.degrees(att.pitch.pitch)
+        yaw_deg   = math.degrees(att.yaw.yaw) % 360
+        alt_str   = f'{data.altitude:.2f}m' if data.altitude is not None else '---'
+
+        print(
+            f'[HSMST][Pose  ] t={ts.seconds}.{ts.nanoseconds:09d}'
+            f'  Lat={data.position.geodeticLatitude:+.6f}°'
+            f'  Lon={data.position.geodeticLongitude:+.7f}°'
+            f'  Alt={alt_str:>8}'
+            f'  Course={math.degrees(data.course):.1f}°TN'
+            f'  Roll={roll_deg:+.2f}°'
+            f'  Pitch={pitch_deg:+.2f}°'
+            f'  Yaw={yaw_deg:.1f}°'
+            f'  Nav={data.navigationSolution.name}',
+            flush=True)
+        logging.info('GlobalPose rx  Lat=%.6f  Lon=%.7f',
+                     data.position.geodeticLatitude,
+                     data.position.geodeticLongitude)

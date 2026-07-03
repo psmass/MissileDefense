@@ -35,10 +35,23 @@ import argparse
 import logging
 import math
 import os
+import sys
 import threading
 import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
+
+# VectorNav GPS integration (optional – gracefully disabled if not available)
+_VN_DIR = os.path.normpath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'vector_nav_py'))
+if os.path.isdir(_VN_DIR) and _VN_DIR not in sys.path:
+    sys.path.append(_VN_DIR)   # append so local ddsEntities.py takes precedence
+try:
+    from umaa_types import GlobalPoseReportType, GlobalPoseReportTypeTopic  # type: ignore
+    import vn_constants as _vn                                               # type: ignore
+    _HAVE_VN = True
+except ImportError:
+    _HAVE_VN = False
 
 import pygame
 import rti.connextdds as dds
@@ -57,9 +70,18 @@ WIN_H   = 600
 MAP_W   = 800
 PANEL_X = 810
 PANEL_W = 246
-CX      = 400           # ship centre x  (C++ SHIP_X)
-CY      = 570           # ship waterline y (C++ SHIP_Y)
+CX      = 400           # ship centre x  (C++ SHIP_X) – home position
+CY      = 570           # ship waterline y (C++ SHIP_Y) – home position
 HULL_SQ = 70 ** 2       # cull when dist² < this
+
+# ---------------------------------------------------------------------------
+# Geographic reference for VectorNav GPS positioning
+# Maps the VectorNav start position (San Diego Bay) to the ship home pixel.
+# GEO_M_PER_PX is exaggerated (5 m/px vs real ~990 m/px) so movement is visible.
+# ---------------------------------------------------------------------------
+GEO_LAT0     = 32.7157    # reference geodetic latitude  (degrees N)
+GEO_LON0     = -117.1611  # reference geodetic longitude (degrees E)
+GEO_M_PER_PX = 5.0        # metres per map pixel
 
 REPUBLISH_INTERVAL = 0.5
 FPS = 100
@@ -100,6 +122,12 @@ class GUISharedState:
         self.effector_actions:   Dict[int, Any]   = {}
         self.effector_last_seen: Dict[int, float]  = {}
         self.pending_effects:    List[EffectEvent] = []
+        # VectorNav GPS – ship position updated by GUIPoseRdr thread
+        self.ship_px:       float          = float(CX)
+        self.ship_py:       float          = float(CY)
+        self.ship_lat:      Optional[float] = None
+        self.ship_lon:      Optional[float] = None
+        self.ship_course_r: float          = 0.0    # radians True North
 
 
 # ---------------------------------------------------------------------------
@@ -126,11 +154,28 @@ class GUIEffectorActionRdr(ship_topics.EffectorActionRdr):
             self._gui_state.effector_actions[data.effector_id]  = data
             self._gui_state.effector_last_seen[data.effector_id] = time.monotonic()
             self._gui_state.pending_effects.append(EffectEvent(
-                lx=float(CX + 40), ly=float(CY - 26),
+                lx=self._gui_state.ship_px + 40,
+                ly=self._gui_state.ship_py - 26,
                 target_id=int(data.threat_id),
                 effector_id=int(data.effector_id),
                 will_kill=bool(data.destroyed),
             ))
+
+
+# ---------------------------------------------------------------------------
+# Geographic coordinate → map pixel conversion
+# ---------------------------------------------------------------------------
+def latlon_to_px(lat: float, lon: float) -> tuple:
+    """Convert geodetic lat/lon to map pixel (x, y).
+
+    North is up (decreasing y), East is right (increasing x).
+    Uses GEO_LAT0/LON0 as the map origin pinned to pixel (CX, CY).
+    """
+    dx_m = (lon - GEO_LON0) * 111_111.0 * math.cos(math.radians(GEO_LAT0))
+    dy_m = (lat - GEO_LAT0) * 111_111.0
+    px = CX + dx_m / GEO_M_PER_PX
+    py = CY - dy_m / GEO_M_PER_PX   # north = up = decreasing y
+    return px, py
 
 
 # ---------------------------------------------------------------------------
@@ -277,6 +322,41 @@ def draw_blast(surf, b):
 
 
 # ---------------------------------------------------------------------------
+# VectorNav GPS reader  (updates ship position from GlobalPoseReportType)
+# ---------------------------------------------------------------------------
+if _HAVE_VN:
+    class GUIPoseRdr(ddsEntities.Reader):
+        """Subscribes to VectorNav GlobalPoseReportType and updates ship position.
+
+        Converts incoming geodetic lat/lon to map pixel coordinates via
+        latlon_to_px() and stores the result in GUISharedState for the
+        render loop to consume each frame.
+        """
+
+        def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
+                     gui_state: GUISharedState) -> None:
+            ddsEntities.Reader.__init__(
+                self, subscriber, topic, GlobalPoseReportType)
+            self._gui_state = gui_state
+
+        def handler(self, data: Any) -> None:
+            lat = data.position.geodeticLatitude
+            lon = data.position.geodeticLongitude
+            px, py = latlon_to_px(lat, lon)
+            crs = data.course if data.course is not None else 0.0
+            print(f"[C2][GPS] Lat={lat:+.6f}°  Lon={lon:+.7f}°  "
+                  f"Crs={math.degrees(crs):.1f}°TN  → px=({px:.1f},{py:.1f})")
+            logging.info("[C2] Pose Lat=%.6f Lon=%.7f → px=(%.1f,%.1f)",
+                         lat, lon, px, py)
+            with self._gui_state.lock:
+                self._gui_state.ship_lat      = lat
+                self._gui_state.ship_lon      = lon
+                self._gui_state.ship_course_r = crs
+                self._gui_state.ship_px       = px
+                self._gui_state.ship_py       = py
+
+
+# ---------------------------------------------------------------------------
 # Pre-rendered radar ring surface
 # ---------------------------------------------------------------------------
 def _build_radar_surf() -> pygame.Surface:
@@ -303,7 +383,7 @@ _SNAMES = {s.sensor_id:  s.name for s in shipConstants.SENSOR_DEFS}
 _ENAMES = {e.effector_id: e.name for e in shipConstants.EFFECTOR_DEFS}
 
 
-def draw_status_panel(surf, fsm, fhd, threats, gui):
+def draw_status_panel(surf, fsm, fhd, threats, gui, ship_cx=CX, ship_cy=CY):
     now = time.monotonic()
     pygame.draw.rect(surf, (22, 22, 32), (PANEL_X, 0, PANEL_W, WIN_H))
     pygame.draw.line(surf, (65, 65, 85), (PANEL_X, 0), (PANEL_X, WIN_H-1))
@@ -376,7 +456,7 @@ def draw_status_panel(surf, fsm, fhd, threats, gui):
     else:
         for t in sorted(threats.values(), key=lambda x: x.id):
             if pcy + LH > WIN_H - 6: break
-            dx = t.x-CX;  dy = t.y-CY;  dst = math.sqrt(dx*dx+dy*dy)
+            dx = t.x-ship_cx;  dy = t.y-ship_cy;  dst = math.sqrt(dx*dx+dy*dy)
             tti = dst/t.speed if t.speed > 0.01 else 99.0
             col = (220,90,90)
             txt(fsm, CN, pcy, f"T#{t.id}",                col)
@@ -384,6 +464,19 @@ def draw_status_panel(surf, fsm, fhd, threats, gui):
             txt(fsm, C3, pcy, f"{int(t.speed*30)}kt",     col)
             txt(fsm, C4, pcy, f"{tti:3.0f}s",             col)
             pcy += LH
+
+    # ── GPS POSITION (VectorNav) ──────────────────────────────────────────
+    pcy += 4;  pcy = sep(pcy)
+    txt(fhd, CN, pcy, "GPS POSITION", (80,200,255));  pcy += LHD;  pcy = sep(pcy)
+    with gui.lock:
+        lat = gui.ship_lat;  lon = gui.ship_lon;  crs = gui.ship_course_r
+    if lat is not None:
+        txt(fsm, CN, pcy, f"Lat: {lat:+.5f}\u00b0",          (120,220,255));  pcy += LH
+        txt(fsm, CN, pcy, f"Lon: {lon:+.6f}\u00b0",          (120,220,255));  pcy += LH
+        txt(fsm, CN, pcy, f"Crs: {math.degrees(crs):05.1f}\u00b0TN",  (120,220,255));  pcy += LH
+    else:
+        txt(fsm, CN, pcy, "NO FIX  (VectorNav_Publisher", (80,80,80));  pcy += LH
+        txt(fsm, CN, pcy, "not running)",                 (80,80,80));  pcy += LH
 
 
 # ---------------------------------------------------------------------------
@@ -449,6 +542,16 @@ def command_control_main(domain_id: int) -> None:
     threat_w.writer.set_listener(ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
     detection_r.start();  effector_r.start()
 
+    # VectorNav GPS subscriber (optional – gracefully absent if publisher not running)
+    pose_r: Optional[Any] = None
+    if _HAVE_VN:
+        pose_topic = dds.Topic(participant, _vn.POSE_TOPIC, GlobalPoseReportType)
+        pose_r = GUIPoseRdr(sub, pose_topic, gui_state)
+        pose_r.start()
+        print("[C2] VectorNav GPS subscriber active – ship will follow Lat/Lon")
+    else:
+        print("[C2] VectorNav GPS not available – ship at fixed position")
+
     # Sim state ──────────────────────────────────────────────────────────
     threats:      Dict[int, Any]    = {}
     plumes:       List[LaunchPlume] = []
@@ -463,6 +566,11 @@ def command_control_main(domain_id: int) -> None:
         now = time.monotonic()
         dt  = min(now - prev_t, 0.05)
         prev_t = now
+
+        # VectorNav GPS – thread-safe snapshot of current ship pixel position
+        with gui_state.lock:
+            ship_cx = gui_state.ship_px
+            ship_cy = gui_state.ship_py
 
         # Events ─────────────────────────────────────────────────────────
         for event in pygame.event.get():
@@ -483,7 +591,7 @@ def command_control_main(domain_id: int) -> None:
 
         # Move threats ───────────────────────────────────────────────────
         for t in threats.values():
-            dx = CX - t.x; dy = (CY-16) - t.y; d = math.sqrt(dx*dx+dy*dy)
+            dx = ship_cx - t.x; dy = (ship_cy-16) - t.y; d = math.sqrt(dx*dx+dy*dy)
             if d > 1e-6: t.x += (dx/d)*t.speed*dt; t.y += (dy/d)*t.speed*dt
 
         # Republish ──────────────────────────────────────────────────────
@@ -493,7 +601,7 @@ def command_control_main(domain_id: int) -> None:
 
         # Cull hull hits ──────────────────────────────────────────────────
         for tid in [k for k,t in threats.items()
-                    if (CX-t.x)**2+(CY-t.y)**2 < HULL_SQ]:
+                    if (ship_cx-t.x)**2+(ship_cy-t.y)**2 < HULL_SQ]:
             print(f"\n[C2] *** IMPACT: T#{tid} reached the hull! ***")
             threats.pop(tid, None)
 
@@ -535,19 +643,20 @@ def command_control_main(domain_id: int) -> None:
         screen.fill((10, 20, 40))
         for wy in range(60, WIN_H, 18):
             pygame.draw.line(screen, (15,30,55), (0,wy), (MAP_W-1,wy))
-        pygame.draw.rect(screen, (8,16,32), (0,CY-2,MAP_W,WIN_H-(CY-2)))
+        pygame.draw.rect(screen, (8,16,32), (0,int(ship_cy)-2,MAP_W,WIN_H-(int(ship_cy)-2)))
 
-        screen.blit(radar_surf, (0,0))
+        # Radar rings follow the ship (pre-built surface centred on CX,CY → offset)
+        screen.blit(radar_surf, (int(ship_cx - CX), int(ship_cy - CY)))
 
         for p in plumes: draw_plume(screen, p)
 
         if ship_img:
-            screen.blit(ship_img, (CX - ship_iw//2, CY + 5 - 48))
+            screen.blit(ship_img, (int(ship_cx) - ship_iw//2, int(ship_cy) + 5 - 48))
         else:
-            draw_destroyer(screen, CX, CY)
+            draw_destroyer(screen, int(ship_cx), int(ship_cy))
 
         for t in threats.values():
-            angle = math.atan2((CY-16)-t.y, CX-t.x)
+            angle = math.atan2((ship_cy-16)-t.y, ship_cx-t.x)
             draw_threat(screen, int(t.x), int(t.y), angle, t.id%3)
             tx, ty = int(t.x), int(t.y)
             pygame.draw.rect(screen, (245,220,70), (tx-6,ty-6,12,12), 1)
@@ -565,7 +674,7 @@ def command_control_main(domain_id: int) -> None:
         now2 = time.monotonic()
         for sid, d in dsnap.items():
             if (now2 - dtimes.get(sid,0)) > 5.0: continue
-            x1,y1 = int(d.x),int(d.y); x2,y2 = CX,CY-16
+            x1,y1 = int(d.x),int(d.y); x2,y2 = int(ship_cx),int(ship_cy)-16
             ln = math.sqrt((x2-x1)**2+(y2-y1)**2); steps = max(1,int(ln))
             for s in range(0, steps, 8):
                 fr = s/steps; px_ = x1+int((x2-x1)*fr); py_ = y1+int((y2-y1)*fr)
@@ -581,12 +690,14 @@ def command_control_main(domain_id: int) -> None:
 
         for b in blasts: draw_blast(screen, b)
 
-        draw_status_panel(screen, fsm, fhd, threats, gui_state)
+        draw_status_panel(screen, fsm, fhd, threats, gui_state, ship_cx, ship_cy)
 
         pygame.display.flip()
         clock.tick(FPS)
 
     application.run_flag = False
+    if pose_r:
+        pose_r.join()
     pygame.quit()
     print("Command & Control GUI Exiting")
     logging.info("C&C GUI exiting")
