@@ -21,3 +21,7 @@ idl/generated_test2/
 # Temporary / scratch files
 tmp_*.txt
 map_rti_symbols_result.txt
+
+# Python bytecode cache
+__pycache__/
+*.py[cod]
