@@ -12,7 +12,7 @@
  Ship Threat Defense – topic Writers and Readers with application business logic.
 
  This module is the ship-domain equivalent of topics.py in the TMS app.
- Each class inherits shipEntities.Writer or shipEntities.Reader and overrides
+ Each class inherits ddsEntities.Writer or ddsEntities.Reader and overrides
  handler() with the application-specific logic for that topic.
 
  Analogy with the TMS codebase:
@@ -26,7 +26,7 @@
    ATEResultMC_Rdr        →  EffectorActionRdr  (C2 app)
 
  INSTANTIATE YOUR TOPICS IN THIS FILE.
- Your topics must inherit either shipEntities.Reader or shipEntities.Writer
+ Your topics must inherit either ddsEntities.Reader or ddsEntities.Writer
  and override handler() for topic-specific data access.
 
  Validated with RTI Connext Python API mypy checker (2026-07-02).
@@ -41,7 +41,7 @@ import random
 
 import application    # noqa: F401  (imported for run_flag side-effects in base classes)
 import shipConstants
-import shipEntities
+import ddsEntities
 import rti.connextdds as dds
 
 
@@ -111,7 +111,7 @@ class ApplicationStateObj:
 # Command & Control  –  Threat  (writer)
 # ===========================================================================
 
-class ThreatWtr(shipEntities.Writer):
+class ThreatWtr(ddsEntities.Writer):
     """Publishes Threat position updates from the command_control app.
 
     command_control originates threats (simulated spawning replaces the
@@ -121,7 +121,7 @@ class ThreatWtr(shipEntities.Writer):
 
     def __init__(self, publisher: dds.Publisher, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj) -> None:
-        shipEntities.Writer.__init__(
+        ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.Threat,
             periodic=False, period=1.0)
         self._app_state_obj = app_state_obj
@@ -137,7 +137,7 @@ class ThreatWtr(shipEntities.Writer):
 # Sensor  –  Threat  (reader)
 # ===========================================================================
 
-class ThreatRdr(shipEntities.Reader):
+class ThreatRdr(ddsEntities.Reader):
     """Sensor app: receives Threat updates and fires detection reports.
 
     Mirrors the C++ ThreatListener::on_data_available() in sensor/main.cpp:
@@ -150,7 +150,7 @@ class ThreatRdr(shipEntities.Reader):
     def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj,
                  detection_wtr: SensorDetectionWtr) -> None:
-        shipEntities.Reader.__init__(
+        ddsEntities.Reader.__init__(
             self, subscriber, topic, shipConstants.Threat)
         self._app_state_obj = app_state_obj
         self._detection_wtr = detection_wtr
@@ -178,7 +178,7 @@ class ThreatRdr(shipEntities.Reader):
 # Sensor  –  SensorDetection  (writer)
 # ===========================================================================
 
-class SensorDetectionWtr(shipEntities.Writer):
+class SensorDetectionWtr(ddsEntities.Writer):
     """Publishes SensorDetection reports from the sensor app.
 
     Mirrors the C++ g_detection_writer->write() call in sensor/main.cpp.
@@ -186,7 +186,7 @@ class SensorDetectionWtr(shipEntities.Writer):
 
     def __init__(self, publisher: dds.Publisher, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj) -> None:
-        shipEntities.Writer.__init__(
+        ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.SensorDetection,
             periodic=False, period=1.0)
         self._app_state_obj = app_state_obj
@@ -211,7 +211,7 @@ class SensorDetectionWtr(shipEntities.Writer):
 # Command & Control  –  SensorDetection  (reader)
 # ===========================================================================
 
-class SensorDetectionRdr(shipEntities.Reader):
+class SensorDetectionRdr(ddsEntities.Reader):
     """Command & Control: receives sensor detection reports for display.
 
     Stores the latest detection per sensor_id in the shared ApplicationStateObj.
@@ -220,7 +220,7 @@ class SensorDetectionRdr(shipEntities.Reader):
 
     def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj) -> None:
-        shipEntities.Reader.__init__(
+        ddsEntities.Reader.__init__(
             self, subscriber, topic, shipConstants.SensorDetection)
         self._app_state_obj = app_state_obj
 
@@ -242,7 +242,7 @@ class SensorDetectionRdr(shipEntities.Reader):
 # Effector  –  Threat  (reader)
 # ===========================================================================
 
-class EffectorThreatRdr(shipEntities.Reader):
+class EffectorThreatRdr(ddsEntities.Reader):
     """Effector app: receives Threat updates and fires weapon engagements.
 
     Mirrors the C++ ThreatListener::on_data_available() in effector/main.cpp:
@@ -256,7 +256,7 @@ class EffectorThreatRdr(shipEntities.Reader):
     def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj,
                  action_wtr: EffectorActionWtr) -> None:
-        shipEntities.Reader.__init__(
+        ddsEntities.Reader.__init__(
             self, subscriber, topic, shipConstants.Threat)
         self._app_state_obj = app_state_obj
         self._action_wtr    = action_wtr
@@ -293,7 +293,7 @@ class EffectorThreatRdr(shipEntities.Reader):
 # Effector  –  EffectorAction  (writer)
 # ===========================================================================
 
-class EffectorActionWtr(shipEntities.Writer):
+class EffectorActionWtr(ddsEntities.Writer):
     """Publishes EffectorAction engagement reports from the effector app.
 
     Mirrors the C++ g_action_writer->write() call in effector/main.cpp.
@@ -301,7 +301,7 @@ class EffectorActionWtr(shipEntities.Writer):
 
     def __init__(self, publisher: dds.Publisher, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj) -> None:
-        shipEntities.Writer.__init__(
+        ddsEntities.Writer.__init__(
             self, publisher, topic, shipConstants.EffectorAction,
             periodic=False, period=1.0)
         self._app_state_obj = app_state_obj
@@ -326,7 +326,7 @@ class EffectorActionWtr(shipEntities.Writer):
 # Command & Control  –  EffectorAction  (reader)
 # ===========================================================================
 
-class EffectorActionRdr(shipEntities.Reader):
+class EffectorActionRdr(ddsEntities.Reader):
     """Command & Control: receives effector engagement reports for display.
 
     Stores the latest action per effector_id in the shared ApplicationStateObj.
@@ -335,7 +335,7 @@ class EffectorActionRdr(shipEntities.Reader):
 
     def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
                  app_state_obj: ApplicationStateObj) -> None:
-        shipEntities.Reader.__init__(
+        ddsEntities.Reader.__init__(
             self, subscriber, topic, shipConstants.EffectorAction)
         self._app_state_obj = app_state_obj
 

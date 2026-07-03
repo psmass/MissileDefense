@@ -26,8 +26,8 @@
    - Publishes EffectorAction samples to EffectorActionTopic
 
  Programming patterns mirror the TMS device.py application:
-   - Compiled IDL types registered via shipEntities.register_ship_types()
-   - Writer / Reader base classes from shipEntities.py
+   - Compiled IDL types registered via ddsEntities.register_ship_types()
+   - Writer / Reader base classes from ddsEntities.py
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
    - Ctrl-C handled via application.run_flag
@@ -48,7 +48,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import shipEntities
+import ddsEntities
 import ship_topics
 
 
@@ -57,10 +57,12 @@ def effector_main(domain_id: int) -> None:
     logging.info("Effector Powering Up")
 
     # *** REGISTER COMPILED TYPES before creating participant ***
-    shipEntities.register_ship_types()
+    ddsEntities.register_ship_types()
 
-    # *** CREATE PARTICIPANT (raw DDS API – default QoS) ***
-    participant = dds.DomainParticipant(domain_id)
+    # *** CREATE PARTICIPANT – named so it appears in Admin Console Logical View ***
+    _qos = dds.DomainParticipantQos()
+    _qos.participant_name.name = "effector"
+    participant = dds.DomainParticipant(domain_id, _qos)
 
     # *** CREATE TOPICS ***
     threat_topic   = dds.Topic(participant, shipConstants.THREAT_TOPIC,
@@ -84,7 +86,7 @@ def effector_main(domain_id: int) -> None:
 
     # *** ATTACH WRITER LISTENER ***
     action_w.writer.set_listener(
-        shipEntities.DefaultWriterListener(), dds.StatusMask.ALL)
+        ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
 
     # *** START READER THREADS ***
     threat_r.start()

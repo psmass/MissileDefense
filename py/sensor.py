@@ -24,8 +24,8 @@
    - Publishes SensorDetection samples to SensorDetectionTopic
 
  Programming patterns mirror the TMS device.py application:
-   - Compiled IDL types registered via shipEntities.register_ship_types()
-   - Writer / Reader base classes from shipEntities.py
+   - Compiled IDL types registered via ddsEntities.register_ship_types()
+   - Writer / Reader base classes from ddsEntities.py
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
    - Ctrl-C handled via application.run_flag
@@ -46,7 +46,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import shipEntities
+import ddsEntities
 import ship_topics
 
 
@@ -54,12 +54,20 @@ def sensor_main(domain_id: int) -> None:
     print("Sensor Powering Up")
     logging.info("Sensor Powering Up")
 
-    # *** REGISTER COMPILED TYPES before creating participant ***
-    # (mirrors ddsEntities.register_tms_types() call in device.py)
-    shipEntities.register_ship_types()
+    # List the active Aegis sensor suite (mirrors C++ SENSOR_DEFS[] in sensor/main.cpp)
+    print("\n Aegis Sensor Suite:")
+    for s in shipConstants.SENSOR_DEFS:
+        print(f"   [{s.sensor_id}] {s.name:<12}  range={s.range_px:>5.0f} px  "
+              f"conf={s.conf_min}–{s.conf_max}%")
+    print()
 
-    # *** CREATE PARTICIPANT (raw DDS API – default QoS) ***
-    participant = dds.DomainParticipant(domain_id)
+    # *** REGISTER COMPILED TYPES before creating participant ***
+    ddsEntities.register_ship_types()
+
+    # *** CREATE PARTICIPANT – named so it appears in Admin Console Logical View ***
+    _qos = dds.DomainParticipantQos()
+    _qos.participant_name.name = "sensor"
+    participant = dds.DomainParticipant(domain_id, _qos)
 
     # *** CREATE TOPICS ***
     threat_topic    = dds.Topic(participant, shipConstants.THREAT_TOPIC,
@@ -83,7 +91,7 @@ def sensor_main(domain_id: int) -> None:
 
     # *** ATTACH WRITER LISTENER ***
     detection_w.writer.set_listener(
-        shipEntities.DefaultWriterListener(), dds.StatusMask.ALL)
+        ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
 
     # *** START READER THREADS ***
     threat_r.start()

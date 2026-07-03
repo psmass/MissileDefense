@@ -182,3 +182,196 @@
 2026-07-02 Thursday 17:41:01 root:INFO:Received Threat id=18 at (151.5, 355.8)
 2026-07-02 Thursday 17:41:01 root:INFO:Received Threat id=18 at (160.1, 362.6)
 2026-07-02 Thursday 17:41:02 root:INFO:Received Threat id=18 at (168.7, 369.5)
+2026-07-03 Friday 08:54:30 root:INFO:Received Threat id=19 at (546.0, 231.0)
+2026-07-03 Friday 08:54:30 root:INFO:Received Threat id=19 at (542.8, 238.0)
+2026-07-03 Friday 08:54:31 root:INFO:Received Threat id=19 at (538.3, 248.0)
+2026-07-03 Friday 08:54:31 root:INFO:Received Threat id=20 at (247.0, 250.0)
+2026-07-03 Friday 08:54:31 root:INFO:Received Threat id=19 at (533.8, 258.1)
+2026-07-03 Friday 08:54:31 root:INFO:Received Threat id=20 at (251.5, 258.9)
+2026-07-03 Friday 08:54:31 root:INFO:Received Threat id=21 at (157.0, 289.0)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=20 at (256.6, 269.0)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=21 at (161.7, 294.1)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=22 at (695.0, 362.0)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=20 at (261.5, 278.8)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=21 at (169.2, 302.3)
+2026-07-03 Friday 08:54:32 root:INFO:Received Threat id=22 at (693.5, 363.0)
+2026-07-03 Friday 08:54:33 root:INFO:Received Threat id=21 at (176.6, 310.4)
+2026-07-03 Friday 08:54:33 root:INFO:Received Threat id=22 at (684.2, 369.0)
+2026-07-03 Friday 08:54:33 root:INFO:Received Threat id=21 at (184.0, 318.5)
+2026-07-03 Friday 08:54:33 root:INFO:Received Threat id=22 at (675.0, 375.0)
+2026-07-03 Friday 08:54:34 root:INFO:Received Threat id=22 at (665.8, 381.0)
+2026-07-03 Friday 08:54:34 root:INFO:Received Threat id=23 at (512.0, 296.0)
+2026-07-03 Friday 08:54:34 root:INFO:Received Threat id=23 at (511.6, 297.0)
+2026-07-03 Friday 08:54:35 root:INFO:Received Threat id=23 at (507.2, 307.1)
+2026-07-03 Friday 08:54:35 root:INFO:Received Threat id=24 at (289.0, 244.0)
+2026-07-03 Friday 08:54:35 root:INFO:Received Threat id=23 at (502.8, 317.2)
+2026-07-03 Friday 08:54:35 root:INFO:Received Threat id=24 at (291.6, 251.2)
+2026-07-03 Friday 08:54:36 root:INFO:Received Threat id=24 at (295.3, 261.6)
+2026-07-03 Friday 08:54:36 root:INFO:Received Threat id=24 at (299.0, 272.0)
+2026-07-03 Friday 08:54:52 root:INFO:Sensor Exiting
+2026-07-03 Friday 09:02:15 root:INFO:Sensor Powering Up
+2026-07-03 Friday 09:02:15 root:INFO:Writer created for type SensorDetection
+2026-07-03 Friday 09:02:15 root:INFO:Reader created for type Threat
+2026-07-03 Friday 09:02:15 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:02:15 root:INFO:SensorDetectionTopic Writer Subs: 1 1
+2026-07-03 Friday 09:02:15 root:INFO:Reader Thread running for Threat
+2026-07-03 Friday 09:02:17 root:INFO:Sensor listening for threats on domain 0
+2026-07-03 Friday 09:02:39 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:02:39 root:INFO:SensorDetectionTopic Writer Subs: 2 1
+2026-07-03 Friday 09:02:41 root:INFO:Received Threat id=1 at (210.0, 238.0)
+2026-07-03 Friday 09:02:41 root:INFO:Received Threat id=1 at (213.0, 243.0)
+2026-07-03 Friday 09:02:41 root:INFO:Received Threat id=2 at (436.0, 225.0)
+2026-07-03 Friday 09:02:41 root:INFO:Received Threat id=1 at (218.7, 252.5)
+2026-07-03 Friday 09:02:41 root:INFO:Received Threat id=2 at (435.5, 229.2)
+2026-07-03 Friday 09:02:42 root:INFO:Received Threat id=1 at (224.5, 262.2)
+2026-07-03 Friday 09:02:42 root:INFO:Received Threat id=2 at (434.3, 240.5)
+2026-07-03 Friday 09:02:42 root:INFO:Received Threat id=1 at (230.2, 271.6)
+2026-07-03 Friday 09:02:42 root:INFO:Received Threat id=2 at (433.1, 251.4)
+2026-07-03 Friday 09:02:43 root:INFO:Received Threat id=3 at (353.0, 561.0)
+2026-07-03 Friday 09:02:43 root:INFO:Received Threat id=4 at (421.0, 574.0)
+2026-07-03 Friday 09:02:45 root:INFO:Received Threat id=5 at (529.0, 497.0)
+2026-07-03 Friday 09:02:45 root:INFO:Received Threat id=5 at (524.3, 499.1)
+2026-07-03 Friday 09:02:45 root:INFO:Received Threat id=6 at (423.0, 314.0)
+2026-07-03 Friday 09:02:45 root:INFO:Received Threat id=6 at (422.9, 315.1)
+2026-07-03 Friday 09:02:46 root:INFO:Received Threat id=6 at (421.8, 326.0)
+2026-07-03 Friday 09:02:46 root:INFO:Received Threat id=7 at (152.0, 237.0)
+2026-07-03 Friday 09:02:46 root:INFO:Received Threat id=6 at (420.8, 337.0)
+2026-07-03 Friday 09:02:46 root:INFO:Received Threat id=7 at (158.8, 245.7)
+2026-07-03 Friday 09:02:46 root:INFO:Received Threat id=8 at (158.0, 162.0)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=7 at (165.6, 254.3)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=8 at (163.2, 170.4)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=9 at (483.0, 189.0)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=7 at (172.4, 263.0)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=8 at (169.0, 179.8)
+2026-07-03 Friday 09:02:47 root:INFO:Received Threat id=9 at (480.8, 198.7)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=10 at (586.0, 449.0)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=7 at (179.1, 271.7)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=8 at (174.8, 189.2)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=9 at (478.4, 209.4)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=10 at (579.3, 452.8)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=7 at (185.9, 280.4)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=8 at (180.6, 198.5)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=9 at (475.9, 220.1)
+2026-07-03 Friday 09:02:48 root:INFO:Received Threat id=10 at (569.7, 458.2)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=7 at (192.7, 289.0)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=8 at (186.3, 207.9)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=9 at (473.5, 230.9)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=7 at (199.5, 297.7)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=8 at (192.1, 217.3)
+2026-07-03 Friday 09:02:49 root:INFO:Received Threat id=9 at (471.0, 241.6)
+2026-07-03 Friday 09:02:50 root:INFO:Received Threat id=8 at (197.9, 226.6)
+2026-07-03 Friday 09:02:50 root:INFO:Received Threat id=9 at (468.6, 252.3)
+2026-07-03 Friday 09:02:50 root:INFO:Received Threat id=8 at (203.7, 236.0)
+2026-07-03 Friday 09:02:50 root:INFO:Received Threat id=9 at (466.2, 263.1)
+2026-07-03 Friday 09:02:51 root:INFO:Received Threat id=8 at (209.5, 245.4)
+2026-07-03 Friday 09:02:51 root:INFO:Received Threat id=9 at (463.7, 273.8)
+2026-07-03 Friday 09:02:51 root:INFO:Received Threat id=8 at (215.3, 254.7)
+2026-07-03 Friday 09:02:51 root:INFO:Received Threat id=9 at (461.3, 284.5)
+2026-07-03 Friday 09:02:52 root:INFO:Received Threat id=8 at (221.0, 264.1)
+2026-07-03 Friday 09:02:52 root:INFO:Received Threat id=9 at (458.8, 295.3)
+2026-07-03 Friday 09:02:52 root:INFO:Received Threat id=8 at (226.8, 273.5)
+2026-07-03 Friday 09:02:52 root:INFO:Received Threat id=9 at (456.4, 306.0)
+2026-07-03 Friday 09:02:53 root:INFO:Received Threat id=8 at (232.6, 282.8)
+2026-07-03 Friday 09:02:53 root:INFO:Received Threat id=9 at (454.0, 316.7)
+2026-07-03 Friday 09:02:53 root:INFO:Received Threat id=9 at (451.5, 327.5)
+2026-07-03 Friday 09:02:54 root:INFO:Received Threat id=9 at (449.1, 338.2)
+2026-07-03 Friday 09:02:54 root:INFO:Received Threat id=9 at (446.6, 349.0)
+2026-07-03 Friday 09:02:55 root:INFO:Received Threat id=9 at (444.2, 359.7)
+2026-07-03 Friday 09:02:55 root:INFO:Received Threat id=9 at (441.7, 370.4)
+2026-07-03 Friday 09:02:56 root:INFO:Received Threat id=9 at (439.3, 381.2)
+2026-07-03 Friday 09:02:56 root:INFO:Received Threat id=9 at (436.9, 391.9)
+2026-07-03 Friday 09:02:57 root:INFO:Received Threat id=9 at (434.4, 402.6)
+2026-07-03 Friday 09:02:57 root:INFO:Received Threat id=9 at (432.0, 413.4)
+2026-07-03 Friday 09:02:58 root:INFO:Received Threat id=9 at (429.5, 424.2)
+2026-07-03 Friday 09:02:58 root:INFO:Received Threat id=9 at (427.1, 435.0)
+2026-07-03 Friday 09:02:59 root:INFO:Received Threat id=9 at (424.6, 445.7)
+2026-07-03 Friday 09:02:59 root:INFO:Received Threat id=9 at (422.2, 456.4)
+2026-07-03 Friday 09:03:00 root:INFO:Received Threat id=9 at (419.7, 467.2)
+2026-07-03 Friday 09:03:00 root:INFO:Received Threat id=9 at (417.2, 478.3)
+2026-07-03 Friday 09:03:01 root:INFO:Received Threat id=9 at (414.7, 489.4)
+2026-07-03 Friday 09:03:01 root:INFO:Received Threat id=9 at (412.3, 500.1)
+2026-07-03 Friday 09:03:28 root:INFO:Received Threat id=11 at (408.0, 280.0)
+2026-07-03 Friday 09:03:28 root:INFO:Received Threat id=11 at (408.0, 281.5)
+2026-07-03 Friday 09:03:28 root:INFO:Received Threat id=11 at (407.6, 292.5)
+2026-07-03 Friday 09:03:29 root:INFO:Received Threat id=12 at (199.0, 324.0)
+2026-07-03 Friday 09:03:29 root:INFO:Received Threat id=11 at (407.3, 303.5)
+2026-07-03 Friday 09:03:29 root:INFO:Received Threat id=12 at (199.7, 324.8)
+2026-07-03 Friday 09:03:29 root:INFO:Received Threat id=12 at (207.0, 333.1)
+2026-07-03 Friday 09:03:29 root:INFO:Received Threat id=13 at (283.0, 518.0)
+2026-07-03 Friday 09:03:30 root:INFO:Received Threat id=12 at (214.2, 341.4)
+2026-07-03 Friday 09:03:30 root:INFO:Received Threat id=13 at (290.4, 520.3)
+2026-07-03 Friday 09:03:30 root:INFO:Received Threat id=14 at (460.0, 564.0)
+2026-07-03 Friday 09:03:30 root:INFO:Received Threat id=12 at (221.5, 349.7)
+2026-07-03 Friday 09:03:31 root:INFO:Received Threat id=15 at (587.0, 394.0)
+2026-07-03 Friday 09:03:31 root:INFO:Received Threat id=15 at (580.3, 399.7)
+2026-07-03 Friday 09:03:32 root:INFO:Received Threat id=15 at (571.9, 406.9)
+2026-07-03 Friday 09:03:32 root:INFO:Received Threat id=16 at (481.0, 351.0)
+2026-07-03 Friday 09:03:33 root:INFO:Received Threat id=16 at (477.2, 360.5)
+2026-07-03 Friday 09:03:33 root:INFO:Received Threat id=16 at (473.1, 370.8)
+2026-07-03 Friday 09:04:15 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:04:15 root:INFO:SensorDetectionTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:10:47 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:10:47 root:INFO:SensorDetectionTopic Writer Subs: 2 1
+2026-07-03 Friday 09:10:55 root:INFO:Sensor Exiting
+2026-07-03 Friday 09:11:00 root:INFO:Sensor Powering Up
+2026-07-03 Friday 09:11:00 root:INFO:Writer created for type SensorDetection
+2026-07-03 Friday 09:11:00 root:INFO:Reader created for type Threat
+2026-07-03 Friday 09:11:00 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:11:00 root:INFO:Reader Thread running for Threat
+2026-07-03 Friday 09:11:00 root:INFO:SensorDetectionTopic Writer Subs: 1 1
+2026-07-03 Friday 09:11:02 root:INFO:Sensor listening for threats on domain 0
+2026-07-03 Friday 09:15:18 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:18 root:INFO:SensorDetectionTopic Writer Subs: 2 1
+2026-07-03 Friday 09:15:34 root:INFO:Sensor Exiting
+2026-07-03 Friday 09:15:35 root:INFO:Sensor Powering Up
+2026-07-03 Friday 09:15:35 root:INFO:Writer created for type SensorDetection
+2026-07-03 Friday 09:15:35 root:INFO:Reader created for type Threat
+2026-07-03 Friday 09:15:35 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:35 root:INFO:Reader Thread running for Threat
+2026-07-03 Friday 09:15:35 root:INFO:SensorDetectionTopic Writer Subs: 1 1
+2026-07-03 Friday 09:15:37 root:INFO:Sensor listening for threats on domain 0
+2026-07-03 Friday 09:15:38 root:INFO:Received Threat id=1 at (399.0, 282.0)
+2026-07-03 Friday 09:15:38 root:INFO:Received Threat id=1 at (399.0, 282.7)
+2026-07-03 Friday 09:15:39 root:INFO:Received Threat id=1 at (399.0, 293.7)
+2026-07-03 Friday 09:15:39 root:INFO:Received Threat id=2 at (590.0, 290.0)
+2026-07-03 Friday 09:15:39 root:INFO:Received Threat id=1 at (399.1, 304.7)
+2026-07-03 Friday 09:15:39 root:INFO:Received Threat id=2 at (585.1, 296.8)
+2026-07-03 Friday 09:15:39 root:INFO:Received Threat id=3 at (678.0, 398.0)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=2 at (578.6, 305.8)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=3 at (671.6, 401.6)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=4 at (174.0, 329.0)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=2 at (572.2, 314.7)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=3 at (662.0, 407.0)
+2026-07-03 Friday 09:15:40 root:INFO:Received Threat id=4 at (178.2, 333.1)
+2026-07-03 Friday 09:15:41 root:INFO:Received Threat id=4 at (186.0, 340.9)
+2026-07-03 Friday 09:15:41 root:INFO:Received Threat id=4 at (193.8, 348.7)
+2026-07-03 Friday 09:15:41 root:INFO:Received Threat id=5 at (377.0, 558.0)
+2026-07-03 Friday 09:15:42 root:INFO:Received Threat id=6 at (408.0, 570.0)
+2026-07-03 Friday 09:15:42 root:INFO:Received Threat id=7 at (510.0, 273.0)
+2026-07-03 Friday 09:15:43 root:INFO:Received Threat id=7 at (509.3, 274.7)
+2026-07-03 Friday 09:15:43 root:INFO:Received Threat id=7 at (505.3, 285.0)
+2026-07-03 Friday 09:15:44 root:INFO:Received Threat id=7 at (501.3, 295.2)
+2026-07-03 Friday 09:21:03 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:03 root:INFO:SensorDetectionTopic Writer Subs: 2 1
+2026-07-03 Friday 09:21:19 root:INFO:Sensor Exiting
+2026-07-03 Friday 09:21:20 root:INFO:Sensor Powering Up
+2026-07-03 Friday 09:21:20 root:INFO:Writer created for type SensorDetection
+2026-07-03 Friday 09:21:20 root:INFO:Reader created for type Threat
+2026-07-03 Friday 09:21:20 root:INFO:SensorDetectionTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:20 root:INFO:Reader Thread running for Threat
+2026-07-03 Friday 09:21:20 root:INFO:SensorDetectionTopic Writer Subs: 1 1
+2026-07-03 Friday 09:21:22 root:INFO:Sensor listening for threats on domain 0
+2026-07-03 Friday 09:21:24 root:INFO:Received Threat id=1 at (522.0, 358.0)
+2026-07-03 Friday 09:21:24 root:INFO:Received Threat id=1 at (521.8, 358.3)
+2026-07-03 Friday 09:21:25 root:INFO:Received Threat id=1 at (516.0, 367.7)
+2026-07-03 Friday 09:21:25 root:INFO:Received Threat id=2 at (324.0, 273.0)
+2026-07-03 Friday 09:21:25 root:INFO:Received Threat id=2 at (326.6, 282.6)
+2026-07-03 Friday 09:21:25 root:INFO:Received Threat id=3 at (167.0, 357.0)
+2026-07-03 Friday 09:21:26 root:INFO:Received Threat id=2 at (329.5, 293.4)
+2026-07-03 Friday 09:21:26 root:INFO:Received Threat id=3 at (174.1, 363.0)
+2026-07-03 Friday 09:21:26 root:INFO:Received Threat id=4 at (669.0, 348.0)
+2026-07-03 Friday 09:21:26 root:INFO:Received Threat id=3 at (182.6, 370.2)
+2026-07-03 Friday 09:21:26 root:INFO:Received Threat id=4 at (665.0, 351.1)
+2026-07-03 Friday 09:21:27 root:INFO:Received Threat id=4 at (656.2, 357.8)
+2026-07-03 Friday 09:21:27 root:INFO:Received Threat id=5 at (418.0, 579.0)
+2026-07-03 Friday 09:21:27 root:INFO:Received Threat id=4 at (647.4, 364.5)

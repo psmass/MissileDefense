@@ -35,8 +35,8 @@
    INIT  → ACTIVE  → SHUT_DOWN
 
  Programming patterns mirror the TMS device.py application:
-   - Compiled IDL types registered via shipEntities.register_ship_types()
-   - Writer / Reader base classes from shipEntities.py
+   - Compiled IDL types registered via ddsEntities.register_ship_types()
+   - Writer / Reader base classes from ddsEntities.py
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
    - Application state machine in the main loop (same as TMS device_main())
@@ -61,7 +61,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import shipEntities
+import ddsEntities
 import ship_topics
 
 
@@ -195,7 +195,7 @@ def command_control_main(domain_id: int) -> None:
     shutdown = False
 
     # *** REGISTER COMPILED TYPES before creating participant ***
-    shipEntities.register_ship_types()
+    ddsEntities.register_ship_types()
 
     # *** CREATE PARTICIPANT (raw DDS API – default QoS) ***
     participant = dds.DomainParticipant(domain_id)
@@ -225,7 +225,7 @@ def command_control_main(domain_id: int) -> None:
 
     # *** ATTACH WRITER LISTENER ***
     threat_w.writer.set_listener(
-        shipEntities.DefaultWriterListener(), dds.StatusMask.ALL)
+        ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
 
     # *** START READER THREADS ***
     detection_r.start()

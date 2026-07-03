@@ -45,7 +45,7 @@ import rti.connextdds as dds
 
 import application
 import shipConstants
-import shipEntities
+import ddsEntities
 import ship_topics
 
 
@@ -432,8 +432,10 @@ def command_control_main(domain_id: int) -> None:
     print("[C2] Ready")
 
     # DDS ────────────────────────────────────────────────────────────────
-    shipEntities.register_ship_types()
-    participant  = dds.DomainParticipant(domain_id)
+    ddsEntities.register_ship_types()
+    _qos = dds.DomainParticipantQos()
+    _qos.participant_name.name = "command_control"
+    participant  = dds.DomainParticipant(domain_id, _qos)
     thr_topic    = dds.Topic(participant, shipConstants.THREAT_TOPIC,           shipConstants.Threat)
     det_topic    = dds.Topic(participant, shipConstants.SENSOR_DETECTION_TOPIC, shipConstants.SensorDetection)
     efx_topic    = dds.Topic(participant, shipConstants.EFFECTOR_ACTION_TOPIC,  shipConstants.EffectorAction)
@@ -444,7 +446,7 @@ def command_control_main(domain_id: int) -> None:
     threat_w     = ship_topics.ThreatWtr(pub, thr_topic, app_state)
     detection_r  = GUISensorDetectionRdr(sub, det_topic, app_state, gui_state)
     effector_r   = GUIEffectorActionRdr(sub,  efx_topic, app_state, gui_state)
-    threat_w.writer.set_listener(shipEntities.DefaultWriterListener(), dds.StatusMask.ALL)
+    threat_w.writer.set_listener(ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
     detection_r.start();  effector_r.start()
 
     # Sim state ──────────────────────────────────────────────────────────

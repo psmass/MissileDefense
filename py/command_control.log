@@ -314,3 +314,112 @@
 2026-07-02 Thursday 17:40:58 root:INFO:Threat id=16 at (316,292)
 2026-07-02 Thursday 17:40:59 root:INFO:Threat id=17 at (633,410)
 2026-07-02 Thursday 17:41:00 root:INFO:Threat id=18 at (138,345)
+2026-07-03 Friday 08:54:30 root:INFO:Threat id=19 at (546,231)
+2026-07-03 Friday 08:54:31 root:INFO:Threat id=20 at (247,250)
+2026-07-03 Friday 08:54:31 root:INFO:Threat id=21 at (157,289)
+2026-07-03 Friday 08:54:32 root:INFO:Threat id=22 at (695,362)
+2026-07-03 Friday 08:54:34 root:INFO:Threat id=23 at (512,296)
+2026-07-03 Friday 08:54:35 root:INFO:Threat id=24 at (289,244)
+2026-07-03 Friday 08:54:52 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 08:54:52 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 08:54:52 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 08:54:52 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-03 Friday 08:54:59 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:01:58 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:01:59 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:01:59 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:01:59 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:01:59 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:01:59 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:02:12 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:02:12 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:02:15 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:02:15 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:02:35 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:02:38 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:02:39 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:02:39 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:02:39 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:02:39 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:02:39 root:INFO:ThreatTopic Writer Subs: 2 2
+2026-07-03 Friday 09:02:39 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:02:39 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:02:41 root:INFO:Threat id=1 at (210,238)
+2026-07-03 Friday 09:02:41 root:INFO:Threat id=2 at (436,225)
+2026-07-03 Friday 09:02:43 root:INFO:Threat id=3 at (353,561)
+2026-07-03 Friday 09:02:43 root:INFO:Threat id=4 at (421,574)
+2026-07-03 Friday 09:02:45 root:INFO:Threat id=5 at (529,497)
+2026-07-03 Friday 09:02:45 root:INFO:Threat id=6 at (423,314)
+2026-07-03 Friday 09:02:46 root:INFO:Threat id=7 at (152,237)
+2026-07-03 Friday 09:02:46 root:INFO:Threat id=8 at (158,162)
+2026-07-03 Friday 09:02:47 root:INFO:Threat id=9 at (483,189)
+2026-07-03 Friday 09:02:48 root:INFO:Threat id=10 at (586,449)
+2026-07-03 Friday 09:03:28 root:INFO:Threat id=11 at (408,280)
+2026-07-03 Friday 09:03:29 root:INFO:Threat id=12 at (199,324)
+2026-07-03 Friday 09:03:29 root:INFO:Threat id=13 at (283,518)
+2026-07-03 Friday 09:03:30 root:INFO:Threat id=14 at (460,564)
+2026-07-03 Friday 09:03:31 root:INFO:Threat id=15 at (587,394)
+2026-07-03 Friday 09:03:32 root:INFO:Threat id=16 at (481,351)
+2026-07-03 Friday 09:10:36 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:10:46 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:10:47 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:10:47 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:10:47 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:10:47 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:10:47 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:10:47 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:10:47 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:10:55 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:10:55 root:INFO:ThreatTopic Writer Subs: 0 -1
+2026-07-03 Friday 09:10:56 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:10:56 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:11:00 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:11:00 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:15:15 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:15:17 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:15:18 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:15:18 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:15:18 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:15:18 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:15:18 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:15:18 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:18 root:INFO:ThreatTopic Writer Subs: 1 1
+2026-07-03 Friday 09:15:18 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:18 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:15:26 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:26 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:15:28 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:28 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:15:34 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:34 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:15:35 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:15:35 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:15:38 root:INFO:Threat id=1 at (399,282)
+2026-07-03 Friday 09:15:39 root:INFO:Threat id=2 at (590,290)
+2026-07-03 Friday 09:15:39 root:INFO:Threat id=3 at (678,398)
+2026-07-03 Friday 09:15:40 root:INFO:Threat id=4 at (174,329)
+2026-07-03 Friday 09:15:41 root:INFO:Threat id=5 at (377,558)
+2026-07-03 Friday 09:15:42 root:INFO:Threat id=6 at (408,570)
+2026-07-03 Friday 09:15:42 root:INFO:Threat id=7 at (510,273)
+2026-07-03 Friday 09:20:59 root:INFO:C&C GUI exiting
+2026-07-03 Friday 09:21:02 root:INFO:C&C GUI starting on domain 0
+2026-07-03 Friday 09:21:03 root:INFO:Writer created for type Threat
+2026-07-03 Friday 09:21:03 root:INFO:Reader created for type SensorDetection
+2026-07-03 Friday 09:21:03 root:INFO:Reader created for type EffectorAction
+2026-07-03 Friday 09:21:03 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:03 root:INFO:ThreatTopic Writer Subs: 2 2
+2026-07-03 Friday 09:21:03 root:INFO:Reader Thread running for SensorDetection
+2026-07-03 Friday 09:21:03 root:INFO:Reader Thread running for EffectorAction
+2026-07-03 Friday 09:21:11 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:11 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:21:13 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:13 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:21:19 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:19 root:INFO:ThreatTopic Writer Subs: 1 -1
+2026-07-03 Friday 09:21:20 root:INFO:ThreatTopic Listener Callback On Publication Match
+2026-07-03 Friday 09:21:20 root:INFO:ThreatTopic Writer Subs: 2 1
+2026-07-03 Friday 09:21:24 root:INFO:Threat id=1 at (522,358)
+2026-07-03 Friday 09:21:25 root:INFO:Threat id=2 at (324,273)
+2026-07-03 Friday 09:21:25 root:INFO:Threat id=3 at (167,357)
+2026-07-03 Friday 09:21:26 root:INFO:Threat id=4 at (669,348)
+2026-07-03 Friday 09:21:27 root:INFO:Threat id=5 at (418,579)
