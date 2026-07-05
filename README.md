@@ -1,9 +1,204 @@
 # Aegis Ship Defense Demo
 
-A real-time, distributed ship defense simulation built with **RTI Connext DDS 7.7** and **SDL2**.  
+A real-time, distributed ship defense simulation built with **RTI Connext DDS 7.7** and **SDL2/pygame**.  
 Three independent processes — Command & Control, Sensor Suite, and Weapons/Effectors — communicate
 exclusively over a DDS data bus, demonstrating a publish/subscribe architecture modelled on the
 U.S. Navy's Aegis Combat System aboard an Arleigh Burke-class destroyer.
+
+Two implementations are provided: the original **C++ / SDL2** apps in `apps/`, and a full
+**Python / pygame + PyQt6** port in `py/` that adds VectorNav UMAA GPS/IMU integration and
+a live instrument dashboard.
+
+---
+
+## Repository Structure
+
+```
+MissileDefense/
+├── apps/                       # C++ / SDL2 implementation (CMake)
+│   ├── command_control/        #   SDL2 GUI — threat publisher + DDS subscriber
+│   ├── sensor/                 #   Aegis sensor suite
+│   └── effector/               #   Weapons / effector system
+├── py/                         # Python / pygame / PyQt6 implementation (5 apps)
+│   ├── command_control.py      #   App 1  pygame GUI — Command & Control
+│   ├── sensor.py               #   App 2  Aegis sensor suite
+│   ├── effector.py             #   App 3  Layered weapon defence
+│   ├── VectorNav_Publisher.py  #   App 4  UMAA GPS/IMU publisher (VectorNav sim)
+│   ├── VectorNav_Dashboard.py  #   App 5  PyQt6 instrument dashboard + speed slider
+│   ├── ddsEntities.py          #   Shared DDS Writer/Reader base classes
+│   ├── ship_topics.py          #   Ship-domain topic classes
+│   ├── vn_topics.py            #   VectorNav topic classes + SpeedCommand IDL
+│   ├── shipConstants.py        #   Compiled IDL types + sensor/effector constants
+│   ├── vn_constants.py         #   VectorNav constants
+│   ├── umaa_types.py           #   UMAA type re-exports (rtiumaapy)
+│   ├── application.py          #   run_flag + SIGINT handler
+│   ├── HSMST_Subscriber.py     #   Console subscriber for VectorNav topics
+│   ├── command_control_cli.py  #   CLI (non-GUI) version of command_control
+│   └── README.md               #   Full Python app documentation
+├── idl/
+│   ├── ShipThreat.idl          # DDS topic definitions (C++ implementation)
+│   └── generated/              # rtiddsgen C++ type-support output
+├── start_all_python.zsh        # macOS launcher — menu-driven, quadrant screen layout
+├── ArleighBurke-class.png      # Ship side-profile PNG
+├── CMakeLists.txt
+└── README.md                   # this file
+```
+
+---
+
+## Overview
+
+The simulation places an Arleigh Burke-class destroyer at the waterline of a tactical display.
+The operator clicks the map to spawn incoming threats (Anti-Ship Cruise Missiles, Ballistic
+Missiles, or Drones). Each threat is published onto the DDS bus. Independent sensor and weapons
+processes subscribe, apply their own logic, and publish back detections and intercept results —
+all without any direct function calls between processes.
+
+In the Python implementation the ship's position is driven by live **VectorNav GPS** data
+(simulated dead-reckoning from San Diego Bay). A **speed slider** (0–30 kt) in the VectorNav
+Dashboard controls the ship speed in real time; the ship continues from its current position
+when the speed changes.
+
+---
+
+## DDS Architecture
+
+All three ship-defense processes share three DDS topics:
+
+```
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │                        DDS Domain (Domain 0)                        │
+  │   Topic: ship::Threat          Topic: ship::SensorDetection         │
+  │   Topic: ship::EffectorAction                                       │
+  └─────────────────────────────────────────────────────────────────────┘
+         ▲  publish                subscribe ▼          subscribe ▼
+         │                                  │                    │
+  ┌──────┴──────┐              ┌─────────────┴──┐    ┌───────────┴────┐
+  │  command_   │  subscribe   │    sensor      │    │   effector     │
+  │  control    │◄─────────────│                │    │                │
+  │             │  SensorDet.  │  AN/SPY-1D     │    │  SM-2 Block IV │
+  │  GUI        │              │  AN/SPQ-9B     │    │  SM-6          │
+  │  Threat     │◄─────────────│  AN/SPS-67     │    │  ESSM          │
+  │  Publisher  │  EffectorAct.│  AN/SLQ-32     │    │  CIWS Phalanx  │
+  │             │              │                │    │  MK 45 Gun     │
+  └─────────────┘              └────────────────┘    └────────────────┘
+```
+
+The Python implementation adds two more topics for VectorNav GPS/speed integration:
+
+```
+  VectorNav_Publisher ──► GlobalPoseReportType ──► command_control (ship moves)
+                      ──► SpeedReportType      ──► VectorNav_Dashboard
+  VectorNav_Dashboard ──► SpeedCommand         ──► VectorNav_Publisher (slider)
+```
+
+---
+
+## Python Implementation — Quickstart
+
+> See [`py/README.md`](py/README.md) for full documentation.
+
+### Prerequisites
+
+| Requirement | Notes |
+|---|---|
+| RTI Connext DDS 7.7.0 | macOS arm64 |
+| Python 3.12 + `~/.venv` | `pip install rti.connext rtiumaapy pygame pyqt6` |
+
+```zsh
+source /Applications/rti_connext_dds-7.7.0/resource/scripts/rtisetenv_arm64Darwin23clang16.0.zsh
+```
+
+### Launch all five apps (recommended)
+
+```zsh
+./start_all_python.zsh
+```
+
+This opens an interactive menu that divides the screen into four quadrants:
+
+```
+┌────────────────────┬────────────────────┐
+│  command_control   │  VectorNav_        │
+│  pygame GUI        │  Dashboard Qt GUI  │
+│  (upper left)      │  (upper right)     │
+├────────────────────┼────────────────────┤
+│  menu terminal     │  sensor            │
+│  (lower left)      │  effector          │
+│                    │  VectorNav_Pub     │
+│                    │  (lower right)     │
+└────────────────────┴────────────────────┘
+```
+
+| Option | Starts |
+|---|---|
+| `1` | Ship Defense — command_control, sensor, effector |
+| `2` | VectorNav — Publisher + Dashboard |
+| `3` | Stop all processes and close all Terminal windows |
+
+### Manual launch
+
+```zsh
+cd py
+python command_control.py    # Terminal 1 — start first
+python sensor.py             # Terminal 2
+python effector.py           # Terminal 3
+python VectorNav_Publisher.py  # Terminal 4  (optional — GPS)
+python VectorNav_Dashboard.py  # Terminal 5  (optional — instrument panel)
+```
+
+---
+
+## Python Implementation — Key Features
+
+- **Ship-centred viewport** — ship is fixed on screen; the tactical world scrolls beneath it
+- **VectorNav GPS** — ship moves to follow live lat/lon (San Diego Bay → NE at 0–30 kt)
+- **Speed slider** — 0–30 kt published via DDS `SpeedCommand` topic; position is continuous (no reset)
+- **Orange HOME buoy** — fixed world marker shows GPS drift from starting position
+- **Layered Aegis defence** — 4 sensors, 5 weapons, probabilistic kill assessment
+- **Interceptor animations** — launch plumes, missiles, kill blasts driven by `EffectorActionTopic`
+- **Status panel** — sensor detections, effector firings, threat table, GPS lat/lon/course
+
+---
+
+## C++ / SDL2 Implementation
+
+> See [`apps/README.md`](apps/README.md) for build instructions.
+
+### Prerequisites
+
+| Requirement | Version |
+|---|---|
+| CMake | ≥ 3.10 |
+| RTI Connext DDS | 7.7.0 |
+| SDL2 + SDL2_image | via vcpkg |
+
+### Build
+
+```powershell
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64 \
+      -DCMAKE_TOOLCHAIN_FILE="C:/RTI/vcpkg/scripts/buildsystems/vcpkg.cmake" \
+      -DUSE_CONNEXT=ON \
+      -DRTI_CONNEXTDDS_DIR="C:/RTI/rti_connext_dds-7.7.0"
+cmake --build build --config Debug
+```
+
+### Run
+
+```powershell
+build\apps\command_control\Debug\command_control.exe   # Terminal 1
+build\apps\sensor\Debug\sensor.exe                     # Terminal 2
+build\apps\effector\Debug\effector.exe                 # Terminal 3
+```
+
+---
+
+## License
+
+This project is provided as a demonstration and is not affiliated with or endorsed by Raytheon,
+Lockheed Martin, the U.S. Navy, or RTI.  RTI Connext DDS is a product of Real-Time Innovations,
+Inc. and requires a separate license.
+
 
 ---
 
@@ -19,184 +214,3 @@ The result is a live, visual demonstration of how DDS decouples producers from c
 real-time C2 (Command and Control) system.
 
 ---
-
-## How Does It Work?
-
-The three executables share no code at runtime.  They are connected solely through three
-DDS **Topics** defined in `idl/ShipThreat.idl`:
-
-```
-  ┌─────────────────────────────────────────────────────────────────────┐
-  │                        DDS Domain (Domain 0)                        │
-  │                                                                     │
-  │   Topic: ship::Threat          Topic: ship::SensorDetection         │
-  │   Topic: ship::EffectorAction                                       │
-  └─────────────────────────────────────────────────────────────────────┘
-         ▲  publish                subscribe ▼          subscribe ▼
-         │                                  │                    │
-  ┌──────┴──────┐              ┌─────────────┴──┐    ┌───────────┴────┐
-  │  command_   │  subscribe   │    sensor      │    │   effector     │
-  │  control    │◄─────────────│                │    │                │
-  │             │  SensorDet.  │  AN/SPY-1D     │    │  SM-2 Block IV │
-  │  SDL2 GUI   │              │  AN/SPQ-9B     │    │  SM-6          │
-  │  Threat     │◄─────────────│  AN/SPS-67     │    │  ESSM          │
-  │  Publisher  │  EffectorAct.│  AN/SLQ-32     │    │  CIWS Phalanx  │
-  │             │              │                │    │  MK 45 Gun     │
-  └─────────────┘              └────────────────┘    └────────────────┘
-       │  publish Threat                │ publish          │ publish
-       │  (click to spawn)              │ SensorDetection  │ EffectorAction
-       └────────────────────────────────┘──────────────────┘
-                  All three processes read/write the same DDS bus
-```
-
-### Data flow — step by step
-
-| Step | Process | Action |
-|------|---------|--------|
-| 1 | **command_control** | Operator clicks the display → a `ship::Threat` sample is published with position, heading, speed, and severity. Re-published every 500 ms as the threat moves. |
-| 2 | **sensor** | Subscribes to `ship::Threat`. Each of the four sensor models checks whether the threat has entered its detection radius. If so, it publishes a `ship::SensorDetection` with a confidence score. |
-| 3 | **command_control** | Subscribes to `ship::SensorDetection`. Updates the status panel: sensor row changes from IDLE → active with threat ID and confidence %. |
-| 4 | **effector** | Subscribes to `ship::Threat`. Once a threat crosses the SPY-1D engagement boundary (~380 px / ~200 nm), all applicable weapons publish `ship::EffectorAction` (with a probabilistic kill assessment). Each threat is engaged only once. |
-| 5 | **command_control** | Subscribes to `ship::EffectorAction`. Renders interceptor missiles, launch plumes, and kill blasts. Updates the weapons panel: IDLE → FIRING → KILL. |
-
----
-
-## Features
-
-- **Three-process DDS architecture** — command_control, sensor, and effector are fully decoupled;
-  any process can be stopped, restarted, or replaced without affecting the others.
-- **Aegis sensor suite** with realistic detection radii:
-  | Sensor | Role | Range |
-  |--------|------|-------|
-  | AN/SPY-1D | Phased-array radar | 220 nm |
-  | AN/SLQ-32 | Electronic warfare | 100 nm |
-  | AN/SPQ-9B | Gun fire-control radar | 40 nm |
-  | AN/SPS-67 | Surface search radar | 25 nm |
-- **Layered weapon engagement** — SM-2 Block IV, SM-6, ESSM, CIWS Phalanx, MK 45 5" Gun, each
-  with independent Pk (probability of kill) and engagement rules.
-- **Visual game loop** — scaled 350 nm display, side-profile Arleigh Burke PNG, typed threat icons
-  (ASCM / Ballistic / Drone), launch plumes, interceptor missiles, and kill-blast effects.
-- **Live status panel** — per-sensor confidence, per-weapon IDLE/FIRING/KILL, and an incoming
-  threats table (type, speed, time-to-impact).
-- **SPY-1D radar ring** — dashed red arc visualises the detection boundary; effectors hold fire
-  until the threat crosses inside it.
-- **Probabilistic intercept** — each weapon rolls against its Pk independently; a miss still
-  animates a passing interceptor.
-
----
-
-## Getting Started
-
-### Download
-
-Clone the repository:
-
-```bash
-git clone https://github.com/<your-username>/MissileDefense.git
-cd MissileDefense
-```
-
-### Prerequisites
-
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Windows 10/11 (x64) | — | Only platform tested |
-| Visual Studio 2022 | 17.x | Desktop C++ workload required |
-| CMake | ≥ 3.10 | Must be on `PATH` |
-| RTI Connext DDS | 7.7.0 | Install to `C:\RTI\rti_connext_dds-7.7.0` |
-| vcpkg | current | Install to `C:\RTI\vcpkg` |
-| SDL2 | via vcpkg | `vcpkg install sdl2:x64-windows` |
-| SDL2_image | via vcpkg | `vcpkg install sdl2-image:x64-windows` |
-
-**Install vcpkg dependencies** (run once):
-
-```powershell
-C:\RTI\vcpkg\vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows
-```
-
-**Generate DDS type-support code** from the IDL (run once, requires `rtiddsgen` on `PATH`):
-
-```bat
-generate_rtiddsgen.bat
-```
-
-This reads `idl/ShipThreat.idl` and writes C++ type-support files into `idl/generated/`.
-
-### Build
-
-```powershell
-# From the repository root
-cmake -S . -B build `
-      -G "Visual Studio 17 2022" -A x64 `
-      -DCMAKE_TOOLCHAIN_FILE="C:/RTI/vcpkg/scripts/buildsystems/vcpkg.cmake" `
-      -DUSE_CONNEXT=ON `
-      -DRTI_CONNEXTDDS_DIR="C:/RTI/rti_connext_dds-7.7.0"
-
-cmake --build build --config Debug
-```
-
-> **Without RTI Connext:** omit `-DUSE_CONNEXT=ON` and `-DRTI_CONNEXTDDS_DIR`. The three
-> executables will still build and run using local fallback structs, but DDS communication
-> between processes will be disabled.
-
-Compiled binaries land in `build\apps\<app>\Debug\`.
-
-### Usage
-
-Open **three separate terminals** from `C:\RTI\Demos\MissileDefense` and launch each process:
-
-**Terminal 1 — Command & Control (SDL2 display):**
-```powershell
-cd .\build\apps\command_control\Debug
-command_control.exe
-```
-
-**Terminal 2 — Sensor Suite:**
-```powershell
-cd .\build\apps\sensor\Debug
-sensor.exe
-```
-
-**Terminal 3 — Weapons / Effectors:**
-```powershell
-cd .\build\apps\effector\Debug
-effector.exe
-```
-
-Once all three are running:
-
-1. **Click anywhere** above the ship in the SDL2 window to spawn an incoming threat.
-2. Watch the **Sensors panel** light up as the threat crosses each sensor's detection radius.
-3. When the threat crosses the **red SPY-1D ring**, the **Effectors panel** changes from IDLE →
-   FIRING, interceptor missiles animate toward the target, and a KILL or miss blast is rendered.
-4. The **Threats table** at the bottom of the panel shows live type, speed, and time-to-impact for
-   every active contact.
-
-Processes can be stopped and restarted independently at any time — DDS will reconnect them
-automatically when they come back online.
-
----
-
-## Project Structure
-
-```
-MissileDefense/
-├── idl/
-│   ├── ShipThreat.idl          # DDS topic definitions (Threat, SensorDetection, EffectorAction)
-│   └── generated/              # rtiddsgen output (C++ type-support — generated, not committed)
-├── apps/
-│   ├── command_control/        # SDL2 GUI — threat publisher + DDS subscriber for sensor/effector data
-│   ├── sensor/                 # Aegis sensor suite — subscribes Threat, publishes SensorDetection
-│   └── effector/               # Weapons system  — subscribes Threat, publishes EffectorAction
-├── ArleighBurke-class.png      # Ship side-profile (transparent PNG, copied to build output)
-├── CMakeLists.txt
-└── README.md
-```
-
----
-
-## License
-
-This project is provided as a demonstration and is not affiliated with or endorsed by Raytheon,
-Lockheed Martin, the U.S. Navy, or RTI.  RTI Connext DDS is a product of Real-Time Innovations,
-Inc. and requires a separate license.
