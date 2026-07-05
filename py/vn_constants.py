@@ -44,6 +44,7 @@ POSE_TOPIC:  str = "UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"
 # Published by VectorNav_Dashboard slider; subscribed by VectorNav_Publisher.
 # ---------------------------------------------------------------------------
 
-SPEED_COMMAND_TOPIC: str  = "VectorNav::SpeedMultiplierCommand"
-SPEED_MULTIPLIER_MIN: int = 1
-SPEED_MULTIPLIER_MAX: int = 20
+SPEED_COMMAND_TOPIC: str = "VectorNav::SpeedCommand"
+SPEED_KNOTS_MIN: int = 0
+SPEED_KNOTS_MAX: int = 30
+SPEED_KNOTS_DEFAULT: int = 5

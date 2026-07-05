@@ -53,8 +53,8 @@ from umaa_types import (
 
 @idl.struct
 class SpeedCommand:
-    """Speed multiplier command.  multiplier=1.0 → normal speed, 10.0 → 10× faster."""
-    multiplier: float = 1.0
+    """Speed command in knots.  Published by Dashboard slider, subscribed by Publisher."""
+    knots: float = 5.0
 
 
 # ===========================================================================
@@ -83,8 +83,8 @@ class VectorNavState:
         self._lat0 = 32.7157     # degrees N
         self._lon0 = -117.1611   # degrees E
 
-        # Speed multiplier — updated live by SpeedCommand_Rdr from Dashboard slider
-        self.speed_multiplier: float = 1.0
+        # Speed in knots — updated live by SpeedCommand_Rdr from Dashboard slider
+        self.speed_knots: float = float(vn_constants.SPEED_KNOTS_DEFAULT)
 
         # IdentifierType source field — set once, shared by all writers
         self.source = GUIDUtil.make_source_id(vn_constants.VECNAV_GUID)
@@ -102,8 +102,8 @@ class VectorNavState:
 
     @property
     def sog(self) -> float:
-        """Speed Over Ground  m/s  – scaled by speed_multiplier."""
-        return (3.0 + 0.4 * math.sin(0.08 * self._t())) * self.speed_multiplier
+        """Speed Over Ground  m/s  — commanded knots converted to m/s with small wave variation."""
+        return (self.speed_knots + 0.2 * math.sin(0.08 * self._t())) * 0.5144
 
     @property
     def stw(self) -> float:
@@ -122,14 +122,26 @@ class VectorNavState:
 
     @property
     def lat(self) -> float:
-        """Geodetic latitude  degrees  (dead-reckoning, speed_multiplier applied)."""
-        return self._lat0 + (3.0 * self.speed_multiplier * self._t() / 111_111.0) * math.cos(self.course_r)
+        """Geodetic latitude  degrees  (dead-reckoning from last speed-change checkpoint)."""
+        return self._lat0 + (self.speed_knots * 0.5144 * self._t() / 111_111.0) * math.cos(self.course_r)
 
     @property
     def lon(self) -> float:
-        """Geodetic longitude  degrees  (dead-reckoning, speed_multiplier applied)."""
+        """Geodetic longitude  degrees  (dead-reckoning from last speed-change checkpoint)."""
         lat_cos = math.cos(math.radians(self._lat0))
-        return self._lon0 + (3.0 * self.speed_multiplier * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
+        return self._lon0 + (self.speed_knots * 0.5144 * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
+
+    def set_speed(self, knots: float) -> None:
+        """Change speed without repositioning the ship.
+
+        Snapshots the current dead-reckoning position as the new origin and
+        resets the elapsed-time clock so the lat/lon formula continues
+        seamlessly from the current location at the new speed.
+        """
+        self._lat0 = self.lat
+        self._lon0 = self.lon
+        self._t0   = time.monotonic()
+        self.speed_knots = knots
 
 
 # ===========================================================================
@@ -329,7 +341,7 @@ class GlobalPoseReport_Rdr(ddsEntities.Reader):
 class SpeedCommand_Rdr(ddsEntities.Reader):
     """Receives speed multiplier commands from the Dashboard slider.
 
-    handler() updates vn_state.speed_multiplier so that the next
+    handler() updates vn_state.speed_knots so that the next
     write() call from SpeedReport_Wtr / GlobalPoseReport_Wtr picks
     up the new value immediately.
     """
@@ -343,8 +355,8 @@ class SpeedCommand_Rdr(ddsEntities.Reader):
         self._vn_state = vn_state
 
     def handler(self, data: SpeedCommand) -> None:
-        mult = max(float(vn_constants.SPEED_MULTIPLIER_MIN),
-                   min(float(vn_constants.SPEED_MULTIPLIER_MAX), data.multiplier))
-        self._vn_state.speed_multiplier = mult
-        print(f'[VN] Speed multiplier → {mult:.0f}×', flush=True)
-        logging.info('SpeedCommand rx  multiplier=%.1f', mult)
+        knots = max(float(vn_constants.SPEED_KNOTS_MIN),
+                    min(float(vn_constants.SPEED_KNOTS_MAX), data.knots))
+        self._vn_state.set_speed(knots)
+        print(f'[VN] Speed → {knots:.0f} kt  ({knots * 0.5144:.2f} m/s)', flush=True)
+        logging.info('SpeedCommand rx  knots=%.1f', knots)

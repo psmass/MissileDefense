@@ -422,26 +422,26 @@ class Dashboard(QMainWindow):
         compass_row.addStretch()
         root.addLayout(compass_row)
 
-        # ── speed multiplier slider ───────────────────────────────────
+        # ── ship speed slider (knots) ─────────────────────────────────
         spd_row = QHBoxLayout()
         spd_row.setSpacing(10)
 
-        spd_icon = QLabel("⚙ Sim Speed:")
+        spd_icon = QLabel("🚢 Ship Speed:")
         spd_icon.setFont(QFont("Helvetica", 10, QFont.Weight.Bold))
         spd_icon.setStyleSheet(f"color: {ACCENT.name()};")
         spd_row.addWidget(spd_icon)
 
-        slow_lbl = QLabel(f"{vn_constants.SPEED_MULTIPLIER_MIN}×")
+        slow_lbl = QLabel(f"{vn_constants.SPEED_KNOTS_MIN} kt")
         slow_lbl.setFont(QFont("Helvetica", 9))
         slow_lbl.setStyleSheet(f"color: {TEXT_SEC.name()};")
         spd_row.addWidget(slow_lbl)
 
         self._speed_slider = QSlider(Qt.Orientation.Horizontal)
-        self._speed_slider.setMinimum(vn_constants.SPEED_MULTIPLIER_MIN)
-        self._speed_slider.setMaximum(vn_constants.SPEED_MULTIPLIER_MAX)
-        self._speed_slider.setValue(vn_constants.SPEED_MULTIPLIER_MIN)
+        self._speed_slider.setMinimum(vn_constants.SPEED_KNOTS_MIN)
+        self._speed_slider.setMaximum(vn_constants.SPEED_KNOTS_MAX)
+        self._speed_slider.setValue(vn_constants.SPEED_KNOTS_DEFAULT)
         self._speed_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
-        self._speed_slider.setTickInterval(1)
+        self._speed_slider.setTickInterval(5)
         self._speed_slider.setMinimumWidth(300)
         self._speed_slider.setStyleSheet("""
             QSlider::groove:horizontal {
@@ -457,14 +457,14 @@ class Dashboard(QMainWindow):
         """)
         spd_row.addWidget(self._speed_slider)
 
-        fast_lbl = QLabel(f"{vn_constants.SPEED_MULTIPLIER_MAX}×")
+        fast_lbl = QLabel(f"{vn_constants.SPEED_KNOTS_MAX} kt")
         fast_lbl.setFont(QFont("Helvetica", 9))
         fast_lbl.setStyleSheet(f"color: {TEXT_SEC.name()};")
         spd_row.addWidget(fast_lbl)
 
-        self._speed_val_lbl = QLabel("1×")
+        self._speed_val_lbl = QLabel(f"{vn_constants.SPEED_KNOTS_DEFAULT} kt")
         self._speed_val_lbl.setFont(QFont("Courier New", 14, QFont.Weight.Bold))
-        self._speed_val_lbl.setStyleSheet(f"color: {WARN.name()}; min-width: 44px;")
+        self._speed_val_lbl.setStyleSheet(f"color: {WARN.name()}; min-width: 54px;")
         spd_row.addWidget(self._speed_val_lbl)
 
         spd_row.addStretch()
@@ -490,8 +490,8 @@ class Dashboard(QMainWindow):
     # ------------------------------------------------------------------
 
     def _on_speed_changed(self, value: int) -> None:
-        """Slider moved — publish new speed multiplier to VectorNav_Publisher."""
-        self._speed_val_lbl.setText(f"{value}×")
+        """Slider moved — publish new speed in knots to VectorNav_Publisher."""
+        self._speed_val_lbl.setText(f"{value} kt")
         _publish_speed_command(float(value))
 
     def _tick_age(self) -> None:
@@ -562,11 +562,11 @@ _speed_writer = None
 _speed_sample = None
 
 
-def _publish_speed_command(multiplier: float) -> None:
-    """Write a SpeedCommand sample to the DDS bus."""
+def _publish_speed_command(knots: float) -> None:
+    """Write a SpeedCommand sample (knots) to the DDS bus."""
     if _speed_writer is None or _speed_sample is None:
         return
-    _speed_sample.multiplier = multiplier
+    _speed_sample.knots = knots
     _speed_writer.write(_speed_sample)
 
 def _start_dds() -> None:
@@ -584,7 +584,7 @@ def _start_dds() -> None:
     pose_reader = dds.DataReader(subscriber, pose_topic)
     pose_reader.set_listener(PoseListener(), dds.StatusMask.DATA_AVAILABLE)
 
-    # Speed multiplier command writer — published when slider moves
+    # Speed command writer — published when slider moves (knots)
     speed_cmd_topic  = dds.Topic(participant, vn_constants.SPEED_COMMAND_TOPIC,
                                  vn_topics.SpeedCommand)
     _speed_writer    = dds.DataWriter(dds.Publisher(participant), speed_cmd_topic)

@@ -41,17 +41,8 @@ import time
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
-# VectorNav GPS integration (optional – gracefully disabled if not available)
-_VN_DIR = os.path.normpath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'vector_nav_py'))
-if os.path.isdir(_VN_DIR) and _VN_DIR not in sys.path:
-    sys.path.append(_VN_DIR)   # append so local ddsEntities.py takes precedence
-try:
-    from umaa_types import GlobalPoseReportType, GlobalPoseReportTypeTopic  # type: ignore
-    import vn_constants as _vn                                               # type: ignore
-    _HAVE_VN = True
-except ImportError:
-    _HAVE_VN = False
+from umaa_types import GlobalPoseReportType   # VectorNav GPS type
+import vn_constants as _vn                   # POSE_TOPIC name
 
 import pygame
 import rti.connextdds as dds
@@ -338,36 +329,37 @@ def draw_buoy(surf, x, y, font):
                         [(bx, by - 18), (bx + 7, by - 14), (bx, by - 10)])
     # Label
     surf.blit(font.render("HOME", True, (255, 160, 40)), (bx + 9, by - 8))
-if _HAVE_VN:
-    class GUIPoseRdr(ddsEntities.Reader):
-        """Subscribes to VectorNav GlobalPoseReportType and updates ship position.
 
-        Converts incoming geodetic lat/lon to map pixel coordinates via
-        latlon_to_px() and stores the result in GUISharedState for the
-        render loop to consume each frame.
-        """
 
-        def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
-                     gui_state: GUISharedState) -> None:
-            ddsEntities.Reader.__init__(
-                self, subscriber, topic, GlobalPoseReportType)
-            self._gui_state = gui_state
+class GUIPoseRdr(ddsEntities.Reader):
+    """Subscribes to VectorNav GlobalPoseReportType and updates ship position.
 
-        def handler(self, data: Any) -> None:
-            lat = data.position.geodeticLatitude
-            lon = data.position.geodeticLongitude
-            px, py = latlon_to_px(lat, lon)
-            crs = data.course if data.course is not None else 0.0
-            print(f"[C2][GPS] Lat={lat:+.6f}°  Lon={lon:+.7f}°  "
-                  f"Crs={math.degrees(crs):.1f}°TN  → px=({px:.1f},{py:.1f})")
-            logging.info("[C2] Pose Lat=%.6f Lon=%.7f → px=(%.1f,%.1f)",
-                         lat, lon, px, py)
-            with self._gui_state.lock:
-                self._gui_state.ship_lat      = lat
-                self._gui_state.ship_lon      = lon
-                self._gui_state.ship_course_r = crs
-                self._gui_state.ship_px       = px
-                self._gui_state.ship_py       = py
+    Converts incoming geodetic lat/lon to map pixel coordinates via
+    latlon_to_px() and stores the result in GUISharedState for the
+    render loop to consume each frame.
+    """
+
+    def __init__(self, subscriber: dds.Subscriber, topic: dds.Topic,
+                 gui_state: GUISharedState) -> None:
+        ddsEntities.Reader.__init__(
+            self, subscriber, topic, GlobalPoseReportType)
+        self._gui_state = gui_state
+
+    def handler(self, data: Any) -> None:
+        lat = data.position.geodeticLatitude
+        lon = data.position.geodeticLongitude
+        px, py = latlon_to_px(lat, lon)
+        crs = data.course if data.course is not None else 0.0
+        print(f"[C2][GPS] Lat={lat:+.6f}°  Lon={lon:+.7f}°  "
+              f"Crs={math.degrees(crs):.1f}°TN  → px=({px:.1f},{py:.1f})")
+        logging.info("[C2] Pose Lat=%.6f Lon=%.7f → px=(%.1f,%.1f)",
+                     lat, lon, px, py)
+        with self._gui_state.lock:
+            self._gui_state.ship_lat      = lat
+            self._gui_state.ship_lon      = lon
+            self._gui_state.ship_course_r = crs
+            self._gui_state.ship_px       = px
+            self._gui_state.ship_py       = py
 
 
 # ---------------------------------------------------------------------------
@@ -556,15 +548,12 @@ def command_control_main(domain_id: int) -> None:
     threat_w.writer.set_listener(ddsEntities.DefaultWriterListener(), dds.StatusMask.ALL)
     detection_r.start();  effector_r.start()
 
-    # VectorNav GPS subscriber (optional – gracefully absent if publisher not running)
-    pose_r: Optional[Any] = None
-    if _HAVE_VN:
-        pose_topic = dds.Topic(participant, _vn.POSE_TOPIC, GlobalPoseReportType)
-        pose_r = GUIPoseRdr(sub, pose_topic, gui_state)
-        pose_r.start()
-        print("[C2] VectorNav GPS subscriber active – ship will follow Lat/Lon")
-    else:
-        print("[C2] VectorNav GPS not available – ship at fixed position")
+    # VectorNav GPS subscriber – ship moves when VectorNav_Publisher is running,
+    # stays at (CX, CY) when it is not (no data → no position updates)
+    pose_topic = dds.Topic(participant, _vn.POSE_TOPIC, GlobalPoseReportType)
+    pose_r = GUIPoseRdr(sub, pose_topic, gui_state)
+    pose_r.start()
+    print("[C2] GPS subscriber active – ship follows Lat/Lon when VectorNav_Publisher running")
 
     # Sim state ──────────────────────────────────────────────────────────
     threats:      Dict[int, Any]    = {}
@@ -713,8 +702,7 @@ def command_control_main(domain_id: int) -> None:
         clock.tick(FPS)
 
     application.run_flag = False
-    if pose_r:
-        pose_r.join()
+    pose_r.join()
     pygame.quit()
     print("Command & Control GUI Exiting")
     logging.info("C&C GUI exiting")
