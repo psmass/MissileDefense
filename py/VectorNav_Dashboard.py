@@ -35,6 +35,7 @@ Prerequisites:
 from __future__ import annotations
 
 import math
+import os
 import sys
 import threading
 from dataclasses import dataclass
@@ -606,6 +607,17 @@ def main() -> None:
     _start_dds()
 
     win = Dashboard()
+
+    # Optional: position the Qt window via WINDOW_POS="x,y" env var
+    # set by start_all_python.zsh so the dashboard lands in the upper-right quadrant.
+    _pos_env = os.environ.get("WINDOW_POS", "")
+    if _pos_env:
+        try:
+            _wx, _wy = _pos_env.split(",")
+            win.move(int(_wx), int(_wy))
+        except (ValueError, AttributeError):
+            pass
+
     win.show()
 
     sys.exit(app.exec())

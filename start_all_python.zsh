@@ -2,14 +2,14 @@
 # =============================================================================
 # start_all_python.zsh  —  Ship Defense + VectorNav launcher with menu
 #
-# Menu options:
-#   1) Start Ship Defense  (command_control, sensor, effector)
-#   2) Start VectorNav     (VectorNav_Publisher, VectorNav_Dashboard)
-#   3) Stop & Terminate All
+# Screen layout (four quadrants):
+#   Upper left  — command_control pygame GUI
+#   Upper right — VectorNav_Dashboard Qt GUI
+#   Lower left  — THIS menu terminal
+#   Lower right — sensor, effector, VectorNav_Publisher Terminal windows (stacked)
 #
-# Each app runs in its own macOS Terminal window so output stays separate.
-# Cleanup uses pkill -f on the script name — no duplicate shadow PIDs.
-# Each option may only be selected once.
+# Each option may only be selected once.  Option 3 kills all processes and
+# closes all Terminal windows that were opened.
 # =============================================================================
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -36,22 +36,68 @@ fi
 source "$RTI_ENV"
 
 # ---------------------------------------------------------------------------
-# Track Terminal window IDs so stop_all() can close them
+# Compute screen quadrant bounds
+# ---------------------------------------------------------------------------
+# Fetch logical screen dimensions from Finder (points, not Retina pixels)
+read SW SH <<< $(osascript \
+    -e 'tell application "Finder"' \
+    -e '  set b to bounds of window of desktop' \
+    -e '  return ((item 3 of b) as text) & " " & ((item 4 of b) as text)' \
+    -e 'end tell')
+
+MB=25                           # macOS menu bar height (pts)
+HW=$((SW / 2))                  # half screen width
+HH=$(( (SH - MB) / 2 ))        # half usable screen height
+MID_Y=$((MB + HH))              # y of the horizontal dividing line
+
+# Individual quadrant corner variables (used in AppleScript set bounds)
+UL_X1=0;    UL_Y1=$MB;     UL_X2=$HW;  UL_Y2=$MID_Y   # upper left
+UR_X1=$HW;  UR_Y1=$MB;     UR_X2=$SW;  UR_Y2=$MID_Y   # upper right
+LL_X1=0;    LL_Y1=$MID_Y;  LL_X2=$HW;  LL_Y2=$SH      # lower left
+LR_X1=$HW;  LR_Y1=$MID_Y;  LR_X2=$SW;  LR_Y2=$SH      # lower right
+
+# Reposition THIS terminal window to lower left immediately
+osascript \
+    -e 'tell application "Terminal"' \
+    -e '  activate' \
+    -e "  set bounds of front window to {$LL_X1, $LL_Y1, $LL_X2, $LL_Y2}" \
+    -e 'end tell'
+
+# ---------------------------------------------------------------------------
+# Track Terminal window IDs opened by this script so stop_all() can close them
 # ---------------------------------------------------------------------------
 typeset -a TERMINAL_WINDOW_IDS
 
 # ---------------------------------------------------------------------------
-# Helper: open a new Terminal window, run cmd, store window ID for cleanup
+# Helper: open a new Terminal window, cap it at 125×30 chars, position it,
+#         minimize it, and record its ID.
+#   open_terminal <cmd> <x1> <y1> <x2> <y2> [minimize_delay_secs]
+#   x1,y1 = desired top-left corner.  x2,y2 accepted but ignored — size is
+#   controlled by columns/rows so the window is never larger than 125×30.
+#   minimize_delay: seconds to wait before minimizing (default 1.5).
+#   GUI-hosting apps (pygame, Qt) use 2.5 s so their window appears first.
 # ---------------------------------------------------------------------------
 open_terminal() {
-    local cmd="$1"
+    local cmd="$1" x1="$2" y1="$3"
+    local min_delay="${6:-1.5}"   # arg 6; args 4&5 (x2,y2) accepted but unused
     local wid
     wid=$(osascript \
         -e 'tell application "Terminal"' \
         -e '  activate' \
         -e "  do script \"$cmd\"" \
-        -e '  delay 0.5' \
-        -e '  return id of window 1' \
+        -e '  delay 0.4' \
+        -e '  set number of columns of front window to 125' \
+        -e '  set number of rows of front window to 30' \
+        -e '  set wb to bounds of front window' \
+        -e '  set ww to (item 3 of wb) - (item 1 of wb)' \
+        -e '  set wh to (item 4 of wb) - (item 2 of wb)' \
+        -e "  set nx2 to $x1 + ww" \
+        -e "  set ny2 to $y1 + wh" \
+        -e "  set bounds of front window to {$x1, $y1, nx2, ny2}" \
+        -e "  set wid to id of front window" \
+        -e "  delay $min_delay" \
+        -e "  set miniaturized of (first window whose id is wid) to true" \
+        -e '  return wid' \
         -e 'end tell')
     TERMINAL_WINDOW_IDS+=($wid)
 }
@@ -62,25 +108,44 @@ open_terminal() {
 start_ship_defense() {
     print -P "\n%F{green}Starting Ship Defense apps …%f"
 
-    open_terminal "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' command_control.py"
-    sleep 1   # let C2 participant come up first
-    open_terminal "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' sensor.py"
-    open_terminal "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' effector.py"
+    # command_control: 2.5 s delay lets pygame window appear before Terminal is minimized
+    open_terminal \
+        "export SDL_VIDEO_WINDOW_POS='0,$MB' && source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' command_control.py" \
+        $UL_X1 $UL_Y1 $UL_X2 $UL_Y2 2.5
 
-    print -P "  %F{green}✓%f  command_control  → Terminal window"
-    print -P "  %F{green}✓%f  sensor           → Terminal window"
-    print -P "  %F{green}✓%f  effector         → Terminal window"
+    sleep 1   # let C2 participant come up first
+
+    # sensor → lower right
+    open_terminal \
+        "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' sensor.py" \
+        $LR_X1 $LR_Y1 $LR_X2 $LR_Y2
+
+    # effector → lower right (stacked on sensor window)
+    open_terminal \
+        "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' effector.py" \
+        $LR_X1 $LR_Y1 $LR_X2 $LR_Y2
+
+    print -P "  %F{green}✓%f  command_control  → upper left"
+    print -P "  %F{green}✓%f  sensor           → lower right"
+    print -P "  %F{green}✓%f  effector         → lower right (stacked)"
     STARTED_SHIP=1
 }
 
 start_vectornav() {
     print -P "\n%F{green}Starting VectorNav apps …%f"
 
-    open_terminal "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' VectorNav_Publisher.py"
-    open_terminal "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' VectorNav_Dashboard.py"
+    # VectorNav_Dashboard: 2.5 s delay lets Qt window appear before Terminal is minimized
+    open_terminal \
+        "export WINDOW_POS='$HW,$MB' && source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' VectorNav_Dashboard.py" \
+        $UR_X1 $UR_Y1 $UR_X2 $UR_Y2 2.5
 
-    print -P "  %F{green}✓%f  VectorNav_Publisher → Terminal window"
-    print -P "  %F{green}✓%f  VectorNav_Dashboard → Terminal window"
+    # VectorNav_Publisher → lower right (stacked)
+    open_terminal \
+        "source '$RTI_ENV' && cd '$APP_DIR' && '$PYTHON' VectorNav_Publisher.py" \
+        $LR_X1 $LR_Y1 $LR_X2 $LR_Y2
+
+    print -P "  %F{green}✓%f  VectorNav_Dashboard → upper right"
+    print -P "  %F{green}✓%f  VectorNav_Publisher → lower right (stacked)"
     STARTED_VN=1
 }
 
