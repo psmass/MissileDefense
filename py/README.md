@@ -1,76 +1,107 @@
-# Ship Threat Defense — Python Applications
+# Ship Threat Defense + VectorNav GPS — Python Applications
 
-Python implementation of the **Aegis Ship Threat Defense** system using
-RTI Connext DDS 7.7.0 compiled types.  Three cooperating applications communicate
-entirely over DDS topics — no shared memory, no direct function calls.
+Python implementation of the **Aegis Ship Threat Defense** system combined with a
+**VectorNav UMAA GPS/IMU** simulation, all communicating over RTI Connext DDS 7.7.0.
+Five cooperating applications share a single DDS domain — no shared memory, no direct
+function calls.
+
+---
+
+## System Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│  VectorNav_Publisher.py  (vector_nav_py/)                            │
-│  GlobalPoseReportType  →  GPS lat/lon/course at 1 Hz                 │
-└───────────────────────────────┬──────────────────────────────────────┘
-                                │ GlobalPoseReportType
-                                ▼
-┌──────────────────────────────────────────────────────────────────────┐
-│                 command_control.py  (pygame GUI)                     │
-│  • Left-click map to spawn inbound threats                           │
-│  • Ship moves to follow GPS position from VectorNav_Publisher        │
-│  • Displays sensor detections, effector actions, GPS panel           │
-│  PUBLISHES   → ThreatTopic                                           │
-│  SUBSCRIBES  ← SensorDetectionTopic                                  │
-│  SUBSCRIBES  ← EffectorActionTopic                                   │
-│  SUBSCRIBES  ← GlobalPoseReportType  (VectorNav GPS)                 │
-└──────────┬──────────────────────────────────┬────────────────────────┘
-           │ ThreatTopic                      │ ThreatTopic
-           ▼                                  ▼
-┌─────────────────────────┐       ┌───────────────────────────────────┐
-│      sensor.py          │       │          effector.py              │
-│  Aegis sensor suite:    │       │  Layered weapon defence:          │
-│  AN/SPY-1D  412 px      │       │  SM-2 MR · SM-6 · ESSM           │
-│  AN/SPQ-9B   75 px      │       │  CIWS · MK 45/62                 │
-│  AN/SPS-67   47 px      │       │                                   │
-│  AN/SLQ-32  187 px      │       │  PUBLISHES → EffectorActionTopic  │
-│  PUBLISHES →            │       └───────────────────────────────────┘
-│  SensorDetectionTopic   │
-└─────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│  VectorNav_Publisher.py                                                         │
+│  Simulates USV sensor (dead-reckoning NE from San Diego Bay, speed 0–30 kt)     │
+│  PUBLISHES → SpeedReportType (1 Hz)                                             │
+│  PUBLISHES → GlobalPoseReportType (1 Hz)                                        │
+│  SUBSCRIBES ← VectorNav::SpeedCommand  (from Dashboard speed slider)            │
+└──────────────────────────┬──────────────────────┬──────────────────────────────┘
+                           │ GlobalPoseReportType  │ SpeedReportType
+                           ▼                       ▼
+        ┌──────────────────────────┐   ┌───────────────────────────────────────┐
+        │  command_control.py      │   │  VectorNav_Dashboard.py               │
+        │  (pygame GUI)            │   │  (PyQt6 GUI instrument panel)         │
+        │  Ship moves to GPS pos   │   │  Compass, roll/pitch, speed panels    │
+        │  PUBLISHES → ThreatTopic │   │  Speed slider 0–30 kt                 │
+        │  SUBSCRIBES ← Sensor     │   │  PUBLISHES → SpeedCommand             │
+        │  SUBSCRIBES ← Effector   │   └───────────────────────────────────────┘
+        │  SUBSCRIBES ← GPS pose   │
+        └────────┬─────────────────┘
+                 │ ThreatTopic
+       ┌─────────┴──────────┐
+       ▼                    ▼
+┌──────────────┐    ┌─────────────────────────────────────┐
+│  sensor.py   │    │  effector.py                        │
+│  Aegis suite │    │  Layered weapon defence             │
+│  4 sensors   │    │  5 weapons (SM-2, SM-6, ESSM,       │
+│  PUBLISHES → │    │            CIWS, MK 45/62)          │
+│  Detection   │    │  PUBLISHES → EffectorActionTopic    │
+└──────────────┘    └─────────────────────────────────────┘
 ```
 
 ---
 
 ## DDS Topics
 
-| Topic | Type | Publisher → Subscriber |
+| Topic | Type | Publisher → Subscriber(s) |
 |---|---|---|
 | `ThreatTopic` | `ship::Threat` | `command_control` → `sensor`, `effector` |
 | `SensorDetectionTopic` | `ship::SensorDetection` | `sensor` → `command_control` |
 | `EffectorActionTopic` | `ship::EffectorAction` | `effector` → `command_control` |
-| `UMAA::SA::GlobalPoseStatus::GlobalPoseReportType` | `GlobalPoseReportType` | `VectorNav_Publisher` → `command_control` |
+| `UMAA::SA::GlobalPoseStatus::GlobalPoseReportType` | `GlobalPoseReportType` | `VectorNav_Publisher` → `command_control`, `VectorNav_Dashboard`, `HSMST_Subscriber` |
+| `UMAA::SA::SpeedStatus::SpeedReportType` | `SpeedReportType` | `VectorNav_Publisher` → `VectorNav_Dashboard`, `HSMST_Subscriber` |
+| `VectorNav::SpeedCommand` | `SpeedCommand` | `VectorNav_Dashboard` → `VectorNav_Publisher` |
 
 ---
 
 ## File Structure
 
 ```
-ship_py/
+py/
 ├── README.md                  ← this file
 │
-├── command_control.py         ← Application 1  (pygame GUI — Command & Control)
-├── sensor.py                  ← Application 2  (Aegis sensor suite)
-├── effector.py                ← Application 3  (layered weapon defence)
+├── # ── Entry points (5 applications) ─────────────────────────────
+├── command_control.py         ← App 1  pygame GUI — Command & Control
+├── sensor.py                  ← App 2  Aegis sensor suite
+├── effector.py                ← App 3  Layered weapon defence
+├── VectorNav_Publisher.py     ← App 4  UMAA GPS/IMU publisher
+├── VectorNav_Dashboard.py     ← App 5  PyQt6 instrument dashboard
 │
-├── ship_topics.py             ← Concrete Writer/Reader topic classes
-├── ship_ddsEntities.py        ← Generic Writer(Thread) + Reader(Thread) base classes
-├── shipConstants.py           ← IDL compiled types + all application constants
-└── application.py             ← Global run_flag + SIGINT handler
+├── # ── Support (also runnable standalone) ─────────────────────────
+├── command_control_cli.py     ← CLI (non-GUI) version of command_control
+├── HSMST_Subscriber.py        ← Console subscriber for VectorNav topics
+│
+├── # ── Shared infrastructure ───────────────────────────────────────
+├── ddsEntities.py             ← Unified Writer(Thread) + Reader(Thread) base classes
+│                                 (supports both ship-style and VectorNav-style calling)
+├── application.py             ← Global run_flag + SIGINT handler
+│
+├── # ── Ship domain ─────────────────────────────────────────────────
+├── shipConstants.py           ← Compiled IDL types (Threat, SensorDetection,
+│                                 EffectorAction) + sensor/effector definitions
+├── ship_topics.py             ← Concrete Writer/Reader topic classes for ship apps
+│
+├── # ── VectorNav / UMAA domain ─────────────────────────────────────
+├── umaa_types.py              ← UMAA compiled-type re-exports (from rtiumaapy)
+├── vn_topics.py               ← Concrete Writer/Reader topic classes + VectorNavState
+│                                 simulation + SpeedCommand IDL struct
+└── vn_constants.py            ← VectorNav constants (domain, rate, topic strings,
+                                  speed range 0–30 kt)
 ```
 
 ### Module dependency map
 
 ```
 command_control.py ──┐
-sensor.py          ──┤──► ship_topics.py ──► ship_ddsEntities.py ──► application.py
-effector.py        ──┘         │                    │
-                               └──► shipConstants.py └──► rti.connextdds
+sensor.py          ──┤──► ship_topics.py ──► shipConstants.py
+effector.py        ──┘         │
+                               │
+VectorNav_Publisher.py ──┐     ├──► ddsEntities.py ──► application.py
+VectorNav_Dashboard.py ──┤──► vn_topics.py              │
+HSMST_Subscriber.py    ──┘         │                    └──► rti.connextdds
+                               ├──► umaa_types.py (rtiumaapy)
+                               └──► vn_constants.py
 ```
 
 ---
@@ -82,51 +113,98 @@ effector.py        ──┘         │                    │
 source /Applications/rti_connext_dds-7.7.0/resource/scripts/rtisetenv_arm64Darwin23clang16.0.zsh
 ```
 
-### 2. Python virtual environment
+### 2. Python virtual environment (`~/.venv`)
 ```zsh
 source ~/.venv/bin/activate
 ```
 
-Verify:
+Verify installed packages:
 ```zsh
-pip show rti.connext      # should show Version: 7.7.0
-pip show pygame           # should show Version: 2.6.1  (required by command_control.py)
+pip show rti.connext      # 7.7.0  — core DDS binding
+pip show rtiumaapy        # 0.1.0  — UMAA compiled types (VectorNav topics)
+pip show pygame           # 2.6.1  — required by command_control.py
+pip show pyqt6            # any    — required by VectorNav_Dashboard.py
 ```
 
 ---
 
-## The Three Applications
+## Quickstart — Launch Script
+
+The recommended way to start all applications:
+
+```zsh
+cd /path/to/MissileDefense
+./start_all_python.zsh
+```
+
+This opens an interactive menu in the lower-left quadrant of your screen:
+
+```
+═══════════════════════════════════════════════════════
+  Ship Defense  —  Launch Menu
+═══════════════════════════════════════════════════════
+
+  1) Start Ship Defense  (command_control, sensor, effector)
+  2) Start VectorNav  (Publisher + Dashboard)
+  3) Stop & Terminate All
+
+Select option [1/2/3]:
+```
+
+**Screen layout (four quadrants):**
+
+```
+┌─────────────────────┬─────────────────────┐
+│  command_control    │  VectorNav_Dashboard │
+│  pygame GUI         │  Qt GUI              │
+│  (upper left)       │  (upper right)       │
+├─────────────────────┼─────────────────────┤
+│  start_all_python   │  sensor terminal     │
+│  menu terminal      │  effector terminal   │
+│  (lower left)       │  VectorNav_Publisher │
+│                     │  (lower right stack) │
+└─────────────────────┴─────────────────────┘
+```
+
+- Terminal windows are **minimized** automatically after launch (GUIs stay visible)
+- All Terminal windows are **closed** when option 3 is selected
+- Each option can only be selected **once**
 
 ---
 
-### Application 1 — command_control.py
-**Role:** Command & Control — pygame GUI with mouse-driven threat spawning.
+## The Five Applications
+
+---
+
+### App 1 — `command_control.py`  *(pygame GUI)*
+
+**Role:** Command & Control — the tactical map operator console.
 
 **What it does:**
-- 1060 × 600 window with ocean background, radar rings and Arleigh Burke ship image
-- Left-click the map to spawn an inbound threat; each threat moves toward the ship
+- 1060 × 600 window: left 800 px = tactical map, right 250 px = status panel
+- Left-click the map to spawn an inbound threat; threats move toward the ship
 - Republishes all active threats on `ThreatTopic` every 0.5 s
 - Subscribes to `SensorDetectionTopic` → draws dotted sensor track lines
-- Subscribes to `EffectorActionTopic` → fires interceptor/blast effects
-- Subscribes to `GlobalPoseReportType` (VectorNav) → moves the ship to the GPS position
-- Right-hand status panel shows live sensor detections, effector firings, threat list, GPS position
+- Subscribes to `EffectorActionTopic` → fires interceptor / blast effects
+- Subscribes to `GlobalPoseReportType` → moves ship to GPS position (stays still until VectorNav_Publisher runs)
+- Orange **HOME** buoy marks the starting position so GPS drift is visible
+- Status panel: live sensor detections, effector firings, active threats, GPS Lat/Lon/Course
 
 ```zsh
-cd ship_py
-python command_control.py [-d DOMAIN_ID]
+cd py && python command_control.py [-d DOMAIN_ID]
 ```
 
-**Admin Console participant name:** `command_control`  
-**Log file:** `command_control.log`
+**Admin Console name:** `command_control` | **Log:** `command_control.log`
 
 ---
 
-### Application 2 — sensor.py
-**Role:** Aegis sensor suite — detects threats within range and publishes detections.
+### App 2 — `sensor.py`  *(Aegis sensor suite)*
+
+**Role:** Detects threats within sensor range and publishes detections.
 
 **What it does:**
 - Subscribes to `ThreatTopic`
-- For each received threat, all four Aegis sensors check their detection range:
+- Each received threat is range-checked by all four Aegis sensors:
 
 | Sensor | ID | Range (px) | Confidence |
 |---|---|---|---|
@@ -135,424 +213,150 @@ python command_control.py [-d DOMAIN_ID]
 | AN/SPS-67 | 3 |  47 | 55–75 %  |
 | AN/SLQ-32 | 4 | 187 | 65–85 %  |
 
-- Publishes one `SensorDetection` per sensor-threat pair that is within range
+- Publishes one `SensorDetection` per in-range sensor-threat pair
 
 ```zsh
-cd ship_py
-python sensor.py [-d DOMAIN_ID]
+cd py && python sensor.py [-d DOMAIN_ID]
 ```
 
-**Admin Console participant name:** `sensor`  
-**Log file:** `sensor.log`
+**Admin Console name:** `sensor` | **Log:** `sensor.log`
 
 ---
 
-### Application 3 — effector.py
-**Role:** Layered weapon defence — engages threats that enter the engagement envelope.
+### App 3 — `effector.py`  *(layered weapon defence)*
+
+**Role:** Engages threats that enter the engagement envelope.
 
 **What it does:**
 - Subscribes to `ThreatTopic`
-- Engages each threat (once) when it closes to within 380 px using layered weapons:
+- Engages each threat **once** when it closes to within 380 px using all weapons:
 
-| Weapon | ID | Pk % | Speed (px/s) |
+| Weapon   | ID | Kill Probability | Notes |
 |---|---|---|---|
-| SM-2 MR | 1 | 75 | 150 |
-| SM-6    | 2 | 87 | 175 |
-| ESSM    | 3 | 68 | 130 |
-| CIWS    | 4 | 52 | 210 |
-| MK 45/62| 5 | 36 | 100 |
+| SM-2 MR  | 1 | 75 % | VLS |
+| SM-6     | 2 | 87 % | VLS extended range |
+| ESSM     | 3 | 68 % | VLS close-in |
+| CIWS     | 4 | 52 % | Phalanx gun |
+| MK 45/62 | 5 | 36 % | Surface threats only (severity ≥ 3) |
 
-- Publishes one `EffectorAction` per engagement (destroyed = True/False)
-
-```zsh
-cd ship_py
-python effector.py [-d DOMAIN_ID]
-```
-
-**Admin Console participant name:** `effector`  
-**Log file:** `effector.log`
-
----
-
-## VectorNav GPS Integration
-
-When `vector_nav_py/VectorNav_Publisher.py` is running on the same DDS domain,
-`command_control.py` automatically subscribes to `GlobalPoseReportType` and moves
-the ship graphic to the corresponding map position.
-
-**Coordinate mapping:**
-
-| VectorNav start | Map pixel | Scale |
-|---|---|---|
-| 32.7157° N, -117.1611° E (San Diego Bay) | (400, 570) — home position | 5 m / px |
-
-At the VectorNav simulation speed (~3 m/s NE), the ship moves at ~0.6 px/s — visible
-drift over a few minutes of runtime.
-
-The **GPS POSITION** panel in the status sidebar shows live Lat, Lon, and Course
-when the publisher is running, or **NO FIX** when it is not.
-
----
-
-## Running All Applications Together
-
-Open **four terminals**, each with the Connext environment and venv activated:
+- Publishes one `EffectorAction` per engagement (`destroyed = True/False`)
 
 ```zsh
-# Run once in every terminal before starting any application
-source /Applications/rti_connext_dds-7.7.0/resource/scripts/rtisetenv_arm64Darwin23clang16.0.zsh
-source ~/.venv/bin/activate
+cd py && python effector.py [-d DOMAIN_ID]
 ```
 
-| Terminal | Directory | Command | Role |
-|---|---|---|---|
-| **1** | `ship_py` | `python command_control.py` | GUI — spawn threats, view everything |
-| **2** | `ship_py` | `python sensor.py` | Aegis sensor suite |
-| **3** | `ship_py` | `python effector.py` | Layered weapon defence |
-| **4** | `vector_nav_py` | `python VectorNav_Publisher.py` | GPS position stream (optional) |
-
-All applications default to **DDS Domain 0**.  
-To use a different domain pass `-d <ID>` to each application.  
-Stop any application with **Ctrl-C** — all threads shut down cleanly.
+**Admin Console name:** `effector` | **Log:** `effector.log`
 
 ---
 
-## Architecture — TMS Pattern
+### App 4 — `VectorNav_Publisher.py`  *(UMAA GPS/IMU publisher)*
 
-These applications follow the same compiled-types threading architecture as the
-TMS `pyCompiledTypes/` example, adapted for the ship domain:
-
-| Ship app | TMS equivalent | Purpose |
-|---|---|---|
-| `application.py` | `application.py` | `run_flag` + SIGINT handler |
-| `shipConstants.py` | `tmsConstants.py` | Compiled IDL types + constants |
-| `ship_ddsEntities.py` | `ddsEntities.py` | `Writer(Thread)` / `Reader(Thread)` base classes |
-| `ship_topics.py` | `topics.py` | Concrete topic classes with `handler()` overrides |
-| `sensor.py` | `device.py` | Sensor publisher entry point |
-| `effector.py` | `device.py` | Effector publisher entry point |
-| `command_control.py` | `controller.py` | GUI subscriber/publisher entry point |
-
-**Key pattern:**
-- `ship_ddsEntities.Writer` — blocks on a WaitSet; calls `write()` on periodic timeout
-- `ship_ddsEntities.Reader` — blocks on a WaitSet + ReadCondition; calls `handler(data)` per sample
-- Static sample fields set in `__init__`; dynamic fields updated in `write()` / read in `handler()`
-- All threads poll `application.run_flag`; Ctrl-C triggers clean exit
-
----
-
-## VectorNav Applications (vector_nav_py/)
-
-Python implementation of the **VectorNav Block Diagram** using RTI Connext DDS 7.7.0
-compiled types from the `rtiumaapy` package (generated by `rtiddsgen` 4.6.0).
-
-```
-┌────────────────────────────────────────────────────────────────┐
-│              VectorNav Component  (VectorNav_Publisher.py)     │
-│  ┌─────────────────────────┐   ┌────────────────────────────┐  │
-│  │ SpeedStatus Provider    │   │ GlobalPoseStatus Provider  │  │
-│  │ (Writer)                │   │ (Writer)                   │  │
-│  └────────────┬────────────┘   └─────────────┬──────────────┘  │
-└───────────────┼──────────────────────────────┼─────────────────┘
-                │  SpeedReportType             │  GlobalPoseReportType
-                ▼                              ▼
-        ════════════════════════════════════════════════
-                DDS Databus  (UMAA Autonomy Bus)
-        ════════════════════════════════════════════════
-                │                              │
-                ▼                              ▼
-┌───────────────────────────────────────────────────────────────────┐
-│          HSMST Control Component  (HSMST_Subscriber.py /          │
-│                                    VectorNav_Dashboard.py)        │
-│  ┌─────────────────────────┐   ┌────────────────────────────┐     │
-│  │ SpeedStatus Consumer    │   │ GlobalPoseStatus Consumer  │     │
-│  │ (Reader)                │   │ (Reader)                   │     │
-│  └─────────────────────────┘   └────────────────────────────┘     │
-└───────────────────────────────────────────────────────────────────┘
-```
-
-### VectorNav DDS Topics
-
-| Topic | IDL Type | Direction |
-|---|---|---|
-| `UMAA::SA::SpeedStatus::SpeedReportType` | `SpeedReportType` | VectorNav → HSMST |
-| `UMAA::SA::GlobalPoseStatus::GlobalPoseReportType` | `GlobalPoseReportType` | VectorNav → HSMST |
-
-### VectorNav File Structure
-
-```
-vector_nav_py/
-├── VectorNav_Publisher.py     ← Application 1  (VectorNav Component)
-├── HSMST_Subscriber.py        ← Application 2  (HSMST Console Consumer)
-├── VectorNav_Dashboard.py     ← Application 3  (HSMST GUI Dashboard)
-│
-├── vn_topics.py               ← Concrete Writer/Reader topic classes
-├── ddsEntities.py             ← Generic Writer(Thread) + Reader(Thread) base classes
-├── umaa_types.py              ← UMAA compiled-type re-exports (from rtiumaapy)
-├── vn_constants.py            ← Application constants (domain, rate, GUIDs, topic strings)
-└── application.py             ← Global run_flag + SIGINT handler
-```
-
-#### Module dependency map
-
-```
-VectorNav_Publisher.py  ──┐
-HSMST_Subscriber.py     ──┤──► vn_topics.py ──► ddsEntities.py ──► application.py
-VectorNav_Dashboard.py  ──┘         │                                  │
-                                    └──► umaa_types.py (rtiumaapy)     └── rti.connextdds
-                                    └──► vn_constants.py
-```
-
-### VectorNav Prerequisites
-
-```zsh
-pip show rti.connext      # should show Version: 7.7.0
-pip show rtiumaapy        # should show Version: 0.1.0
-pip show pyqt6            # required by VectorNav_Dashboard.py only
-```
-
-Install PyQt6 if needed:
-```zsh
-pip install pyqt6
-```
-
----
-
-### VectorNav Application 1 — VectorNav_Publisher.py
-**Role:** VectorNav Component — publishes simulated USV sensor data at 1 Hz.
+**Role:** Simulates a VectorNav USV sensor — publishes position and speed at 1 Hz.
 
 **What it does:**
-- Creates one `DomainParticipant` with two periodic `Writer` threads
-- `SpeedReport_Wtr` publishes `SpeedReportType` (SOG, STW, mode)
-- `GlobalPoseReport_Wtr` publishes `GlobalPoseReportType` (lat/lon, altitude, roll/pitch/yaw, course)
-- Simulates a USV dead-reckoning NE from San Diego Bay with realistic wave motion
+- Dead-reckons NE from San Diego Bay (32.7157°N, 117.1611°W) at commanded speed
+- Speed is set by the Dashboard slider (0–30 kt); default 5 kt
+- When speed changes the ship **continues from its current position** (no reset to home)
+- Publishes `SpeedReportType` (SOG, STW, mode) and `GlobalPoseReportType` (lat/lon, alt, roll/pitch/yaw, course)
+- Subscribes to `VectorNav::SpeedCommand` to receive slider updates from the Dashboard
 
 ```zsh
-cd vector_nav_py
-python VectorNav_Publisher.py [-d DOMAIN_ID]
+cd py && python VectorNav_Publisher.py [-d DOMAIN_ID]
 ```
 
 **Example output:**
 ```
-[VN][Speed ][1782934372.376046000]  SOG=3.032 m/s  STW=3.082 m/s  Mode=MRC
-[VN][Pose  ][1782934372.376565000]  Lat=+32.715719°  Lon=-117.1610770°  Alt=0.3m  Course=45.0°TN  Roll=+0.50°  Pitch=+0.16°
+[VN][Speed ][...] SOG=2.580 m/s  STW=2.630 m/s  Mode=MRC
+[VN][Pose  ][...] Lat=+32.715717°  Lon=-117.1610804°  Course=45.0°TN  Roll=+0.50°  Pitch=+0.16°
 ```
 
-**Log file:** `vector_nav_py/vecnav.log`
+**Admin Console name:** `VectorNav_Publisher` | **Log:** `VectorNav_Publisher.log`
 
 ---
 
-### VectorNav Application 2 — HSMST_Subscriber.py
-**Role:** HSMST Control Component — console subscriber.
+### App 5 — `VectorNav_Dashboard.py`  *(PyQt6 instrument dashboard)*
+
+**Role:** Live instrument panel showing GPS, attitude, and speed data.
 
 **What it does:**
-- Creates one `DomainParticipant` with two `Reader` threads
-- `SpeedReport_Rdr` receives and prints each `SpeedReportType` sample
-- `GlobalPoseReport_Rdr` receives and prints each `GlobalPoseReportType` sample
+- Subscribes to `SpeedReportType` and `GlobalPoseReportType`
+- Dark-theme PyQt6 dashboard with four data cards and a compass widget:
 
-```zsh
-cd vector_nav_py
-python HSMST_Subscriber.py [-d DOMAIN_ID]
-```
-
-**Example output:**
-```
-[HSMST][Speed ] t=1782934372.376046000  SOG=     3.032 m/s  STW=     3.082 m/s  Mode=MRC
-[HSMST][Pose  ] t=1782934372.376565000  Lat=+32.715719°  Lon=-117.1610771°  Alt=   0.30m  Course=45.0°TN  Roll=+0.50°  Pitch=+0.16°  Yaw=45.0°  Nav=MEASURED
-```
-
-**Log file:** `vector_nav_py/hsmst.log`
-
----
-
-### VectorNav Application 3 — VectorNav_Dashboard.py
-**Role:** HSMST Control Component — live PyQt6 GUI instrument dashboard.
-
-**What it does:**
-- Subscribes to the same two topics as `HSMST_Subscriber.py`
-- Renders a dark-theme PyQt6 instrument panel with four data cards and a compass widget
-- Status bar turns amber if no data received for > 2.5 seconds
-
-#### Dashboard panels
-
-| Panel | Fields | Source topic |
-|---|---|---|
-| **Position** | Latitude (°N+), Longitude (°E+), Altitude (m MSL) | `GlobalPoseReportType` |
-| **Orientation** | Roll (°), Pitch (°), Yaw / Heading (°TN) | `GlobalPoseReportType` |
-| **Speed** | SOG (m/s), STW (m/s), STA (m/s), Mode | `SpeedReportType` |
-| **Navigation** | Course True North (°), Nav Solution, Timestamp | `GlobalPoseReportType` |
-| **Compass widget** | Combined heading rose + roll arc + pitch bar | `GlobalPoseReportType` |
-
-#### Compass widget
-
-```
-              N
-              ▲  ← red needle (fixed, always points up = current heading)
-         W ───●─── E         ● = centre dot
-              ▼
-              S
-        ──────────  ← green horizontal bar: rises (bow up) / falls (bow down) with pitch
-        ╰────╯      ← amber arc: sweeps CW (starboard roll) / CCW (port roll)
-
-        045.0°      ← live heading readout at bottom
-```
-
-| Indicator | Colour | Field | Range |
-|---|---|---|---|
-| Rotating compass rose | Sky-blue ticks + N/E/S/W labels | `attitude.yaw.yaw` | Full 360° |
-| Fixed red heading needle | Red | `attitude.yaw.yaw` | Always points to top |
-| Roll arc (outer ring) | Amber | `attitude.roll.roll` | ±45° clamped |
-| Pitch bar (horizontal) | Emerald | `attitude.pitch.pitch` | ±30° clamped |
-
-```zsh
-cd vector_nav_py
-python VectorNav_Dashboard.py [-d DOMAIN_ID]
-```
-
-> **Note:** `HSMST_Subscriber.py` and `VectorNav_Dashboard.py` are independent consumers
-> of the same publisher — run one or both simultaneously.
-
----
-
-### Running VectorNav Applications
-
-| Terminal | Directory | Command | Role |
-|---|---|---|---|
-| **1** | `vector_nav_py` | `python VectorNav_Publisher.py` | Sensor publisher |
-| **2** | `vector_nav_py` | `python HSMST_Subscriber.py` | Console consumer |
-| **3** | `vector_nav_py` | `python VectorNav_Dashboard.py` | GUI consumer |
-
----
-
-### VectorNav Architecture — TMS Pattern
-
-| VectorNav | TMS equivalent | Purpose |
-|---|---|---|
-| `application.py` | `application.py` | `run_flag` + SIGINT |
-| `vn_constants.py` | `constants.py` | App-level constants |
-| `umaa_types.py` | `tmsConstants.py` | Compiled DDS types |
-| `ddsEntities.py` | `ship_ddsEntities.py` | `Writer(Thread)` / `Reader(Thread)` |
-| `vn_topics.py` | `ship_topics.py` | Concrete topic classes |
-| `VectorNav_Publisher.py` | `sensor.py` / `effector.py` | Publisher entry point |
-| `HSMST_Subscriber.py` | `command_control.py` | Subscriber entry point |
-
----
-
-### UMAA Data Model
-
-Topic IDL source files are in `data_model/UMAA/SA/`:
-
-```
-data_model/UMAA/SA/
-├── SpeedStatus/
-│   └── SpeedReportType.idl      ← UMAA::SA::SpeedStatus::SpeedReportType
-└── GlobalPoseStatus/
-    └── GlobalPoseReportType.idl ← UMAA::SA::GlobalPoseStatus::GlobalPoseReportType
-```
-
-Python compiled types are provided by the `rtiumaapy` package
-(`rticonnextdds-usecases-umaa/python`), generated by `rtiddsgen` 4.6.0.
-
----
-
-### AI Cost of Implementation
-
-This example was built end-to-end in a single AI-assisted coding session (GitHub Copilot / Claude).
-
-| Type | Tokens | Rate | Cost |
-|---|---|---|---|
-| Input  | ~72,000 | $3.00 / 1M | **$0.22** |
-| Output | ~26,000 | $15.00 / 1M | **$0.39** |
-| **Total** | **~98,000** | | **~$0.61** |
-
-> Output tokens are only ~27 % of total volume but account for **64 % of cost**
-> (5× higher rate).  Multiple file rewrites during debugging were the primary
-> cost driver.  Using the Connext MCP code validator *before* writing files
-> would have reduced cost to **~$0.35–0.40**.
-
-
-
----
-
-## What changed vs. `python/`
-
-| Area | `python/` (DynamicData) | `pyCompiledTypes/` (compiled types) |
-|---|---|---|
-| Sample creation | `dds.DynamicData(type_from_qos_provider)` | `TypeClass()` — plain Python dataclass |
-| Field write | `sample["fieldName"] = val` | `sample.fieldName = val` |
-| Nested field write | `sample["a.b"] = val` | `sample.a.b = val` |
-| Field read | `data["fieldName"]` | `data.fieldName` |
-| DataWriter lookup | `dds.DynamicData.DataWriter.find_by_name(p, name)` | `dds.DataWriter(participant.find_datawriter(name))` |
-| DataReader lookup | `dds.DynamicData.DataReader.find_by_name(p, name)` | `dds.DataReader(participant.find_datareader(name))` |
-| Listener base | `dds.DynamicData.NoOpDataWriterListener` | `dds.NoOpDataWriterListener` |
-| CFT find | `dds.DynamicData.ContentFilteredTopic.find(p, name)` | `dds.ContentFilteredTopic.find(p, name)` |
-| Type registration | Not needed (QosProvider resolves from XML) | `dds.DomainParticipant.register_idl_type(TypeClass, "tms::TypeName")` called **before** `create_participant_from_config()` |
-
-### Key files
-
-| File | Purpose |
+| Panel | Fields |
 |---|---|
-| `ddsEntities.py` | Base `Writer` / `Reader` thread classes — compiled-types version |
-| `topics.py` | Concrete topic classes (all `sample["field"]` → `sample.field`) |
-| `controller.py` | Master Controller application — registers types, runs state machine |
-| `device.py` | Generator Device application — registers types, runs state machine |
-| `constants.py` | Application constants (identical to `python/constants.py`) |
-| `tmsConstants.py` | Thin shim that re-exports the auto-generated compiled types from `python/tmsConstants.py` |
-| `application.py` | Signal-handler / run-flag (identical to `python/application.py`) |
+| **Position** | Latitude (°N), Longitude (°E), Altitude (m MSL) |
+| **Orientation** | Roll (°), Pitch (°), Yaw / Heading (°TN) |
+| **Speed** | SOG (m/s), STW (m/s), STA (m/s), Mode |
+| **Navigation** | Course True North (°), Nav Solution, Timestamp |
+| **Compass widget** | Rotating rose + roll arc (amber) + pitch bar (emerald) |
+
+- **Speed slider** (0–30 kt) publishes `VectorNav::SpeedCommand` → `VectorNav_Publisher`
+  updates ship speed and continues dead-reckoning from current position
+- Status bar turns amber if no data received for > 2.5 s
+
+```zsh
+cd py && python VectorNav_Dashboard.py [-d DOMAIN_ID]
+```
+
+**Admin Console name:** `VectorNav_Dashboard` | **Log:** `VectorNav_Dashboard.log`
 
 ---
 
-## Prerequisites
+## Coordinate System
 
-Same as `python/` — install the RTI Connext DDS Python binding:
+The tactical map pins the VectorNav start position to the ship's home pixel:
 
-```
-pip install rti.connextdds
-```
+| Geodetic | Map pixel | Scale |
+|---|---|---|
+| 32.7157°N, 117.1611°W (San Diego Bay) | (400, 570) — HOME buoy | 5 m / px |
 
-See the full setup instructions in `python/README.md`.
+At 5 kt (≈ 2.57 m/s) the ship moves ≈ 0.51 px/s — visible drift after ~30 seconds.
+The HOME buoy stays fixed so GPS drift is immediately apparent.
 
 ---
 
-## Type registration
+## Architecture — Unified ddsEntities.py
 
-The critical difference is the call to `ddsEntities.register_tms_types()` at
-the top of both `controller_main()` and `device_main()`, **before**
-`qos_provider.create_participant_from_config()`:
+All five applications use the single `ddsEntities.py` which detects two calling styles:
+
+| Style | `Writer` 2nd arg | `Reader` 2nd arg | Used by |
+|---|---|---|---|
+| **Ship** — caller creates Publisher/Subscriber/Topic | `dds.Topic` | `dds.Topic` | `sensor`, `effector`, `command_control` |
+| **VectorNav** — entities created internally | `bool` (periodic) | type class | `VectorNav_Publisher`, `VectorNav_Dashboard`, `HSMST_Subscriber` |
 
 ```python
-ddsEntities.register_tms_types()                          # <-- new step
-qos_provider = dds.QosProvider(constants.QOS_URL)
-participant  = qos_provider.create_participant_from_config(...)
+# Ship style
+ddsEntities.Writer(publisher, topic, shipConstants.Threat, False, 1.0)
+
+# VectorNav style
+ddsEntities.Writer(participant, True, 1.0, SpeedReportType, SpeedReportTypeTopic)
 ```
 
-`register_tms_types()` calls `dds.DomainParticipant.register_idl_type()` for
-each compiled type, binding the XML `<register_type name="tms::XYZ">` entries
-in `tmsExampleApp.xml` to the corresponding Python `@idl.struct` classes in
-`tmsConstants.py`.
+| Module | Purpose |
+|---|---|
+| `application.py` | Global `run_flag` + SIGINT handler (shared by all apps) |
+| `ddsEntities.py` | `Writer(Thread)` / `Reader(Thread)` + `register_ship_types()` |
+| `shipConstants.py` | `@idl.struct` types + sensor/effector/geometry constants |
+| `ship_topics.py` | Concrete ship topic classes with `handler()` / `write()` overrides |
+| `vn_constants.py` | VectorNav constants (topic strings, speed range, rate) |
+| `umaa_types.py` | UMAA type re-exports from `rtiumaapy` package |
+| `vn_topics.py` | VectorNav topic classes + `VectorNavState` simulation + `SpeedCommand` IDL |
 
 ---
 
-## Running
+## Manual Launch (without the script)
 
-```bash
-cd pyCompiledTypes
-python3 device.py
-```
+```zsh
+# Source RTI environment once per terminal session
+source /Applications/rti_connext_dds-7.7.0/resource/scripts/rtisetenv_arm64Darwin23clang16.0.zsh
 
-```bash
-cd pyCompiledTypes
-python3 controller.py
-```
+cd py
 
-Both applications must be run from the `pyCompiledTypes/` directory so the
-relative path `../model_distroA/tmsExampleApp.xml` resolves correctly.
+# Terminal 1 — Command & Control GUI (start first)
+python command_control.py
 
----
+# Terminal 2 — Sensor suite
+python sensor.py
 
-## Environment
-
-Tested with:
-
-* macOS / Ubuntu 20.04
-* RTI Connext DDS Professional 7.x
-* Python 3.10+
+# Terminal 3 — Effector suite
+python effector.py
