@@ -50,7 +50,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtCore import QPointF, QRectF
 from PyQt6.QtWidgets import (
     QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QMainWindow, QSizePolicy, QSlider, QVBoxLayout, QWidget,
+    QLabel, QMainWindow, QPushButton, QSizePolicy, QSlider, QVBoxLayout, QWidget,
 )
 
 import vn_constants
@@ -473,6 +473,41 @@ class Dashboard(QMainWindow):
 
         self._speed_slider.valueChanged.connect(self._on_speed_changed)
 
+        # ── orbit toggle button ───────────────────────────────────────
+        orbit_row = QHBoxLayout()
+        orbit_row.setSpacing(10)
+
+        self._orbit_btn = QPushButton("🔄  Orbit: OFF")
+        self._orbit_btn.setCheckable(True)
+        self._orbit_btn.setChecked(False)
+        self._orbit_btn.setFont(QFont("Helvetica", 10, QFont.Weight.Bold))
+        self._orbit_btn.setMinimumWidth(150)
+        self._orbit_btn.setStyleSheet(
+            f"QPushButton {{"
+            f"  background-color: {PANEL_BG.name()};"
+            f"  color: {TEXT_PRI.name()};"
+            f"  border: 1px solid {BORDER.name()};"
+            f"  border-radius: 6px;"
+            f"  padding: 5px 14px;"
+            f"}}"
+            f"QPushButton:checked {{"
+            f"  background-color: {ACCENT2.name()};"
+            f"  color: {DARK_BG.name()};"
+            f"  border: 1px solid {ACCENT2.name()};"
+            f"}}"
+        )
+        orbit_row.addWidget(self._orbit_btn)
+
+        orbit_hint = QLabel("— press to begin clockwise orbit around home at current position")
+        orbit_hint.setFont(QFont("Helvetica", 9))
+        orbit_hint.setStyleSheet(f"color: {TEXT_SEC.name()};")
+        orbit_row.addWidget(orbit_hint)
+
+        orbit_row.addStretch()
+        root.addLayout(orbit_row)
+
+        self._orbit_btn.toggled.connect(self._on_orbit_toggled)
+
         # ── refresh timer ─────────────────────────────────────────────
         self._timer = QTimer(self)
         self._timer.setInterval(REFRESH_MS)
@@ -494,6 +529,11 @@ class Dashboard(QMainWindow):
         """Slider moved — publish new speed in knots to VectorNav_Publisher."""
         self._speed_val_lbl.setText(f"{value} kt")
         _publish_speed_command(float(value))
+
+    def _on_orbit_toggled(self, checked: bool) -> None:
+        """Orbit button toggled — publish orbit enable/disable command."""
+        self._orbit_btn.setText("🔄  Orbit: ON" if checked else "🔄  Orbit: OFF")
+        _publish_orbit_command(checked)
 
     def _tick_age(self) -> None:
         with _state._lock:
@@ -562,6 +602,10 @@ class Dashboard(QMainWindow):
 _speed_writer = None
 _speed_sample = None
 
+# Orbit command writer — initialised in _start_dds(), used by orbit button
+_orbit_writer = None
+_orbit_sample = None
+
 
 def _publish_speed_command(knots: float) -> None:
     """Write a SpeedCommand sample (knots) to the DDS bus."""
@@ -570,8 +614,16 @@ def _publish_speed_command(knots: float) -> None:
     _speed_sample.knots = knots
     _speed_writer.write(_speed_sample)
 
+
+def _publish_orbit_command(enabled: bool) -> None:
+    """Write an OrbitCommand sample to the DDS bus."""
+    if _orbit_writer is None or _orbit_sample is None:
+        return
+    _orbit_sample.enabled = enabled
+    _orbit_writer.write(_orbit_sample)
+
 def _start_dds() -> None:
-    global _speed_writer, _speed_sample
+    global _speed_writer, _speed_sample, _orbit_writer, _orbit_sample
     qos = dds.DomainParticipantQos()
     qos.participant_name.name = "VectorNav_Dashboard"
     participant = dds.DomainParticipant(domain_id=DOMAIN_ID, qos=qos)
@@ -591,9 +643,15 @@ def _start_dds() -> None:
     _speed_writer    = dds.DataWriter(dds.Publisher(participant), speed_cmd_topic)
     _speed_sample    = vn_topics.SpeedCommand()
 
+    # Orbit command writer — published when orbit button is toggled
+    orbit_cmd_topic  = dds.Topic(participant, vn_constants.ORBIT_COMMAND_TOPIC,
+                                 vn_topics.OrbitCommand)
+    _orbit_writer    = dds.DataWriter(dds.Publisher(participant), orbit_cmd_topic)
+    _orbit_sample    = vn_topics.OrbitCommand()
+
     # Keep references alive for the process lifetime
     _start_dds._refs = (participant, subscriber, speed_reader, pose_reader,
-                        _speed_writer)
+                        _speed_writer, _orbit_writer)
 
 
 # ---------------------------------------------------------------------------

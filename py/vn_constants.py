@@ -48,3 +48,10 @@ SPEED_COMMAND_TOPIC: str = "VectorNav::SpeedCommand"
 SPEED_KNOTS_MIN: int = 0
 SPEED_KNOTS_MAX: int = 30
 SPEED_KNOTS_DEFAULT: int = 5
+
+# ---------------------------------------------------------------------------
+# Orbit command topic
+# Published by VectorNav_Dashboard orbit button; subscribed by VectorNav_Publisher.
+# ---------------------------------------------------------------------------
+
+ORBIT_COMMAND_TOPIC: str = "VectorNav::OrbitCommand"
