@@ -12,14 +12,13 @@
 """
 
 
-import sys
 import signal
 
 def signal_handler(sig, frame):
     print('You pressed Ctrl+C!')
-    global run_flag
-    run_flag = False
+    global RUN_FLAG
+    RUN_FLAG = False
 
 signal.signal(signal.SIGINT, signal_handler)
-run_flag = True
+RUN_FLAG = True
 print("Enter Ctrl+C to quit")

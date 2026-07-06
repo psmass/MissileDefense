@@ -39,7 +39,6 @@ import logging
 import math
 import random
 
-import application    # noqa: F401  (imported for run_flag side-effects in base classes)
 import shipConstants
 import ddsEntities
 import rti.connextdds as dds

@@ -40,7 +40,7 @@
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
    - Application state machine in the main loop (same as TMS device_main())
-   - Ctrl-C handled via application.run_flag
+   - Ctrl-C handled via application.RUN_FLAG
 
  Usage:
    python command_control.py [-d <domain_id>]
@@ -248,7 +248,7 @@ def command_control_main(domain_id: int) -> None:
     last_update   = time()
 
     while not shutdown:
-        if not application.run_flag:
+        if not application.RUN_FLAG:
             c2_state = C2State.SHUT_DOWN
 
         now = time()

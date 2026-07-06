@@ -45,7 +45,7 @@ import rti.connextdds as dds
 from PyQt6.QtCore import QTimer, Qt, pyqtSignal, QObject
 from PyQt6.QtGui import (
     QColor, QFont, QFontMetrics, QPainter, QPen, QBrush,
-    QLinearGradient, QRadialGradient, QPolygonF,
+    QRadialGradient,
 )
 from PyQt6.QtCore import QPointF, QRectF
 from PyQt6.QtWidgets import (
@@ -68,6 +68,13 @@ from umaa_types import (
 
 DOMAIN_ID: int = int(sys.argv[1]) if len(sys.argv) > 1 else 0
 REFRESH_MS: int = 100  # GUI refresh interval
+
+# Maximum string lengths for NavState fields — derived from UMAA enum widths
+# and timestamp format {10-digit-epoch}.{9-digit-ns}.
+# Enforced at assignment time to bound memory and avoid unbounded growth.
+_MAX_NAV_SOL:   int = 16   # longest UMAA NavigationSolutionEnumType name = 12 ("GROUND_TRUTH")
+_MAX_TIMESTAMP: int = 20   # f"{seconds}.{ns:09d}" is always exactly 20 chars
+_MAX_SPEED_MODE: int = 16  # longest UMAA VehicleSpeedModeEnumType name = 16 ("VEHICLE_SPECIFIC")
 
 
 # ---------------------------------------------------------------------------
@@ -120,7 +127,7 @@ class SpeedListener(dds.DataReaderListener):
                 _state.sog = d.speedOverGround
                 _state.stw = d.speedThroughWater
                 _state.sta = d.speedThroughAir
-                _state.speed_mode = d.mode.name if d.mode is not None else "---"
+                _state.speed_mode = (d.mode.name if d.mode is not None else "---")[:_MAX_SPEED_MODE]
         _signals.updated.emit()
 
 
@@ -140,8 +147,10 @@ class PoseListener(dds.DataReaderListener):
                 _state.roll    = att.roll.roll
                 _state.pitch   = att.pitch.pitch
                 _state.yaw     = att.yaw.yaw
-                _state.nav_solution = d.navigationSolution.name
-                _state.timestamp = f"{ts.seconds}.{ts.nanoseconds:09d}"
+                _state.nav_solution = d.navigationSolution.name[:_MAX_NAV_SOL]
+                _ts_sec, _ts_ns = divmod(
+                    ts.seconds * 1_000_000_000 + ts.nanoseconds, 1_000_000_000)
+                _state.timestamp = f"{_ts_sec}.{_ts_ns:09d}"[:_MAX_TIMESTAMP]
                 _state.data_age_ms = 0.0
         _signals.updated.emit()
 

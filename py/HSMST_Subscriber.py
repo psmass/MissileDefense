@@ -27,7 +27,6 @@ from time import sleep
 import rti.connextdds as dds
 
 import application
-import ddsEntities
 import vn_constants
 import vn_topics
 
@@ -65,7 +64,7 @@ def hsmst_main(domain_id: int) -> None:
     # *** MAIN LOOP
     # All data handling occurs in the reader threads via handler().
     # The main thread simply keeps the process alive.
-    while application.run_flag:
+    while application.RUN_FLAG:
         sleep(1)
 
     # *** SHUTDOWN READER THREADS

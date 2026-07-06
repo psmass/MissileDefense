@@ -47,9 +47,28 @@ from umaa_types import (
 )
 
 
-# ===========================================================================
-# SpeedCommand  —  published by Dashboard slider, subscribed by Publisher
-# ===========================================================================
+# ---------------------------------------------------------------------------
+# Timestamp formatting helper
+# ---------------------------------------------------------------------------
+
+def _fmt_ts(ts) -> str:
+    """Format a UMAA DateTimeType timestamp as 'seconds.nanoseconds'.
+
+    Normalises the (seconds, nanoseconds) pair before formatting.
+    The IDL field ``nanoseconds`` is ``uint32`` (0–4 294 967 295), which is
+    wider than the valid sub-second range (0–999 999 999).  Connext does NOT
+    guarantee the value is normalised on receive, so we always compute:
+
+        total_ns = seconds * 1_000_000_000 + nanoseconds
+        sec, ns  = divmod(total_ns, 1_000_000_000)
+
+    before formatting, making it safe for both locally-set and externally-
+    received timestamps.
+    """
+    sec, ns = divmod(ts.seconds * 1_000_000_000 + ts.nanoseconds, 1_000_000_000)
+    return f"{sec}.{ns:09d}"
+
+
 
 @idl.struct
 class SpeedCommand:
@@ -278,7 +297,7 @@ class SpeedReport_Wtr(ddsEntities.Writer):
 
         ts = self._sample.timeStamp
         print(
-            f'[VN][Speed ][{ts.seconds}.{ts.nanoseconds:09d}]'
+            f'[VN][Speed ][{_fmt_ts(ts)}]'
             f'  SOG={s.sog:.3f} m/s'
             f'  STW={s.stw:.3f} m/s'
             f'  Mode={self._sample.mode.name}',
@@ -338,7 +357,7 @@ class GlobalPoseReport_Wtr(ddsEntities.Writer):
 
         ts = self._sample.timeStamp
         print(
-            f'[VN][Pose  ][{ts.seconds}.{ts.nanoseconds:09d}]'
+            f'[VN][Pose  ][{_fmt_ts(ts)}]'
             f'  Lat={s.lat:+.6f}°'
             f'  Lon={s.lon:+.7f}°'
             f'  Alt={s.alt:.1f}m'
@@ -376,7 +395,7 @@ class SpeedReport_Rdr(ddsEntities.Reader):
         sta = f'{data.speedThroughAir:.3f} m/s'    if data.speedThroughAir   is not None else '---'
 
         print(
-            f'[HSMST][Speed ] t={ts.seconds}.{ts.nanoseconds:09d}'
+            f'[HSMST][Speed ] t={_fmt_ts(ts)}'
             f'  SOG={sog:>14}  STW={stw:>14}  STA={sta:>14}'
             f'  Mode={mode_str}',
             flush=True)
@@ -410,7 +429,7 @@ class GlobalPoseReport_Rdr(ddsEntities.Reader):
         alt_str   = f'{data.altitude:.2f}m' if data.altitude is not None else '---'
 
         print(
-            f'[HSMST][Pose  ] t={ts.seconds}.{ts.nanoseconds:09d}'
+            f'[HSMST][Pose  ] t={_fmt_ts(ts)}'
             f'  Lat={data.position.geodeticLatitude:+.6f}°'
             f'  Lon={data.position.geodeticLongitude:+.7f}°'
             f'  Alt={alt_str:>8}'

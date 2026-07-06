@@ -30,7 +30,7 @@
    - Writer / Reader base classes from ddsEntities.py
    - Topic-specific business logic in ship_topics.py (handler() overrides)
    - WaitSet-based threading for all DDS I/O
-   - Ctrl-C handled via application.run_flag
+   - Ctrl-C handled via application.RUN_FLAG
 
  Usage:
    python effector.py [-d <domain_id>]
@@ -100,7 +100,7 @@ def effector_main(domain_id: int) -> None:
     logging.info("Effector listening for threats on domain %d", domain_id)
 
     try:
-        while application.run_flag:
+        while application.RUN_FLAG:
             sleep(1)
     except KeyboardInterrupt:
         pass

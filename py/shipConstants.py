@@ -26,7 +26,6 @@
    - Plain `bool` is used for IDL `boolean` fields.
 """
 
-import rti.connextdds as dds  # noqa: F401  (imported for type stubs / side-effects)
 import rti.types as idl
 
 # ---------------------------------------------------------------------------

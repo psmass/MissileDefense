@@ -166,7 +166,7 @@ class Writer(Thread):
 
     def run(self) -> None:
         logging.info("Writer thread started  topic=%s", self._topic_name)
-        while application.run_flag:
+        while application.RUN_FLAG:
             conditions = self._waitset.wait(self._wait_duration)
             if self._status_condition in conditions:
                 st = self._writer.publication_matched_status
@@ -258,7 +258,7 @@ class Reader(Thread):
 
     def run(self) -> None:
         logging.info("Reader thread started  topic=%s", self._topic_name)
-        while application.run_flag:
+        while application.RUN_FLAG:
             conditions = self._waitset.wait(self._wait_duration)
             if self._status_condition in conditions:
                 st = self._reader.subscription_matched_status

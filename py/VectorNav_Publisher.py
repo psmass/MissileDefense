@@ -82,7 +82,7 @@ def vecnav_main(domain_id: int) -> None:
     # The writer threads do all the work.  The main thread simply keeps the
     # process alive and monitors application.run_flag for a clean shutdown.
     # No state machine is required — the VectorNav sensor streams continuously.
-    while application.run_flag:
+    while application.RUN_FLAG:
         sleep(1)
 
     # *** SHUTDOWN WRITER THREADS

@@ -35,7 +35,6 @@ import argparse
 import logging
 import math
 import os
-import sys
 import threading
 import time
 from dataclasses import dataclass
@@ -594,7 +593,7 @@ def command_control_main(domain_id: int) -> None:
     try:
         fsm = pygame.font.SysFont("monospace", 11)
         fhd = pygame.font.SysFont("monospace", 14, bold=True)
-    except Exception:
+    except OSError:
         fsm = pygame.font.Font(None, 14)
         fhd = pygame.font.Font(None, 18)
 
@@ -613,7 +612,7 @@ def command_control_main(domain_id: int) -> None:
             ship_img = pygame.transform.smoothscale(raw, (ship_iw, DISP_H))
             print(f"[C2] Loaded {candidate} ({ship_iw}×{DISP_H})")
             break
-        except Exception:
+        except (FileNotFoundError, OSError):
             pass
     if not ship_img:
         print("[C2] Ship image not found – using drawn destroyer")
@@ -658,7 +657,7 @@ def command_control_main(domain_id: int) -> None:
     print("[C2] GUI running – left-click map to spawn threat, ESC to quit")
 
     running = True
-    while running and application.run_flag:
+    while running and application.RUN_FLAG:
         now = time.monotonic()
         dt  = min(now - prev_t, 0.05)
         prev_t = now
@@ -673,9 +672,9 @@ def command_control_main(domain_id: int) -> None:
         # Events ─────────────────────────────────────────────────────────
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False; application.run_flag = False
+                running = False; application.RUN_FLAG = False
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                running = False; application.run_flag = False
+                running = False; application.RUN_FLAG = False
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 mx, my = event.pos
                 if mx < MAP_W and my < WIN_H - 10:
@@ -799,7 +798,7 @@ def command_control_main(domain_id: int) -> None:
         pygame.display.flip()
         clock.tick(FPS)
 
-    application.run_flag = False
+    application.RUN_FLAG = False
     pose_r.join()
     pygame.quit()
     print("Command & Control GUI Exiting")
