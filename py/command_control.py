@@ -66,6 +66,16 @@ CY      = 570           # ship waterline y (C++ SHIP_Y) – home position
 HULL_SQ = 70 ** 2       # cull when dist² < this
 
 # ---------------------------------------------------------------------------
+# Overhead mini-map inset geometry
+# ---------------------------------------------------------------------------
+INSET_X         = 8      # top-left x of inset on screen
+INSET_Y         = 35     # top-left y of inset on screen (below the hint text)
+INSET_W         = 155    # inset width  (pixels)
+INSET_H         = 155    # inset height (pixels)
+INSET_SCALE     = 0.35   # world px → inset px  (visible range ≈ ±220 world px = ±1.1 km)
+INSET_TRACK_MAX = 300    # GPS track points kept (≈ 5 min at 1 Hz)
+
+# ---------------------------------------------------------------------------
 # Geographic reference for VectorNav GPS positioning
 # Maps the VectorNav start position (San Diego Bay) to the ship home pixel.
 # GEO_M_PER_PX is exaggerated (5 m/px vs real ~990 m/px) so movement is visible.
@@ -119,6 +129,7 @@ class GUISharedState:
         self.ship_lat:      Optional[float] = None
         self.ship_lon:      Optional[float] = None
         self.ship_course_r: float          = 0.0    # radians True North
+        self.ship_track:    List[tuple]    = []     # (ship_px, ship_py) GPS history
 
 
 # ---------------------------------------------------------------------------
@@ -331,6 +342,85 @@ def draw_buoy(surf, x, y, font):
     surf.blit(font.render("HOME", True, (255, 160, 40)), (bx + 9, by - 8))
 
 
+# ---------------------------------------------------------------------------
+# Overhead mini-map inset  (top-down GPS track view, upper-left of map)
+# ---------------------------------------------------------------------------
+def draw_overhead_inset(surf, ship_cx, ship_cy, course_r, track, threats, font):
+    """Draw a top-down GPS track inset anchored to the HOME buoy.
+
+    North is up.  The HOME buoy always sits at the inset centre; the ship
+    icon moves as it manoeuvres relative to the buoy.
+    """
+    ICX = INSET_X + INSET_W // 2
+    ICY = INSET_Y + INSET_H // 2
+    BUOY_WX = CX
+    BUOY_WY = CY + 20
+
+    def w2i(wx, wy):
+        """World pixel coords → inset screen pixel coords (buoy-centred)."""
+        return (int(ICX + (wx - BUOY_WX) * INSET_SCALE),
+                int(ICY + (wy - BUOY_WY) * INSET_SCALE))
+
+    def in_inset(px, py):
+        return INSET_X <= px < INSET_X + INSET_W and INSET_Y <= py < INSET_Y + INSET_H
+
+    # ── Semi-transparent background ───────────────────────────────────────
+    bg = pygame.Surface((INSET_W, INSET_H), pygame.SRCALPHA)
+    bg.fill((8, 14, 26, 215))
+    surf.blit(bg, (INSET_X, INSET_Y))
+
+    # ── Cross-hair grid ───────────────────────────────────────────────────
+    pygame.draw.line(surf, (20, 40, 60), (ICX, INSET_Y + 14), (ICX, INSET_Y + INSET_H - 2))
+    pygame.draw.line(surf, (20, 40, 60), (INSET_X + 2, ICY), (INSET_X + INSET_W - 2, ICY))
+
+    # ── HOME buoy (always at inset centre, orange dot) ───────────────────
+    pygame.draw.circle(surf, (255, 140, 0), (ICX, ICY), 4)
+    pygame.draw.circle(surf, (210, 90, 0),  (ICX, ICY), 4, 1)
+    surf.blit(font.render("H", True, (255, 160, 40)), (ICX + 5, ICY - 5))
+
+    # ── GPS track (older = dark blue, newer = cyan) ────────────────────────
+    n = len(track)
+    if n > 1:
+        for i in range(n - 1):
+            p1 = w2i(track[i][0],   track[i][1])
+            p2 = w2i(track[i+1][0], track[i+1][1])
+            if in_inset(*p1) or in_inset(*p2):
+                frac = i / max(n - 2, 1)
+                c = (int(20 + 36*frac), int(80 + 109*frac), int(120 + 108*frac))
+                pygame.draw.line(surf, c, p1, p2)
+
+    # ── Active threat dots ────────────────────────────────────────────────
+    for t in threats.values():
+        tx, ty = w2i(t.x, t.y)
+        if in_inset(tx, ty):
+            pygame.draw.circle(surf, (220, 60, 60), (tx, ty), 3)
+            surf.blit(font.render(f"T{t.id}", True, (220, 80, 80)), (tx + 4, ty - 4))
+
+    # ── Ship triangle (pointing in course direction, North = up) ──────────
+    # In world coords: North = -y, East = +x.  course_r: 0=N, π/2=E.
+    # Forward vector in inset screen coords:
+    sx, sy = w2i(ship_cx, ship_cy)
+    fwd  = (math.sin(course_r), -math.cos(course_r))   # (dx, dy) screen
+    perp = (-fwd[1], fwd[0])                            # perpendicular
+    sz = 7
+    tip   = (int(sx + fwd[0]*sz),             int(sy + fwd[1]*sz))
+    left  = (int(sx - fwd[0]*3 + perp[0]*4),  int(sy - fwd[1]*3 + perp[1]*4))
+    right = (int(sx - fwd[0]*3 - perp[0]*4),  int(sy - fwd[1]*3 - perp[1]*4))
+    if in_inset(sx, sy):
+        pygame.draw.polygon(surf, (56, 189, 248), [tip, left, right])
+        pygame.draw.polygon(surf, (20, 100, 160), [tip, left, right], 1)
+
+    # ── North arrow (top-right corner) ───────────────────────────────────
+    NX, NY = INSET_X + INSET_W - 12, INSET_Y + 16
+    pygame.draw.line(surf, (200, 80, 80), (NX, NY + 7), (NX, NY - 7), 1)
+    pygame.draw.polygon(surf, (200, 80, 80), [(NX, NY-7), (NX-3, NY-1), (NX+3, NY-1)])
+    surf.blit(font.render("N", True, (200, 80, 80)), (NX - 3, NY - 19))
+
+    # ── Title and border ──────────────────────────────────────────────────
+    surf.blit(font.render("OVERHEAD", True, (56, 120, 180)), (INSET_X + 4, INSET_Y + 2))
+    pygame.draw.rect(surf, (40, 80, 120), (INSET_X, INSET_Y, INSET_W, INSET_H), 1)
+
+
 class GUIPoseRdr(ddsEntities.Reader):
     """Subscribes to VectorNav GlobalPoseReportType and updates ship position.
 
@@ -360,6 +450,9 @@ class GUIPoseRdr(ddsEntities.Reader):
             self._gui_state.ship_course_r = crs
             self._gui_state.ship_px       = px
             self._gui_state.ship_py       = py
+            self._gui_state.ship_track.append((px, py))
+            if len(self._gui_state.ship_track) > INSET_TRACK_MAX:
+                self._gui_state.ship_track.pop(0)
 
 
 # ---------------------------------------------------------------------------
@@ -572,8 +665,10 @@ def command_control_main(domain_id: int) -> None:
 
         # VectorNav GPS – thread-safe snapshot of current ship pixel position
         with gui_state.lock:
-            ship_cx = gui_state.ship_px
-            ship_cy = gui_state.ship_py
+            ship_cx  = gui_state.ship_px
+            ship_cy  = gui_state.ship_py
+            course_r = gui_state.ship_course_r
+            track_snap = list(gui_state.ship_track)
 
         # Events ─────────────────────────────────────────────────────────
         for event in pygame.event.get():
@@ -695,6 +790,9 @@ def command_control_main(domain_id: int) -> None:
             draw_interceptor(screen, ic.x, ic.y, angle)
 
         for b in blasts: draw_blast(screen, b)
+
+        draw_overhead_inset(screen, ship_cx, ship_cy, course_r,
+                            track_snap, threats, fsm)
 
         draw_status_panel(screen, fsm, fhd, threats, gui_state, ship_cx, ship_cy)
 

@@ -69,25 +69,42 @@ class VectorNavState:
     SpeedReport and GlobalPose writers always read consistent data without
     requiring any mutual exclusion.
 
+    Motion profile (two phases):
+      Phase 1 — Outbound:
+          Ship steams straight from home on _heading0 (045° TN) until it
+          reaches ORBIT_RADIUS_M (200 m).  Duration = 200 m / speed.
+      Phase 2 — Orbit:
+          Ship circles clockwise at a fixed 200 m radius from home.
+          Angular velocity ω = v / R, so orbit period ∝ 1/speed.
+
+    Speed changes during orbit snapshot the current orbit angle so the
+    ship's position never jumps.
+
     Starting position: San Diego Bay, heading 045° True North.
     """
 
+    ORBIT_RADIUS_M: float = 200.0     # metres from home before entering orbit
+
     def __init__(self):
-        self._t0       = time.monotonic()
+        self._t0 = time.monotonic()
 
-        # Static / slowly-changing values
-        self.alt       = 0.3                       # m MSL (antenna height)
-        self.course_r  = math.radians(45.0)        # 045° True North
+        # Static values
+        self.alt = 0.3                            # m MSL (antenna height)
+        self._heading0 = math.radians(45.0)       # initial heading: 045° True North
 
-        # Starting geodetic position (San Diego Bay, 32°N 117°W)
-        self._lat0 = 32.7157     # degrees N
-        self._lon0 = -117.1611   # degrees E
+        # Fixed orbit centre / home position (San Diego Bay)
+        self._home_lat = 32.7157                  # degrees N
+        self._home_lon = -117.1611                # degrees E
 
         # Speed in knots — updated live by SpeedCommand_Rdr from Dashboard slider
         self.speed_knots: float = float(vn_constants.SPEED_KNOTS_DEFAULT)
 
         # IdentifierType source field — set once, shared by all writers
         self.source = GUIDUtil.make_source_id(vn_constants.VECNAV_GUID)
+
+        # Phase tracking — transitions once from 'outbound' to 'orbit'
+        self._phase: str = 'outbound'
+        self._orbit_theta0: float = self._heading0  # orbit angle at phase entry
 
     # ------------------------------------------------------------------
     # Internal elapsed time helper
@@ -97,8 +114,46 @@ class VectorNavState:
         return time.monotonic() - self._t0
 
     # ------------------------------------------------------------------
+    # Phase management
+    # ------------------------------------------------------------------
+
+    def _outbound_t(self) -> float:
+        """Seconds required to travel ORBIT_RADIUS_M at current speed."""
+        v = self.speed_knots * 0.5144
+        return self.ORBIT_RADIUS_M / max(v, 0.001)
+
+    def _check_phase(self) -> None:
+        """Transition to orbit once the ship has travelled ORBIT_RADIUS_M.
+
+        Called at the start of every position/course property.  Safe to call
+        from multiple threads — _phase is a one-way gate and CPython's GIL
+        makes the string assignment atomic.
+        """
+        if self._phase == 'orbit':
+            return
+        if self._t() >= self._outbound_t():
+            self._orbit_theta0 = self._heading0   # enter orbit at same angle
+            self._t0 = time.monotonic()           # reset clock for orbit timer
+            self._phase = 'orbit'                 # one-way gate (set last)
+
+    # ------------------------------------------------------------------
     # Dynamic sensor properties (computed from elapsed time)
     # ------------------------------------------------------------------
+
+    @property
+    def course_r(self) -> float:
+        """Heading in radians (True North).
+
+        Outbound: fixed at _heading0 (045°).
+        Orbit:    tangent to the clockwise circle at current position.
+        """
+        self._check_phase()
+        if self._phase == 'outbound':
+            return self._heading0
+        v = self.speed_knots * 0.5144
+        omega = v / self.ORBIT_RADIUS_M            # rad/s
+        theta = self._orbit_theta0 + omega * self._t()
+        return theta + math.pi / 2                 # clockwise tangent
 
     @property
     def sog(self) -> float:
@@ -122,25 +177,44 @@ class VectorNavState:
 
     @property
     def lat(self) -> float:
-        """Geodetic latitude  degrees  (dead-reckoning from last speed-change checkpoint)."""
-        return self._lat0 + (self.speed_knots * 0.5144 * self._t() / 111_111.0) * math.cos(self.course_r)
+        """Geodetic latitude  degrees."""
+        self._check_phase()
+        v = self.speed_knots * 0.5144
+        t = self._t()
+        if self._phase == 'outbound':
+            return self._home_lat + (v * t / 111_111.0) * math.cos(self._heading0)
+        # Clockwise orbit at fixed ORBIT_RADIUS_M from home
+        omega = v / self.ORBIT_RADIUS_M
+        theta = self._orbit_theta0 + omega * t
+        return self._home_lat + (self.ORBIT_RADIUS_M / 111_111.0) * math.cos(theta)
 
     @property
     def lon(self) -> float:
-        """Geodetic longitude  degrees  (dead-reckoning from last speed-change checkpoint)."""
-        lat_cos = math.cos(math.radians(self._lat0))
-        return self._lon0 + (self.speed_knots * 0.5144 * self._t() / (111_111.0 * lat_cos)) * math.sin(self.course_r)
+        """Geodetic longitude  degrees."""
+        self._check_phase()
+        v = self.speed_knots * 0.5144
+        t = self._t()
+        lat_cos = math.cos(math.radians(self._home_lat))
+        if self._phase == 'outbound':
+            return self._home_lon + (v * t / (111_111.0 * lat_cos)) * math.sin(self._heading0)
+        # Clockwise orbit at fixed ORBIT_RADIUS_M from home
+        omega = v / self.ORBIT_RADIUS_M
+        theta = self._orbit_theta0 + omega * t
+        return self._home_lon + (self.ORBIT_RADIUS_M / (111_111.0 * lat_cos)) * math.sin(theta)
 
     def set_speed(self, knots: float) -> None:
-        """Change speed without repositioning the ship.
+        """Change commanded speed without a position jump.
 
-        Snapshots the current dead-reckoning position as the new origin and
-        resets the elapsed-time clock so the lat/lon formula continues
-        seamlessly from the current location at the new speed.
+        During orbit: snapshots the current orbit angle and resets the
+        clock so the new angular velocity continues from the same point.
+        During outbound: just updates speed (position formula is v×t, which
+        stays continuous because ORBIT_RADIUS_M / v recalculates correctly).
         """
-        self._lat0 = self.lat
-        self._lon0 = self.lon
-        self._t0   = time.monotonic()
+        if self._phase == 'orbit':
+            v_old = self.speed_knots * 0.5144
+            omega_old = v_old / self.ORBIT_RADIUS_M
+            self._orbit_theta0 += omega_old * self._t()
+            self._t0 = time.monotonic()
         self.speed_knots = knots
 
 
