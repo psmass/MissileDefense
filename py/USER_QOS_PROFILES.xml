@@ -1,78 +1,1392 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/7.7.0/rti_dds_profiles.xsd"
-     version="7.7.0">
+<?xml version='1.0' encoding='UTF-8'?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/7.7.0/rti_dds_profiles.xsd" version="7.7.0">
+    <types>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Measurement">
+                    <const name="AmpHours_MIN" type="float64" value="0.0" />
+                    <const name="AmpHours_MAX" type="float64" value="500.0" />
+                    <typedef name="AmpHours" type="float64" />
+                    <const name="AngleAcceleration_MIN" type="float64" value="-10000.0" />
+                    <const name="AngleAcceleration_MAX" type="float64" value="10000.0" />
+                    <typedef name="AngleAcceleration" type="float64" />
+                    <const name="AzimuthTrueNorthAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="AzimuthTrueNorthAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="AzimuthTrueNorthAngle" type="float64" />
+                    <const name="BatteryCurrent_MIN" type="float64" value="0.0" />
+                    <const name="BatteryCurrent_MAX" type="float64" value="1000.0" />
+                    <typedef name="BatteryCurrent" type="float64" />
+                    <const name="BatteryCurrentDuration_MIN" type="float64" value="0.0" />
+                    <const name="BatteryCurrentDuration_MAX" type="float64" value="20.0" />
+                    <typedef name="BatteryCurrentDuration" type="float64" />
+                    <const name="BatteryCycles_MIN" type="float64" value="0.0" />
+                    <const name="BatteryCycles_MAX" type="float64" value="10000.0" />
+                    <typedef name="BatteryCycles" type="float64" />
+                    <typedef name="BinaryValue" type="byte" arrayDimensions="256" />
+                    <typedef name="ByteValue" type="byte" />
+                    <const name="Charge_MIN" type="float64" value="0.0" />
+                    <const name="Charge_MAX" type="float64" value="3600000.0" />
+                    <typedef name="Charge" type="float64" />
+                    <typedef name="CharValue" type="char8" />
+                    <typedef name="Conductivity" type="float64" />
+                    <const name="DataTransferRate_MIN" type="float64" value="0.0" />
+                    <typedef name="DataTransferRate" type="float64" />
+                    <const name="DistanceASF_MIN" type="float64" value="0.0" />
+                    <const name="DistanceASF_MAX" type="float64" value="401056000.0" />
+                    <typedef name="DistanceASF" type="float64" />
+                    <const name="DistanceBSL_MIN" type="float64" value="0.0" />
+                    <const name="DistanceBSL_MAX" type="float64" value="10000.0" />
+                    <typedef name="DistanceBSL" type="float64" />
+                    <const name="DistanceAGL_MIN" type="float64" value="0.0" />
+                    <typedef name="DistanceAGL" type="float64" />
+                    <typedef name="DoubleValue" type="float64" />
+                    <const name="DurationMilliseconds_MIN" type="float64" value="0.0" />
+                    <typedef name="DurationMilliseconds" type="float64" />
+                    <const name="Effort_MIN" type="float64" value="-100.0" />
+                    <const name="Effort_MAX" type="float64" value="100.0" />
+                    <typedef name="Effort" type="float64" />
+                    <const name="ElectroMagneticFrequencyHertz_MIN" type="float64" value="0.0" />
+                    <const name="ElectroMagneticFrequencyHertz_MAX" type="float64" value="1e25" />
+                    <typedef name="ElectroMagneticFrequencyHertz" type="float64" />
+                    <const name="EnergyPercent_MIN" type="float64" value="0.0" />
+                    <const name="EnergyPercent_MAX" type="float64" value="1000.0" />
+                    <typedef name="EnergyPercent" type="float64" />
+                    <const name="FrequencyRPM_MIN" type="int32" value="-100000" />
+                    <const name="FrequencyRPM_MAX" type="int32" value="100000" />
+                    <typedef name="FrequencyRPM" type="int32" />
+                    <const name="GammaAnglePropulsor_MIN" type="float64" value="-6.28318530718" />
+                    <const name="GammaAnglePropulsor_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="GammaAnglePropulsor" type="float64" />
+                    <const name="HeadingCurrentDirection_MIN" type="float64" value="-6.28318530718" />
+                    <const name="HeadingCurrentDirection_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="HeadingCurrentDirection" type="float64" />
+                    <const name="HeadingMagneticNorth_MIN" type="float64" value="-6.28318530718" />
+                    <const name="HeadingMagneticNorth_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="HeadingMagneticNorth" type="float64" />
+                    <const name="HeadingTarget_MIN" type="float64" value="-6.28318530718" />
+                    <const name="HeadingTarget_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="HeadingTarget" type="float64" />
+                    <const name="HeadingWindDirection_MIN" type="float64" value="-6.28318530718" />
+                    <const name="HeadingWindDirection_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="HeadingWindDirection" type="float64" />
+                    <typedef name="IntegerValue" type="int32" />
+                    <typedef name="LargeCount" type="uint64" />
+                    <const name="MassMetricTon_MIN" type="float64" value="0.0" />
+                    <const name="MassMetricTon_MAX" type="float64" value="100000.0" />
+                    <typedef name="MassMetricTon" type="float64" />
+                    <typedef name="MassFlowRate" type="float64" />
+                    <const name="MSLAltitude_MIN" type="float64" value="0.0" />
+                    <typedef name="MSLAltitude" type="float64" />
+                    <const name="PressurePercent_MIN" type="float64" value="0.0" />
+                    <const name="PressurePercent_MAX" type="float64" value="200.0" />
+                    <typedef name="PressurePercent" type="float64" />
+                    <const name="Priority_MIN" type="int32" value="0" />
+                    <const name="Priority_MAX" type="int32" value="255" />
+                    <typedef name="Priority" type="int32" />
+                    <const name="PropellerPitchAnglePropulsor_MIN" type="float64" value="-6.28318530718" />
+                    <const name="PropellerPitchAnglePropulsor_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="PropellerPitchAnglePropulsor" type="float64" />
+                    <const name="RhoAnglePropulsor_MIN" type="float64" value="-6.28318530718" />
+                    <const name="RhoAnglePropulsor_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="RhoAnglePropulsor" type="float64" />
+                    <typedef name="Salinity" type="float64" />
+                    <const name="SegmentID_MIN" type="int32" value="0" />
+                    <const name="SegmentID_MAX" type="int32" value="100000" />
+                    <typedef name="SegmentID" type="int32" />
+                    <const name="SidesCount_MIN" type="int32" value="3" />
+                    <const name="SidesCount_MAX" type="int32" value="255" />
+                    <typedef name="SidesCount" type="int32" />
+                    <typedef name="SizeLargeBytes" type="uint64" />
+                    <const name="SpeedASF_MIN" type="float64" value="-299792458.0" />
+                    <const name="SpeedASF_MAX" type="float64" value="299792458.0" />
+                    <typedef name="SpeedASF" type="float64" />
+                    <const name="SpeedBSL_MIN" type="float64" value="-299792458.0" />
+                    <const name="SpeedBSL_MAX" type="float64" value="299792458.0" />
+                    <typedef name="SpeedBSL" type="float64" />
+                    <const name="SpeedLocalWaterMass_MIN" type="float64" value="0.0" />
+                    <const name="SpeedLocalWaterMass_MAX" type="float64" value="299792458.0" />
+                    <typedef name="SpeedLocalWaterMass" type="float64" />
+                    <const name="TransmitAttenuation_MIN" type="int32" value="0" />
+                    <const name="TransmitAttenuation_MAX" type="int32" value="18" />
+                    <typedef name="TransmitAttenuation" type="int32" />
+                    <const name="Turbidity_MIN" type="float64" value="0.0" />
+                    <typedef name="Turbidity" type="float64" />
+                    <const name="VolumeCubicMeter_MIN" type="float64" value="0.0" />
+                    <const name="VolumeCubicMeter_MAX" type="float64" value="1000.0" />
+                    <typedef name="VolumeCubicMeter" type="float64" />
+                    <const name="VolumePercent_MIN" type="float64" value="0.0" />
+                    <const name="VolumePercent_MAX" type="float64" value="1000.0" />
+                    <typedef name="VolumePercent" type="float64" />
+                    <const name="VolumetricFlowRate_MIN" type="float64" value="-100000000.0" />
+                    <const name="VolumetricFlowRate_MAX" type="float64" value="100000000.0" />
+                    <typedef name="VolumetricFlowRate" type="float64" />
+                    <const name="WattHours_MIN" type="float64" value="0.0" />
+                    <const name="WattHours_MAX" type="float64" value="900000.0" />
+                    <typedef name="WattHours" type="float64" />
+                    <const name="YawAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="YawAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="YawAngle" type="float64" />
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Measurement">
+                    <const name="AccelerationScalar_MIN" type="float64" value="-1310.68" />
+                    <const name="AccelerationScalar_MAX" type="float64" value="1310.68" />
+                    <typedef name="AccelerationScalar" type="float64" />
+                    <const name="Angle_MIN" type="float64" value="-3.1415926535897932" />
+                    <const name="Angle_MAX" type="float64" value="3.1415926535897932" />
+                    <typedef name="Angle" type="float64" />
+                    <const name="AngleRate_MIN" type="float64" value="-62.831" />
+                    <const name="AngleRate_MAX" type="float64" value="62.831" />
+                    <typedef name="AngleRate" type="float64" />
+                    <const name="Count_MIN" type="int32" value="-2147483648" />
+                    <const name="Count_MAX" type="int32" value="2147483647" />
+                    <typedef name="Count" type="int32" />
+                    <const name="CourseTrueNorth_MIN" type="float64" value="-6.28318530718" />
+                    <const name="CourseTrueNorth_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="CourseTrueNorth" type="float64" />
+                    <const name="DateTimeSeconds_MIN" type="int64" value="-9223372036854775807" />
+                    <const name="DateTimeSeconds_MAX" type="int64" value="9223372036854775807" />
+                    <typedef name="DateTimeSeconds" type="int64" />
+                    <const name="DateTimeNanoseconds_MIN" type="int32" value="0" />
+                    <const name="DateTimeNanoseconds_MAX" type="int32" value="999999999" />
+                    <typedef name="DateTimeNanoseconds" type="int32" />
+                    <struct name="DateTime">
+                        <member name="seconds" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DateTimeSeconds" />
+                        <member name="nanoseconds" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DateTimeNanoseconds" />
+                    </struct>
+                    <const name="Density_MIN" type="float64" value="0.0" />
+                    <const name="Density_MAX" type="float64" value="3e17" />
+                    <typedef name="Density" type="float64" />
+                    <const name="Distance_MIN" type="float64" value="0.0" />
+                    <const name="Distance_MAX" type="float64" value="401056000.0" />
+                    <typedef name="Distance" type="float64" />
+                    <const name="DurationHours_MIN" type="float64" value="0.0" />
+                    <const name="DurationHours_MAX" type="float64" value="10505.0" />
+                    <typedef name="DurationHours" type="float64" />
+                    <const name="DurationSeconds_MIN" type="float64" value="0.0" />
+                    <const name="DurationSeconds_MAX" type="float64" value="37817280.0" />
+                    <typedef name="DurationSeconds" type="float64" />
+                    <const name="ElectricalPower_MIN" type="float64" value="0.0" />
+                    <const name="ElectricalPower_MAX" type="float64" value="100000000.0" />
+                    <typedef name="ElectricalPower" type="float64" />
+                    <const name="EngineSpeed_MIN" type="float64" value="-100000.0" />
+                    <const name="EngineSpeed_MAX" type="float64" value="100000.0" />
+                    <typedef name="EngineSpeed" type="float64" />
+                    <const name="Force_MIN" type="float64" value="0.0" />
+                    <const name="Force_MAX" type="float64" value="100000000.0" />
+                    <typedef name="Force" type="float64" />
+                    <const name="FrequencyHertz_MIN" type="float64" value="0.0" />
+                    <const name="FrequencyHertz_MAX" type="float64" value="1e10" />
+                    <typedef name="FrequencyHertz" type="float64" />
+                    <const name="GroundSpeed_MIN" type="float64" value="-299792458.0" />
+                    <const name="GroundSpeed_MAX" type="float64" value="299792458.0" />
+                    <typedef name="GroundSpeed" type="float64" />
+                    <const name="HeadingTrueNorthAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="HeadingTrueNorthAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="HeadingTrueNorthAngle" type="float64" />
+                    <const name="IndicatedAirspeed_MIN" type="float64" value="0.0" />
+                    <const name="IndicatedAirspeed_MAX" type="float64" value="299792458.0" />
+                    <typedef name="IndicatedAirspeed" type="float64" />
+                    <const name="MagneticVariation_MIN" type="float64" value="-6.28318530718" />
+                    <const name="MagneticVariation_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="MagneticVariation" type="float64" />
+                    <const name="Mass_MIN" type="float64" value="0.0" />
+                    <const name="Mass_MAX" type="float64" value="100000000.0" />
+                    <typedef name="Mass" type="float64" />
+                    <typedef name="NumericGUID" type="byte" arrayDimensions="16" />
+                    <const name="Percent_MIN" type="float64" value="0.0" />
+                    <const name="Percent_MAX" type="float64" value="1000.0" />
+                    <typedef name="Percent" type="float64" />
+                    <const name="PitchHalfAngle_MIN" type="float64" value="-1.5707963267948966" />
+                    <const name="PitchHalfAngle_MAX" type="float64" value="1.5707963267948966" />
+                    <typedef name="PitchHalfAngle" type="float64" />
+                    <const name="PitchAcceleration_MIN" type="float64" value="-10000.0" />
+                    <const name="PitchAcceleration_MAX" type="float64" value="10000.0" />
+                    <typedef name="PitchAcceleration" type="float64" />
+                    <const name="PitchRate_MIN" type="float64" value="-32.767" />
+                    <const name="PitchRate_MAX" type="float64" value="32.767" />
+                    <typedef name="PitchRate" type="float64" />
+                    <const name="PowerBusCurrent_MIN" type="float64" value="-100000.0" />
+                    <const name="PowerBusCurrent_MAX" type="float64" value="100000.0" />
+                    <typedef name="PowerBusCurrent" type="float64" />
+                    <const name="PowerBusVoltage_MIN" type="float64" value="-100000.0" />
+                    <const name="PowerBusVoltage_MAX" type="float64" value="100000.0" />
+                    <typedef name="PowerBusVoltage" type="float64" />
+                    <const name="PressureKiloPascals_MIN" type="float64" value="0.0" />
+                    <const name="PressureKiloPascals_MAX" type="float64" value="51200.0" />
+                    <typedef name="PressureKiloPascals" type="float64" />
+                    <const name="PressurePascals_MIN" type="float64" value="0.0" />
+                    <const name="PressurePascals_MAX" type="float64" value="107558000.0" />
+                    <typedef name="PressurePascals" type="float64" />
+                    <const name="RadioFrequencyHertz_MIN" type="float64" value="0.0" />
+                    <const name="RadioFrequencyHertz_MAX" type="float64" value="1e10" />
+                    <typedef name="RadioFrequencyHertz" type="float64" />
+                    <const name="RelativeAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="RelativeAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="RelativeAngle" type="float64" />
+                    <const name="RelativeHumidity_MIN" type="float64" value="0.0" />
+                    <const name="RelativeHumidity_MAX" type="float64" value="1000.0" />
+                    <typedef name="RelativeHumidity" type="float64" />
+                    <const name="RollAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="RollAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="RollAngle" type="float64" />
+                    <const name="RollAcceleration_MIN" type="float64" value="-10000.0" />
+                    <const name="RollAcceleration_MAX" type="float64" value="10000.0" />
+                    <typedef name="RollAcceleration" type="float64" />
+                    <const name="RollRate_MIN" type="float64" value="-32.767" />
+                    <const name="RollRate_MAX" type="float64" value="32.767" />
+                    <typedef name="RollRate" type="float64" />
+                    <const name="SizeBytes_MIN" type="int32" value="0" />
+                    <const name="SizeBytes_MAX" type="int32" value="1000000000" />
+                    <typedef name="SizeBytes" type="int32" />
+                    <typedef name="SizeReal" type="float64" />
+                    <const name="Speed_MIN" type="float64" value="0.0" />
+                    <const name="Speed_MAX" type="float64" value="299792458.0" />
+                    <typedef name="Speed" type="float64" />
+                    <const name="Temperature_MIN" type="float64" value="-273.0" />
+                    <const name="Temperature_MAX" type="float64" value="1000.0" />
+                    <typedef name="Temperature" type="float64" />
+                    <const name="TurnRate_MIN" type="float64" value="-32.767" />
+                    <const name="TurnRate_MAX" type="float64" value="32.767" />
+                    <typedef name="TurnRate" type="float64" />
+                    <const name="YawAcceleration_MIN" type="float64" value="-10000.0" />
+                    <const name="YawAcceleration_MAX" type="float64" value="10000.0" />
+                    <typedef name="YawAcceleration" type="float64" />
+                    <const name="YawRate_MIN" type="float64" value="-32.767" />
+                    <const name="YawRate_MAX" type="float64" value="32.767" />
+                    <typedef name="YawRate" type="float64" />
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <struct name="IdentifierType" nested="true">
+                    <member name="id" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::NumericGUID" />
+                    <member name="parentID" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::NumericGUID" />
+                </struct>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="MaritimeEnumeration">
+                    <module name="ActivationStateEnumModule">
+                        <enum name="ActivationStateEnumType">
+                            <enumerator name="ACTIVE" />
+                            <enumerator name="ERROR" />
+                            <enumerator name="OFF" />
+                            <enumerator name="READY" />
+                            <enumerator name="STANDBY" />
+                        </enum>
+                    </module>
+                    <module name="ActivationStateTargetEnumModule">
+                        <enum name="ActivationStateTargetEnumType">
+                            <enumerator name="ACTIVE" />
+                            <enumerator name="OFF" />
+                            <enumerator name="READY" />
+                            <enumerator name="STANDBY" />
+                        </enum>
+                    </module>
+                    <module name="AnchorActionEnumModule">
+                        <enum name="AnchorActionEnumType">
+                            <enumerator name="LOWER" />
+                            <enumerator name="RAISE" />
+                            <enumerator name="STOP" />
+                        </enum>
+                    </module>
+                    <module name="AnchorKindEnumModule">
+                        <enum name="AnchorKindEnumType">
+                            <enumerator name="COMMERCIAL_STOCKLESS" />
+                            <enumerator name="DANFORTH" />
+                            <enumerator name="FOUR_FLUKE" />
+                            <enumerator name="GENERAL" />
+                            <enumerator name="LIGHTWEIGHT" />
+                            <enumerator name="MARK_2_LWT" />
+                            <enumerator name="MARK_2_STOCKLESS" />
+                            <enumerator name="MUSHROOM" />
+                            <enumerator name="NAVY_TYPE_STOCK" />
+                            <enumerator name="NONMAGNETIC" />
+                            <enumerator name="STANDARD_NAVY_STOCKLESS" />
+                            <enumerator name="TWO_FLUKE_BALANCED_FLUKE" />
+                            <enumerator name="WEDGE_BLOCK_LWT" />
+                        </enum>
+                    </module>
+                    <module name="AnchorLocationEnumModule">
+                        <enum name="AnchorLocationEnumType">
+                            <enumerator name="BOWER" />
+                            <enumerator name="KEEL" />
+                            <enumerator name="STERN" />
+                        </enum>
+                    </module>
+                    <module name="AnchorRodeEnumModule">
+                        <enum name="AnchorRodeEnumType">
+                            <enumerator name="CHAIN" />
+                            <enumerator name="ROPE" />
+                        </enum>
+                    </module>
+                    <module name="AnchorStateEnumModule">
+                        <enum name="AnchorStateEnumType">
+                            <enumerator name="DEPLOYED" />
+                            <enumerator name="LOWERING" />
+                            <enumerator name="RAISING" />
+                            <enumerator name="STOPPED" />
+                            <enumerator name="STOWED" />
+                        </enum>
+                    </module>
+                    <module name="AutoOffModeEnumModule">
+                        <enum name="AutoOffModeEnumType">
+                            <enumerator name="DEACTIVATE" />
+                            <enumerator name="SHUTDOWN" />
+                        </enum>
+                    </module>
+                    <module name="BilgeStateEnumModule">
+                        <enum name="BilgeStateEnumType">
+                            <enumerator name="FAULT" />
+                            <enumerator name="OFF" />
+                            <enumerator name="ON" />
+                        </enum>
+                    </module>
+                    <module name="BufferPurgeOptionEnumModule">
+                        <enum name="BufferPurgeOptionEnumType">
+                            <enumerator name="DROP_LOWEST_PRIORITY" />
+                            <enumerator name="DROP_MOST_RECENT" />
+                            <enumerator name="DROP_OLDEST" />
+                        </enum>
+                    </module>
+                    <module name="COLREGSClassificationEnumModule">
+                        <enum name="COLREGSClassificationEnumType">
+                            <enumerator name="ANCHORED" />
+                            <enumerator name="CONSTRAINED_BY_DRAUGHT" />
+                            <enumerator name="FISHING" />
+                            <enumerator name="NON_VESSEL" />
+                            <enumerator name="NOT_UNDER_COMMAND" />
+                            <enumerator name="POWER_DRIVEN_UNDERWAY" />
+                            <enumerator name="PUSHING" />
+                            <enumerator name="RESTRICTED_IN_ABILITY_TO_MANUEVER" />
+                            <enumerator name="SAILING" />
+                            <enumerator name="TOWING" />
+                        </enum>
+                    </module>
+                    <module name="CommandStatusReasonEnumModule">
+                        <enum name="CommandStatusReasonEnumType">
+                            <enumerator name="CANCELED" />
+                            <enumerator name="INTERRUPTED" />
+                            <enumerator name="OBJECTIVE_FAILED" />
+                            <enumerator name="RESOURCE_FAILED" />
+                            <enumerator name="RESOURCE_REJECTED" />
+                            <enumerator name="SERVICE_FAILED" />
+                            <enumerator name="SUCCEEDED" />
+                            <enumerator name="TIMEOUT" />
+                            <enumerator name="UPDATED" />
+                            <enumerator name="VALIDATION_FAILED" />
+                        </enum>
+                    </module>
+                    <module name="CommsChannelOperationalStatusEnumModule">
+                        <enum name="CommsChannelOperationalStatusEnumType">
+                            <enumerator name="OFF" />
+                            <enumerator name="ON" />
+                            <enumerator name="OPERATIONAL" />
+                        </enum>
+                    </module>
+                    <module name="ConditionalOperatorEnumModule">
+                        <enum name="ConditionalOperatorEnumType">
+                            <enumerator name="GREATER_THAN" />
+                            <enumerator name="GREATER_THAN_OR_EQUAL_TO" />
+                            <enumerator name="LESS_THAN" />
+                            <enumerator name="LESS_THAN_OR_EQUAL_TO" />
+                        </enum>
+                    </module>
+                    <module name="ContactManeuverInfluenceEnumModule">
+                        <enum name="ContactManeuverInfluenceEnumType">
+                            <enumerator name="COLLISION" />
+                            <enumerator name="COLLISION_AVOIDANCE" />
+                            <enumerator name="CROSSING_LEFT_COMPLIANT" />
+                            <enumerator name="CROSSING_LEFT_NONCOMPLIANT" />
+                            <enumerator name="CROSSING_RIGHT_COMPLIANT" />
+                            <enumerator name="CROSSING_RIGHT_NONCOMPLIANT" />
+                            <enumerator name="DYNAMIC_AVOIDANCE" />
+                            <enumerator name="GUIDE" />
+                            <enumerator name="HEAD_ON_COMPLIANT" />
+                            <enumerator name="HEAD_ON_NONCOMPLIANT" />
+                            <enumerator name="NONE" />
+                            <enumerator name="OVERTAKEN_COMPLIANT" />
+                            <enumerator name="OVERTAKEN_NONCOMPLIANT" />
+                            <enumerator name="OVERTAKING_COMPLIANT" />
+                            <enumerator name="OVERTAKING_NONCOMPLIANT" />
+                            <enumerator name="PREEMPTIVE" />
+                            <enumerator name="STATIC_AVOIDANCE" />
+                        </enum>
+                    </module>
+                    <module name="ContingencyBehaviorEnumModule">
+                        <enum name="ContingencyBehaviorEnumType">
+                            <enumerator name="CONTINUE" />
+                            <enumerator name="FINISH" />
+                            <enumerator name="_HOME" />
+                            <enumerator name="LOITER" />
+                            <enumerator name="NONE" />
+                            <enumerator name="VEHICLE_SPECIFIC" />
+                        </enum>
+                    </module>
+                    <module name="ContinuousTestEnumModule">
+                        <enum name="ContinuousTestEnumType">
+                            <enumerator name="DISABLED_NO_TEST" />
+                            <enumerator name="FULL_TEST" />
+                            <enumerator name="NON_INTRUSIVE_TESTS_ONLY" />
+                        </enum>
+                    </module>
+                    <module name="CoordinationSituationalSignalEnumModule">
+                        <enum name="CoordinationSituationalSignalEnumType">
+                            <enumerator name="AGREE_TO_BE_OVERTAKEN" />
+                            <enumerator name="ALTERING_COURSE_TO_PORT" />
+                            <enumerator name="ALTERING_COURSE_TO_STARBOARD" />
+                            <enumerator name="BLIND_BEND_SIGNAL" />
+                            <enumerator name="DANGER_SIGNAL" />
+                            <enumerator name="IN_DISTRESS_NEED_ASSISTANCE" />
+                            <enumerator name="NONE" />
+                            <enumerator name="OPERATING_ASTERN_PROPULSION" />
+                            <enumerator name="TO_OVERTAKE_LEAVE_VESSEL_TO_PORT" />
+                            <enumerator name="TO_OVERTAKE_LEAVE_VESSEL_TO_STARBOARD" />
+                            <enumerator name="VESSEL_LEAVING_DOCK" />
+                            <enumerator name="VISIBILITY_RESTRICTED_VEHICLE_STOPPED" />
+                            <enumerator name="VISIBILITY_RESTRICTED_VEHICLE_UNDERWAY" />
+                        </enum>
+                    </module>
+                    <module name="DirectionModeEnumModule">
+                        <enum name="DirectionModeEnumType">
+                            <enumerator name="COURSE" />
+                            <enumerator name="HEADING" />
+                        </enum>
+                    </module>
+                    <module name="DomainEnumModule">
+                        <enum name="DomainEnumType">
+                            <enumerator name="AIR" />
+                            <enumerator name="GROUND" />
+                            <enumerator name="SURFACE" />
+                            <enumerator name="UNDERSEA" />
+                        </enum>
+                    </module>
+                    <module name="EmitterStateEnumModule">
+                        <enum name="EmitterStateEnumType">
+                            <enumerator name="ALLOWED" />
+                            <enumerator name="SECURED" />
+                        </enum>
+                    </module>
+                    <module name="EngineKindEnumModule">
+                        <enum name="EngineKindEnumType">
+                            <enumerator name="DIESEL" />
+                            <enumerator name="GAS" />
+                        </enum>
+                    </module>
+                    <module name="ErrorCodeEnumModule">
+                        <enum name="ErrorCodeEnumType">
+                            <enumerator name="ACTUATOR" />
+                            <enumerator name="FILESYS" />
+                            <enumerator name="NONE" />
+                            <enumerator name="POWER" />
+                            <enumerator name="PROCESSOR" />
+                            <enumerator name="RAM" />
+                            <enumerator name="ROM" />
+                            <enumerator name="SENSOR" />
+                            <enumerator name="SOFTWARE" />
+                        </enum>
+                    </module>
+                    <module name="ErrorConditionEnumModule">
+                        <enum name="ErrorConditionEnumType">
+                            <enumerator name="ERROR" />
+                            <enumerator name="FAIL" />
+                            <enumerator name="INFO" />
+                            <enumerator name="NONE" />
+                            <enumerator name="WARN" />
+                        </enum>
+                    </module>
+                    <module name="FLSBeamwidthEnumModule">
+                        <enum name="FLSBeamwidthEnumType">
+                            <enumerator name="MEDIUM" />
+                            <enumerator name="NARROW" />
+                            <enumerator name="WIDE" />
+                        </enum>
+                    </module>
+                    <module name="FLSConfigModeEnumModule">
+                        <enum name="FLSConfigModeEnumType">
+                            <enumerator name="DEV_TEST" />
+                            <enumerator name="DIVE" />
+                            <enumerator name="PASSIVE_ONLY" />
+                            <enumerator name="SEARCH_BOTTOM" />
+                            <enumerator name="SEARCH_VOLUME" />
+                            <enumerator name="SURFACE" />
+                            <enumerator name="TEST" />
+                            <enumerator name="TRANSIT" />
+                        </enum>
+                    </module>
+                    <module name="FLSWaveformLengthEnumModule">
+                        <enum name="FLSWaveformLengthEnumType">
+                            <enumerator name="_LONG" />
+                            <enumerator name="MEDIUM" />
+                            <enumerator name="_SHORT" />
+                            <enumerator name="XSHORT" />
+                        </enum>
+                    </module>
+                    <module name="GPSConstellationEnumModule">
+                        <enum name="GPSConstellationEnumType">
+                            <enumerator name="BEIDOU" />
+                            <enumerator name="GALILEO" />
+                            <enumerator name="GLONASS" />
+                            <enumerator name="GPS" />
+                            <enumerator name="IRNSS" />
+                            <enumerator name="QZSS" />
+                            <enumerator name="SBAS" />
+                            <enumerator name="UNKNOWN" />
+                        </enum>
+                    </module>
+                    <module name="HandoverResultEnumModule">
+                        <enum name="HandoverResultEnumType">
+                            <enumerator name="DEFERRED" />
+                            <enumerator name="DENIED" />
+                            <enumerator name="GRANTED" />
+                            <enumerator name="INSUFFICIENT_AUTHORITY" />
+                            <enumerator name="NOT_AVAILABLE" />
+                            <enumerator name="TIMEOUT" />
+                        </enum>
+                    </module>
+                    <module name="HeadingSectorKindEnumModule">
+                        <enum name="HeadingSectorKindEnumType">
+                            <enumerator name="INSIDE" />
+                            <enumerator name="OUTSIDE" />
+                        </enum>
+                    </module>
+                    <module name="HoverKindEnumModule">
+                        <enum name="HoverKindEnumType">
+                            <enumerator name="LAT_LON_PRIORITY" />
+                            <enumerator name="Z_PRIORITY" />
+                        </enum>
+                    </module>
+                    <module name="IgnitionControlEnumModule">
+                        <enum name="IgnitionControlEnumType">
+                            <enumerator name="OFF" />
+                            <enumerator name="RUN" />
+                        </enum>
+                    </module>
+                    <module name="IgnitionStateEnumModule">
+                        <enum name="IgnitionStateEnumType">
+                            <enumerator name="OFF" />
+                            <enumerator name="RUN" />
+                            <enumerator name="START" />
+                        </enum>
+                    </module>
+                    <module name="IlluminatorStateEnumModule">
+                        <enum name="IlluminatorStateEnumType">
+                            <enumerator name="FLASHING" />
+                            <enumerator name="OFF" />
+                            <enumerator name="ON" />
+                        </enum>
+                    </module>
+                    <module name="ImageFormatEnumModule">
+                        <enum name="ImageFormatEnumType">
+                            <enumerator name="ARW" />
+                            <enumerator name="BMP" />
+                            <enumerator name="CR2_RAW" />
+                            <enumerator name="DNG" />
+                            <enumerator name="GEOJPEG" />
+                            <enumerator name="GEOTIFF" />
+                            <enumerator name="GIF" />
+                            <enumerator name="GPR" />
+                            <enumerator name="JPEG" />
+                            <enumerator name="NEF" />
+                            <enumerator name="PGM" />
+                            <enumerator name="PNG" />
+                            <enumerator name="PNM" />
+                            <enumerator name="PPM" />
+                            <enumerator name="TIFF" />
+                        </enum>
+                    </module>
+                    <module name="InertialSensorCmdEnumModule">
+                        <enum name="InertialSensorCmdEnumType">
+                            <enumerator name="BEST_ALIGN" />
+                            <enumerator name="GPS_ALIGN" />
+                            <enumerator name="INIT" />
+                            <enumerator name="SNAP_ALIGN" />
+                            <enumerator name="STATIONARY_ALIGN" />
+                            <enumerator name="TRANSFER_ALIGN" />
+                        </enum>
+                    </module>
+                    <module name="InertialSensorOpStatusEnumModule">
+                        <enum name="InertialSensorOpStatusEnumType">
+                            <enumerator name="BEST_ALIGNMENT_FAILURE" />
+                            <enumerator name="COARSE_BEST_ALIGNMENT" />
+                            <enumerator name="COARSE_GPS_ALIGNMENT" />
+                            <enumerator name="COARSE_STATIONARY_ALIGNMENT" />
+                            <enumerator name="COARSE_TRANSFER_ALIGNMENT" />
+                            <enumerator name="FINE_BEST_ALIGNMENT_COMPLETE" />
+                            <enumerator name="FINE_BEST_ALIGNMENT_STARTED" />
+                            <enumerator name="FINE_GPS_ALIGNMENT_COMPLETE" />
+                            <enumerator name="FINE_GPS_ALIGNMENT_STARTED" />
+                            <enumerator name="FINE_STATIONARY_ALIGNMENT_COMPLETE" />
+                            <enumerator name="FINE_STATIONARY_ALIGNMENT_STARTED" />
+                            <enumerator name="FINE_TRANSFER_ALIGNMENT_COMPLETE" />
+                            <enumerator name="FINE_TRANSFER_ALIGNMENT_STARTED" />
+                            <enumerator name="GPS_ALIGNMENT_FAILURE" />
+                            <enumerator name="INERTIAL_SENSOR_FAILURE" />
+                            <enumerator name="INIT" />
+                            <enumerator name="SNAP_ALIGNMENT_COMPLETE" />
+                            <enumerator name="SNAP_ALIGNMENT_FAILURE" />
+                            <enumerator name="STATIONARY_ALIGNMENT_FAILURE" />
+                            <enumerator name="TRANSFER_ALIGNMENT_FAILURE" />
+                        </enum>
+                    </module>
+                    <module name="InitiatedTestEnumModule">
+                        <enum name="InitiatedTestEnumType">
+                            <enumerator name="DESTRUCTIVE" />
+                            <enumerator name="NON_DESTRUCTIVE" />
+                        </enum>
+                    </module>
+                    <module name="InterferenceEnumModule">
+                        <enum name="InterferenceEnumType">
+                            <enumerator name="ACOUSTIC" />
+                            <enumerator name="NONACOUSTIC" />
+                            <enumerator name="UNKNOWN" />
+                        </enum>
+                    </module>
+                    <module name="LandmarkEnumModule">
+                        <enum name="LandmarkEnumType">
+                            <enumerator name="CLUSTER_OBJECT" />
+                            <enumerator name="LARGE_OBJECT" />
+                            <enumerator name="MARKED" />
+                            <enumerator name="TERRAIN" />
+                        </enum>
+                    </module>
+                    <module name="LogLevelEnumModule">
+                        <enum name="LogLevelEnumType">
+                            <enumerator name="ERROR" />
+                            <enumerator name="INFORMATION" />
+                            <enumerator name="WARNING" />
+                        </enum>
+                    </module>
+                    <module name="MastActionEnumModule">
+                        <enum name="MastActionEnumType">
+                            <enumerator name="LOWER" />
+                            <enumerator name="RAISE" />
+                            <enumerator name="STOP" />
+                        </enum>
+                    </module>
+                    <module name="MastStateEnumModule">
+                        <enum name="MastStateEnumType">
+                            <enumerator name="DOWN" />
+                            <enumerator name="MOVING_DOWN" />
+                            <enumerator name="MOVING_UP" />
+                            <enumerator name="STOPPED" />
+                            <enumerator name="UP" />
+                        </enum>
+                    </module>
+                    <module name="CommandStatusEnumModule">
+                        <enum name="CommandStatusEnumType">
+                            <enumerator name="CANCELED" />
+                            <enumerator name="COMMANDED" />
+                            <enumerator name="COMPLETED" />
+                            <enumerator name="EXECUTING" />
+                            <enumerator name="FAILED" />
+                            <enumerator name="ISSUED" />
+                        </enum>
+                    </module>
+                    <module name="TaskControlEnumModule">
+                        <enum name="TaskControlEnumType">
+                            <enumerator name="CANCEL" />
+                            <enumerator name="EXECUTION_APPROVED" />
+                            <enumerator name="EXECUTION_NOT_APPROVED" />
+                            <enumerator name="PAUSE" />
+                            <enumerator name="PLAN" />
+                            <enumerator name="QUEUE" />
+                            <enumerator name="RESTART" />
+                            <enumerator name="RESUME" />
+                        </enum>
+                    </module>
+                    <module name="TaskStateEnumModule">
+                        <enum name="TaskStateEnumType">
+                            <enumerator name="AWAITING_EXECUTION_APPROVAL" />
+                            <enumerator name="CANCELED" />
+                            <enumerator name="CANCELING" />
+                            <enumerator name="COMPLETED" />
+                            <enumerator name="EXECUTING" />
+                            <enumerator name="EXECUTION_APPROVED" />
+                            <enumerator name="FAILED" />
+                            <enumerator name="NOT_PLANNED" />
+                            <enumerator name="NOT_QUEUED" />
+                            <enumerator name="PAUSED" />
+                            <enumerator name="PAUSING" />
+                            <enumerator name="PLANNED" />
+                            <enumerator name="PLANNING" />
+                            <enumerator name="QUEUED" />
+                            <enumerator name="QUEUING" />
+                            <enumerator name="RESTARTING" />
+                            <enumerator name="RESUMING" />
+                        </enum>
+                    </module>
+                    <module name="NavigationSolutionEnumModule">
+                        <enum name="NavigationSolutionEnumType">
+                            <enumerator name="ESTIMATED" />
+                            <enumerator name="GROUND_TRUTH" />
+                            <enumerator name="MEASURED" />
+                        </enum>
+                    </module>
+                    <module name="ObjectiveExecutorControlEnumModule">
+                        <enum name="ObjectiveExecutorControlEnumType">
+                            <enumerator name="EXECUTE" />
+                            <enumerator name="PAUSE" />
+                            <enumerator name="RESUME" />
+                        </enum>
+                    </module>
+                    <module name="ObjectiveExecutorStateEnumModule">
+                        <enum name="ObjectiveExecutorStateEnumType">
+                            <enumerator name="CANCELED" />
+                            <enumerator name="CANCELING" />
+                            <enumerator name="COMPLETED" />
+                            <enumerator name="EXECUTING" />
+                            <enumerator name="FAILED" />
+                            <enumerator name="MODIFYING" />
+                            <enumerator name="PAUSED" />
+                            <enumerator name="PAUSING" />
+                            <enumerator name="QUEUED" />
+                            <enumerator name="RESUMING" />
+                        </enum>
+                    </module>
+                    <module name="ObjectiveExecutorStateReasonEnumModule">
+                        <enum name="ObjectiveExecutorStateReasonEnumType">
+                            <enumerator name="BUS_MSG_DISPOSE" />
+                            <enumerator name="BUS_MSG_UPDATE" />
+                            <enumerator name="CANNOT_PERFORM_UNDER_CONSTRAINTS" />
+                            <enumerator name="COMMAND_VALIDATION_FAILED" />
+                            <enumerator name="COMMANDED" />
+                            <enumerator name="INTERNAL_FAILURE" />
+                            <enumerator name="LOWER_SERVICE_FAILED" />
+                            <enumerator name="LOWER_SERVICE_INTERRUPTED" />
+                            <enumerator name="LOWER_SERVICE_REJECTED" />
+                            <enumerator name="LOWER_SERVICE_TIMEOUT" />
+                            <enumerator name="OBJECTIVE_REPLACED" />
+                            <enumerator name="SUCCEEDED" />
+                        </enum>
+                    </module>
+                    <module name="OperationalModeControlEnumModule">
+                        <enum name="OperationalModeControlEnumType">
+                            <enumerator name="AUTONOMOUS" />
+                            <enumerator name="REMOTE" />
+                            <enumerator name="STANDBY" />
+                        </enum>
+                    </module>
+                    <module name="OperationalModeEnumModule">
+                        <enum name="OperationalModeEnumType">
+                            <enumerator name="AUTONOMOUS" />
+                            <enumerator name="MANUAL" />
+                            <enumerator name="REMOTE" />
+                            <enumerator name="STANDBY" />
+                        </enum>
+                    </module>
+                    <module name="PassiveContactFeatureEnumModule">
+                        <enum name="PassiveContactFeatureEnumType">
+                            <enumerator name="BROADBAND" />
+                            <enumerator name="NARROWBAND" />
+                            <enumerator name="TRANSIENT" />
+                        </enum>
+                    </module>
+                    <module name="PathWayEnumModule">
+                        <enum name="PathWayEnumType">
+                            <enumerator name="HISTORICAL_GLOBAL" />
+                            <enumerator name="HISTORICAL_LOCAL" />
+                            <enumerator name="PLANNED_GLOBAL" />
+                            <enumerator name="PLANNED_LOCAL" />
+                        </enum>
+                    </module>
+                    <module name="PowerOnTestEnumModule">
+                        <enum name="PowerOnTestEnumType">
+                            <enumerator name="DISABLED_NO_TEST" />
+                            <enumerator name="FULL_TEST" />
+                            <enumerator name="QUICK_TEST" />
+                        </enum>
+                    </module>
+                    <module name="PowerPlantStateEnumModule">
+                        <enum name="PowerPlantStateEnumType">
+                            <enumerator name="FAULT" />
+                            <enumerator name="OFF" />
+                            <enumerator name="ON" />
+                        </enum>
+                    </module>
+                    <module name="PowerStateEnumModule">
+                        <enum name="PowerStateEnumType">
+                            <enumerator name="EMERGENCY_POWER" />
+                            <enumerator name="POWER_OFF" />
+                            <enumerator name="POWER_ON" />
+                            <enumerator name="POWER_STANDBY" />
+                        </enum>
+                    </module>
+                    <module name="ProcessingUnitEnumModule">
+                        <enum name="ProcessingUnitEnumType">
+                            <enumerator name="CPU" />
+                            <enumerator name="DSP" />
+                            <enumerator name="FPGA" />
+                            <enumerator name="GPU" />
+                            <enumerator name="NPU" />
+                            <enumerator name="PhPU" />
+                            <enumerator name="PPU" />
+                            <enumerator name="QPU" />
+                            <enumerator name="SPU" />
+                            <enumerator name="TPU" />
+                            <enumerator name="VPU" />
+                        </enum>
+                    </module>
+                    <module name="PumpStateEnumModule">
+                        <enum name="PumpStateEnumType">
+                            <enumerator name="FAULT" />
+                            <enumerator name="OFF" />
+                            <enumerator name="ON_FORWARD" />
+                            <enumerator name="ON_REVERSE" />
+                        </enum>
+                    </module>
+                    <module name="ReferenceFrameOriginEnumModule">
+                        <enum name="ReferenceFrameOriginEnumType">
+                            <enumerator name="BOW_WATERLINE_INTERSECTION" />
+                            <enumerator name="CENTER_OF_BUOYANCY" />
+                            <enumerator name="CENTER_OF_GRAVITY" />
+                            <enumerator name="INS_LOCATION" />
+                            <enumerator name="KEEL_TRANSOM_INTERSECTION" />
+                        </enum>
+                    </module>
+                    <module name="SourceIndicatorEnumModule">
+                        <enum name="SourceIndicatorEnumType">
+                            <enumerator name="ACTUAL" />
+                            <enumerator name="GROUND_TRUTH" />
+                            <enumerator name="SIMULATED" />
+                            <enumerator name="TENTATIVE" />
+                        </enum>
+                    </module>
+                    <module name="SpecialManeuverIndicatorEnumModule">
+                        <enum name="SpecialManeuverIndicatorEnumType">
+                            <enumerator name="ENGAGED" />
+                            <enumerator name="NOT_AVAILABLE" />
+                            <enumerator name="NOT_ENGAGED" />
+                            <enumerator name="NOT_PROVIDED" />
+                        </enum>
+                    </module>
+                    <module name="TamperDetectionStateEnumModule">
+                        <enum name="TamperDetectionStateEnumType">
+                            <enumerator name="ALWAYS_ENABLED_OR_CLEAR" />
+                            <enumerator name="DISABLED" />
+                            <enumerator name="ENABLED" />
+                        </enum>
+                    </module>
+                    <module name="TFOMEnumModule">
+                        <enum name="TFOMEnumType">
+                            <enumerator name="TFOM_1" />
+                            <enumerator name="TFOM_2" />
+                            <enumerator name="TFOM_3" />
+                            <enumerator name="TFOM_4" />
+                            <enumerator name="TFOM_5" />
+                            <enumerator name="TFOM_6" />
+                            <enumerator name="TFOM_7" />
+                            <enumerator name="TFOM_8" />
+                            <enumerator name="TFOM_9" />
+                        </enum>
+                    </module>
+                    <module name="TrackCategoryEnumModule">
+                        <enum name="TrackCategoryEnumType">
+                            <enumerator name="ADS_B_DIRECTIONAL_AIR" />
+                            <enumerator name="ADS_B_DIRECTIONAL_SURFACE" />
+                            <enumerator name="ADS_B_NONDIRECTIONAL_AIR" />
+                            <enumerator name="ADS_B_NONDIRECTIONAL_SURFACE" />
+                            <enumerator name="AIR" />
+                            <enumerator name="ASW" />
+                            <enumerator name="EMERGENCY" />
+                            <enumerator name="EW" />
+                            <enumerator name="LAND_POINT" />
+                            <enumerator name="LAND_TRACK" />
+                            <enumerator name="MP_AREA" />
+                            <enumerator name="MP_LINE" />
+                            <enumerator name="NA" />
+                            <enumerator name="NO_STATEMENT" />
+                            <enumerator name="POINTER" />
+                            <enumerator name="REF_POINT" />
+                            <enumerator name="SP_AREA" />
+                            <enumerator name="SPACE" />
+                            <enumerator name="SUB_SURFACE" />
+                            <enumerator name="SURFACE" />
+                        </enum>
+                    </module>
+                    <module name="TrackIdentityEnumModule">
+                        <enum name="TrackIdentityEnumType">
+                            <enumerator name="ASSUMED_FRIEND" />
+                            <enumerator name="FAKER" />
+                            <enumerator name="FRIEND" />
+                            <enumerator name="HOSTILE" />
+                            <enumerator name="JOKER" />
+                            <enumerator name="NEUTRAL" />
+                            <enumerator name="PENDING" />
+                            <enumerator name="SUSPECT" />
+                            <enumerator name="UNKNOWN" />
+                        </enum>
+                    </module>
+                    <module name="TriggerStateEnumModule">
+                        <enum name="TriggerStateEnumType">
+                            <enumerator name="CANCEL" />
+                            <enumerator name="PAUSE" />
+                            <enumerator name="PLAN" />
+                            <enumerator name="QUEUE" />
+                            <enumerator name="RESTART" />
+                            <enumerator name="RESUME" />
+                        </enum>
+                    </module>
+                    <module name="VehicleSpeedModeEnumModule">
+                        <enum name="VehicleSpeedModeEnumType">
+                            <enumerator name="LRC" />
+                            <enumerator name="MEC" />
+                            <enumerator name="MRC" />
+                            <enumerator name="SLOW" />
+                            <enumerator name="VEHICLE_SPECIFIC" />
+                        </enum>
+                    </module>
+                    <module name="VisualClassificationEnumModule">
+                        <enum name="VisualClassificationEnumType">
+                            <enumerator name="AID_TO_NAVIGATION_CHANNEL_MARKER" />
+                            <enumerator name="AID_TO_NAVIGATION_GENERAL" />
+                            <enumerator name="AID_TO_NAVIGATION_LARGE_BUOY" />
+                            <enumerator name="AID_TO_NAVIGATION_LIGHTHOUSE" />
+                            <enumerator name="AID_TO_NAVIGATION_SMALL_BUOY" />
+                            <enumerator name="LARGE_GENERAL_OBSTACLE" />
+                            <enumerator name="LARGE_VESSEL_CARGO" />
+                            <enumerator name="LARGE_VESSEL_GENERAL" />
+                            <enumerator name="LARGE_VESSEL_MILITARY" />
+                            <enumerator name="LARGE_VESSEL_OTHER" />
+                            <enumerator name="LARGE_VESSEL_PASSENGER" />
+                            <enumerator name="MEDIUM_VESSEL_FISHING" />
+                            <enumerator name="MEDIUM_VESSEL_GENERAL" />
+                            <enumerator name="MEDIUM_VESSEL_MILITARY" />
+                            <enumerator name="MEDIUM_VESSEL_OTHER" />
+                            <enumerator name="MEDIUM_VESSEL_TUG" />
+                            <enumerator name="MEDIUM_VESSEL_TUG_IN_TOW" />
+                            <enumerator name="MEDIUM_VESSEL_YACHT" />
+                            <enumerator name="SAILBOAT" />
+                            <enumerator name="SMALL_GENERAL_OBSTACLE" />
+                            <enumerator name="SMALL_VESSEL_GENERAL" />
+                            <enumerator name="SMALL_VESSEL_JET_SKI" />
+                            <enumerator name="SMALL_VESSEL_MILITARY" />
+                            <enumerator name="SMALL_VESSEL_OTHER" />
+                            <enumerator name="SMALL_VESSEL_POWER_BOAT" />
+                        </enum>
+                    </module>
+                    <module name="WaterTurnDirectionEnumModule">
+                        <enum name="WaterTurnDirectionEnumType">
+                            <enumerator name="LEFT_TURN" />
+                            <enumerator name="RIGHT_TURN" />
+                        </enum>
+                    </module>
+                    <module name="WaterZoneKindEnumModule">
+                        <enum name="WaterZoneKindEnumType">
+                            <enumerator name="INSIDE" />
+                            <enumerator name="OUTSIDE" />
+                        </enum>
+                    </module>
+                    <module name="WaypointStateEnumModule">
+                        <enum name="WaypointStateEnumType">
+                            <enumerator name="ACHIEVED" />
+                            <enumerator name="COMPLETED" />
+                            <enumerator name="EXECUTING" />
+                            <enumerator name="FAILED" />
+                            <enumerator name="QUEUED" />
+                        </enum>
+                    </module>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="SA">
+                <module name="SpeedStatus">
+                    <const name="SpeedReportTypeTopic" type="string" value="&quot;UMAA::SA::SpeedStatus::SpeedReportType&quot;" />
+                    <struct name="SpeedReportType">
+                        <member name="mode" type="nonBasic" nonBasicTypeName="UMAA::Common::MaritimeEnumeration::VehicleSpeedModeEnumModule::VehicleSpeedModeEnumType" optional="true" />
+                        <member name="speedOverGround" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::GroundSpeed" optional="true" />
+                        <member name="speedThroughAir" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::IndicatedAirspeed" optional="true" />
+                        <member name="speedThroughWater" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::SpeedLocalWaterMass" optional="true" />
+                        <member name="timeStamp" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DateTime" />
+                        <member name="source" type="nonBasic" nonBasicTypeName="UMAA::Common::IdentifierType" key="true" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="PrimitiveConstrained">
+                    <const name="AccelerationLocalWaterMass_MIN" type="float64" value="-299792458.0" />
+                    <const name="AccelerationLocalWaterMass_MAX" type="float64" value="299792458.0" />
+                    <typedef name="AccelerationLocalWaterMass" type="float64" />
+                    <const name="AirTemperature_MIN" type="float64" value="-100.0" />
+                    <const name="AirTemperature_MAX" type="float64" value="100.0" />
+                    <typedef name="AirTemperature" type="float64" />
+                    <const name="AngleAcceleration_MIN" type="float64" value="-10000.0" />
+                    <const name="AngleAcceleration_MAX" type="float64" value="10000.0" />
+                    <typedef name="AngleAcceleration" type="float64" />
+                    <const name="BearingAngle_MIN" type="float64" value="-6.28318530718" />
+                    <const name="BearingAngle_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="BearingAngle" type="float64" />
+                    <const name="CarrierToNoiseDensityRatio_MIN" type="float64" value="0.0" />
+                    <const name="CarrierToNoiseDensityRatio_MAX" type="float64" value="1000000.0" />
+                    <typedef name="CarrierToNoiseDensityRatio" type="float64" />
+                    <const name="ColorComponent_MIN" type="int32" value="0" />
+                    <const name="ColorComponent_MAX" type="int32" value="255" />
+                    <typedef name="ColorComponent" type="int32" />
+                    <typedef name="ContactUncertainty" type="float64" />
+                    <const name="CovarAccelPlatformXYZ_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarAccelPlatformXYZ_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarAccelPlatformXYZ" type="float64" />
+                    <const name="CovarOrientationAccelPlatformXYZ_MIN" type="float64" value="-100.0" />
+                    <const name="CovarOrientationAccelPlatformXYZ_MAX" type="float64" value="100.0" />
+                    <typedef name="CovarOrientationAccelPlatformXYZ" type="float64" />
+                    <const name="CovarOrientationNED_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarOrientationNED_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarOrientationNED" type="float64" />
+                    <const name="CovarOrientationVelNED_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarOrientationVelNED_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarOrientationVelNED" type="float64" />
+                    <const name="CovarPosECEF_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarPosECEF_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarPosECEF" type="float64" />
+                    <const name="CovarPosNED_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarPosNED_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarPosNED" type="float64" />
+                    <const name="CovarPosVelNED_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarPosVelNED_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarPosVelNED" type="float64" />
+                    <const name="CovarVelNED_MIN" type="float64" value="-10000.0" />
+                    <const name="CovarVelNED_MAX" type="float64" value="10000.0" />
+                    <typedef name="CovarVelNED" type="float64" />
+                    <const name="DewPointTemperature_MIN" type="float64" value="-100.0" />
+                    <const name="DewPointTemperature_MAX" type="float64" value="100.0" />
+                    <typedef name="DewPointTemperature" type="float64" />
+                    <const name="GeodeticAltitude_MIN" type="float64" value="-10000.0" />
+                    <const name="GeodeticAltitude_MAX" type="float64" value="700000.0" />
+                    <typedef name="GeodeticAltitude" type="float64" />
+                    <const name="IlluminatorBeamWidth_MIN" type="float64" value="0.0" />
+                    <const name="IlluminatorBeamWidth_MAX" type="float64" value="6.28318530718" />
+                    <typedef name="IlluminatorBeamWidth" type="float64" />
+                    <const name="IlluminatorIntensityLevel_MIN" type="float64" value="0.0" />
+                    <const name="IlluminatorIntensityLevel_MAX" type="float64" value="100.0" />
+                    <typedef name="IlluminatorIntensityLevel" type="float64" />
+                    <const name="Left_MIN" type="float64" value="-20000000.0" />
+                    <const name="Left_MAX" type="float64" value="20000000.0" />
+                    <typedef name="Left" type="float64" />
+                    <const name="MaxEngineOilPressure_MIN" type="float64" value="0.0" />
+                    <const name="MaxEngineOilPressure_MAX" type="float64" value="512.0" />
+                    <typedef name="MaxEngineOilPressure" type="float64" />
+                    <typedef name="MMSI" stringMaxLength="9" type="string" />
+                    <const name="NanosecondsCount_MIN" type="int64" value="-9223372036854775807" />
+                    <const name="NanosecondsCount_MAX" type="int64" value="9223372036854775807" />
+                    <typedef name="NanosecondsCount" type="int64" />
+                    <const name="NanosecondsDrift_MIN" type="int32" value="-2147483648" />
+                    <const name="NanosecondsDrift_MAX" type="int32" value="2147483647" />
+                    <typedef name="NanosecondsDrift" type="int32" />
+                    <const name="NaturalNumberCount_MIN" type="float64" value="0.0" />
+                    <const name="NaturalNumberCount_MAX" type="float64" value="9223372036854775807.0" />
+                    <typedef name="NaturalNumberCount" type="float64" />
+                    <const name="PeakSoundPressureLevel_MIN" type="float64" value="-400.0" />
+                    <const name="PeakSoundPressureLevel_MAX" type="float64" value="400.0" />
+                    <typedef name="PeakSoundPressureLevel" type="float64" />
+                    <typedef name="Ratio" type="float64" />
+                    <const name="SignalToNoiseRatio_MIN" type="float64" value="0.0" />
+                    <const name="SignalToNoiseRatio_MAX" type="float64" value="100.0" />
+                    <typedef name="SignalToNoiseRatio" type="float64" />
+                    <const name="SpeedBSLAcceleration_MIN" type="float64" value="-299792458.0" />
+                    <const name="SpeedBSLAcceleration_MAX" type="float64" value="299792458.0" />
+                    <typedef name="SpeedBSLAcceleration" type="float64" />
+                    <typedef name="StringLongDescription" stringMaxLength="4095" type="string" />
+                    <typedef name="StringName" stringMaxLength="64" type="string" />
+                    <typedef name="StringShortDescription" stringMaxLength="1023" type="string" />
+                    <typedef name="StringValue" stringMaxLength="256" type="string" />
+                    <typedef name="UniformResourceIdentifier" stringMaxLength="2047" type="string" />
+                    <const name="WaterTemperature_MIN" type="float64" value="-22.0" />
+                    <const name="WaterTemperature_MAX" type="float64" value="100.0" />
+                    <typedef name="WaterTemperature" type="float64" />
+                    <const name="WeatherBarometricPressure_MIN" type="float64" value="600.0" />
+                    <const name="WeatherBarometricPressure_MAX" type="float64" value="1200.0" />
+                    <typedef name="WeatherBarometricPressure" type="float64" />
+                    <typedef name="XPosition" type="float64" />
+                    <typedef name="YPosition" type="float64" />
+                    <const name="ZPosition_MIN" type="float64" value="-100000.0" />
+                    <const name="ZPosition_MAX" type="float64" value="100000.0" />
+                    <typedef name="ZPosition" type="float64" />
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Measurement">
+                    <struct name="CovarianceOrientationNEDType" nested="true">
+                        <member name="rpRp" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" />
+                        <member name="rpRy" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" optional="true" />
+                        <member name="rrRp" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" optional="true" />
+                        <member name="rrRr" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" />
+                        <member name="rrRy" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" optional="true" />
+                        <member name="ryRy" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarOrientationNED" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Measurement">
+                    <struct name="CovariancePositionNEDType" nested="true">
+                        <member name="pdPd" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" optional="true" />
+                        <member name="pePd" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" optional="true" />
+                        <member name="pePe" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" />
+                        <member name="pnPd" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" optional="true" />
+                        <member name="pnPe" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" optional="true" />
+                        <member name="pnPn" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::CovarPosNED" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="MeasurementCoordinate">
+                    <const name="GeodeticLatitude_MIN" type="float64" value="-90.0" />
+                    <const name="GeodeticLatitude_MAX" type="float64" value="90.0" />
+                    <typedef name="GeodeticLatitude" type="float64" />
+                    <const name="GeodeticLongitude_MIN" type="float64" value="-180.0" />
+                    <const name="GeodeticLongitude_MAX" type="float64" value="180.0" />
+                    <typedef name="GeodeticLongitude" type="float64" />
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Measurement">
+                    <struct name="GeoPosition2D" nested="true">
+                        <member name="geodeticLatitude" type="nonBasic" nonBasicTypeName="UMAA::Common::MeasurementCoordinate::GeodeticLatitude" />
+                        <member name="geodeticLongitude" type="nonBasic" nonBasicTypeName="UMAA::Common::MeasurementCoordinate::GeodeticLongitude" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Orientation">
+                    <struct name="PitchYNEDType" nested="true">
+                        <member name="pitch" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::PitchHalfAngle" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Orientation">
+                    <struct name="RollXNEDType" nested="true">
+                        <member name="roll" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::RollAngle" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Orientation">
+                    <struct name="YawZNEDType" nested="true">
+                        <member name="yaw" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::YawAngle" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="Common">
+                <module name="Orientation">
+                    <struct name="Orientation3DNEDType" nested="true">
+                        <member name="pitch" type="nonBasic" nonBasicTypeName="UMAA::Common::Orientation::PitchYNEDType" />
+                        <member name="roll" type="nonBasic" nonBasicTypeName="UMAA::Common::Orientation::RollXNEDType" />
+                        <member name="yaw" type="nonBasic" nonBasicTypeName="UMAA::Common::Orientation::YawZNEDType" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="UMAA">
+            <module name="SA">
+                <module name="GlobalPoseStatus">
+                    <const name="GlobalPoseReportTypeTopic" type="string" value="&quot;UMAA::SA::GlobalPoseStatus::GlobalPoseReportType&quot;" />
+                    <struct name="GlobalPoseReportType">
+                        <member name="altitude" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::MSLAltitude" optional="true" />
+                        <member name="altitudeAGL" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DistanceAGL" optional="true" />
+                        <member name="altitudeASF" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DistanceASF" optional="true" />
+                        <member name="altitudeGeodetic" type="nonBasic" nonBasicTypeName="UMAA::Common::PrimitiveConstrained::GeodeticAltitude" optional="true" />
+                        <member name="attitude" type="nonBasic" nonBasicTypeName="UMAA::Common::Orientation::Orientation3DNEDType" />
+                        <member name="attitudeCovariance" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::CovarianceOrientationNEDType" optional="true" />
+                        <member name="course" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::CourseTrueNorth" />
+                        <member name="depth" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DistanceBSL" optional="true" />
+                        <member name="navigationSolution" type="nonBasic" nonBasicTypeName="UMAA::Common::MaritimeEnumeration::NavigationSolutionEnumModule::NavigationSolutionEnumType" />
+                        <member name="position" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::GeoPosition2D" />
+                        <member name="positionCovariance" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::CovariancePositionNEDType" optional="true" />
+                        <member name="timeStamp" type="nonBasic" nonBasicTypeName="UMAA::Common::Measurement::DateTime" />
+                        <member name="source" type="nonBasic" nonBasicTypeName="UMAA::Common::IdentifierType" key="true" />
+                    </struct>
+                </module>
+            </module>
+        </module>
+        <module name="ship">
+            <struct name="Threat">
+                <member name="id" type="int32" key="true" />
+                <member name="x" type="float64" />
+                <member name="y" type="float64" />
+                <member name="heading" type="float64" />
+                <member name="speed" type="float64" />
+                <member name="severity" type="int32" />
+            </struct>
+            <struct name="SensorDetection">
+                <member name="sensor_id" type="int32" key="true" />
+                <member name="threat_id" type="int32" key="true" />
+                <member name="x" type="float64" />
+                <member name="y" type="float64" />
+                <member name="confidence" type="int32" />
+            </struct>
+            <struct name="EffectorAction">
+                <member name="effector_id" type="int32" key="true" />
+                <member name="threat_id" type="int32" key="true" />
+                <member name="destroyed" type="boolean" />
+                <member name="x" type="float64" />
+                <member name="y" type="float64" />
+            </struct>
+        </module>
+        <struct name="SpeedCommand">
+            <member name="knots" type="float64" />
+        </struct>
+        <struct name="OrbitCommand">
+            <member name="enabled" type="boolean" />
+        </struct>
+    </types>
     <qos_library name="MissileDefenseQosLibrary">
-        <!--
-            Empty entity blocks inherit the Connext built-in defaults.
-            Command-related readers override reliability below.
-        -->
-        <qos_profile name="DefaultProfile" is_default_qos="true">
-            <participant_qos/>
-            <publisher_qos/>
-            <subscriber_qos/>
-
-            <datawriter_qos topic_filter="ThreatTopic"/>
-            <datawriter_qos topic_filter="SensorDetectionTopic"/>
-            <datawriter_qos topic_filter="EffectorActionTopic"/>
-            <datawriter_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType"/>
-            <datawriter_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"/>
-            <datawriter_qos topic_filter="VectorNav::SpeedCommand"/>
-            <datawriter_qos topic_filter="VectorNav::OrbitCommand"/>
-
-            <datareader_qos topic_filter="ThreatTopic">
-                <reliability>
-                    <kind>RELIABLE_RELIABILITY_QOS</kind>
-                </reliability>
-            </datareader_qos>
-            <datareader_qos topic_filter="SensorDetectionTopic">
-                <reliability>
-                    <kind>RELIABLE_RELIABILITY_QOS</kind>
-                </reliability>
-            </datareader_qos>
-            <datareader_qos topic_filter="EffectorActionTopic">
-                <reliability>
-                    <kind>RELIABLE_RELIABILITY_QOS</kind>
-                </reliability>
-            </datareader_qos>
-            <datareader_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType"/>
-            <datareader_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"/>
-            <datareader_qos topic_filter="VectorNav::SpeedCommand">
-                <reliability>
-                    <kind>RELIABLE_RELIABILITY_QOS</kind>
-                </reliability>
-            </datareader_qos>
-            <datareader_qos topic_filter="VectorNav::OrbitCommand">
+        <qos_profile name="GenericProfile">
+            <domain_participant_qos />
+            <publisher_qos />
+            <subscriber_qos />
+            <datawriter_qos />
+            <datareader_qos />
+        </qos_profile>
+        <qos_profile name="ReliableReaderProfile" base_name="MissileDefenseQosLibrary::GenericProfile">
+            <datareader_qos>
                 <reliability>
                     <kind>RELIABLE_RELIABILITY_QOS</kind>
                 </reliability>
             </datareader_qos>
         </qos_profile>
+        <qos_profile name="DefaultProfile" base_name="MissileDefenseQosLibrary::GenericProfile" is_default_qos="true">
+            <datawriter_qos topic_filter="ThreatTopic" />
+            <datawriter_qos topic_filter="SensorDetectionTopic" />
+            <datawriter_qos topic_filter="EffectorActionTopic" />
+            <datawriter_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType" />
+            <datawriter_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            <datawriter_qos topic_filter="VectorNav::SpeedCommand" />
+            <datawriter_qos topic_filter="VectorNav::OrbitCommand" />
+            <datareader_qos topic_filter="ThreatTopic" base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+            <datareader_qos topic_filter="SensorDetectionTopic" base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+            <datareader_qos topic_filter="EffectorActionTopic" base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+            <datareader_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType" />
+            <datareader_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            <datareader_qos topic_filter="VectorNav::SpeedCommand" base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+            <datareader_qos topic_filter="VectorNav::OrbitCommand" base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+        </qos_profile>
     </qos_library>
-
-        <domain_library name="MissileDefenseDomainLibrary">
-         <domain name="MissileDefenseDomain" domain_id="0">
-             <register_type name="ship::Threat"/>
-             <register_type name="ship::SensorDetection"/>
-             <register_type name="ship::EffectorAction"/>
-            <register_type name="SpeedReportTypeRegistration"/>
-            <register_type name="GlobalPoseReportTypeRegistration"/>
-             <register_type name="SpeedCommand"/>
-             <register_type name="OrbitCommand"/>
-
-             <topic name="ThreatTopic" register_type_ref="ship::Threat"/>
-             <topic name="SensorDetectionTopic"
-                 register_type_ref="ship::SensorDetection"/>
-             <topic name="EffectorActionTopic"
-                 register_type_ref="ship::EffectorAction"/>
-             <topic name="UMAA::SA::SpeedStatus::SpeedReportType"
-                     register_type_ref="SpeedReportTypeRegistration"/>
-             <topic name="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"
-                     register_type_ref="GlobalPoseReportTypeRegistration"/>
-             <topic name="VectorNav::SpeedCommand"
-                 register_type_ref="SpeedCommand"/>
-             <topic name="VectorNav::OrbitCommand"
-                 register_type_ref="OrbitCommand"/>
-         </domain>
-        </domain_library>
+    <domain_library name="MissileDefenseDomainLibrary">
+        <domain name="MissileDefenseDomain" domain_id="0">
+            <register_type name="ship::Threat" type_ref="ship::Threat" />
+            <register_type name="ship::SensorDetection" type_ref="ship::SensorDetection" />
+            <register_type name="ship::EffectorAction" type_ref="ship::EffectorAction" />
+            <register_type name="SpeedReportTypeRegistration" type_ref="UMAA::SA::SpeedStatus::SpeedReportType" />
+            <register_type name="GlobalPoseReportTypeRegistration" type_ref="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            <register_type name="SpeedCommand" type_ref="SpeedCommand" />
+            <register_type name="OrbitCommand" type_ref="OrbitCommand" />
+            <topic name="ThreatTopic" register_type_ref="ship::Threat" />
+            <topic name="SensorDetectionTopic" register_type_ref="ship::SensorDetection" />
+            <topic name="EffectorActionTopic" register_type_ref="ship::EffectorAction" />
+            <topic name="UMAA::SA::SpeedStatus::SpeedReportType" register_type_ref="SpeedReportTypeRegistration" />
+            <topic name="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" register_type_ref="GlobalPoseReportTypeRegistration" />
+            <topic name="VectorNav::SpeedCommand" register_type_ref="SpeedCommand" />
+            <topic name="VectorNav::OrbitCommand" register_type_ref="OrbitCommand" />
+        </domain>
+    </domain_library>
+    <domain_participant_library name="MissileDefenseParticipantLibrary">
+        <domain_participant name="CommandControlParticipant" domain_ref="MissileDefenseDomainLibrary::MissileDefenseDomain">
+            <publisher name="publisher">
+                <data_writer name="threat_writer" topic_ref="ThreatTopic" />
+            </publisher>
+            <subscriber name="subscriber">
+                <data_reader name="sensor_detection_reader" topic_ref="SensorDetectionTopic">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+                <data_reader name="effector_action_reader" topic_ref="EffectorActionTopic">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+                <data_reader name="global_pose_reader" topic_ref="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            </subscriber>
+            <domain_participant_qos base_name="MissileDefenseQosLibrary::DefaultProfile">
+                <participant_name>
+                    <name>command_control</name>
+                </participant_name>
+            </domain_participant_qos>
+        </domain_participant>
+        <domain_participant name="SensorParticipant" domain_ref="MissileDefenseDomainLibrary::MissileDefenseDomain">
+            <publisher name="publisher">
+                <data_writer name="sensor_detection_writer" topic_ref="SensorDetectionTopic" />
+            </publisher>
+            <subscriber name="subscriber">
+                <data_reader name="threat_reader" topic_ref="ThreatTopic">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+            </subscriber>
+            <domain_participant_qos base_name="MissileDefenseQosLibrary::DefaultProfile">
+                <participant_name>
+                    <name>sensor</name>
+                </participant_name>
+            </domain_participant_qos>
+        </domain_participant>
+        <domain_participant name="EffectorParticipant" domain_ref="MissileDefenseDomainLibrary::MissileDefenseDomain">
+            <publisher name="publisher">
+                <data_writer name="effector_action_writer" topic_ref="EffectorActionTopic" />
+            </publisher>
+            <subscriber name="subscriber">
+                <data_reader name="threat_reader" topic_ref="ThreatTopic">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+            </subscriber>
+            <domain_participant_qos base_name="MissileDefenseQosLibrary::DefaultProfile">
+                <participant_name>
+                    <name>effector</name>
+                </participant_name>
+            </domain_participant_qos>
+        </domain_participant>
+        <domain_participant name="VectorNavPublisherParticipant" domain_ref="MissileDefenseDomainLibrary::MissileDefenseDomain">
+            <publisher name="publisher">
+                <data_writer name="speed_report_writer" topic_ref="UMAA::SA::SpeedStatus::SpeedReportType" />
+                <data_writer name="global_pose_writer" topic_ref="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            </publisher>
+            <subscriber name="subscriber">
+                <data_reader name="speed_command_reader" topic_ref="VectorNav::SpeedCommand">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+                <data_reader name="orbit_command_reader" topic_ref="VectorNav::OrbitCommand">
+                    <datareader_qos base_name="MissileDefenseQosLibrary::ReliableReaderProfile" />
+                </data_reader>
+            </subscriber>
+            <domain_participant_qos base_name="MissileDefenseQosLibrary::DefaultProfile">
+                <participant_name>
+                    <name>VectorNav_Publisher</name>
+                </participant_name>
+            </domain_participant_qos>
+        </domain_participant>
+        <domain_participant name="VectorNavDashboardParticipant" domain_ref="MissileDefenseDomainLibrary::MissileDefenseDomain">
+            <publisher name="publisher">
+                <data_writer name="speed_command_writer" topic_ref="VectorNav::SpeedCommand" />
+                <data_writer name="orbit_command_writer" topic_ref="VectorNav::OrbitCommand" />
+            </publisher>
+            <subscriber name="subscriber">
+                <data_reader name="speed_report_reader" topic_ref="UMAA::SA::SpeedStatus::SpeedReportType" />
+                <data_reader name="global_pose_reader" topic_ref="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType" />
+            </subscriber>
+            <domain_participant_qos base_name="MissileDefenseQosLibrary::DefaultProfile">
+                <participant_name>
+                    <name>VectorNav_Dashboard</name>
+                </participant_name>
+            </domain_participant_qos>
+        </domain_participant>
+    </domain_participant_library>
 </dds>
