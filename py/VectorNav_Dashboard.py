@@ -55,6 +55,7 @@ from PyQt6.QtWidgets import (
 
 import vn_constants
 import vn_topics
+import ddsEntities
 from umaa_types import (
     GlobalPoseReportType,
     GlobalPoseReportTypeTopic,
@@ -633,33 +634,39 @@ def _publish_orbit_command(enabled: bool) -> None:
 
 def _start_dds() -> None:
     global _speed_writer, _speed_sample, _orbit_writer, _orbit_sample
-    qos = dds.DomainParticipantQos()
-    qos.participant_name.name = "VectorNav_Dashboard"
+    qos = ddsEntities.participant_qos("VectorNav_Dashboard")
     participant = dds.DomainParticipant(domain_id=DOMAIN_ID, qos=qos)
-    subscriber  = dds.Subscriber(participant)
+    subscriber  = dds.Subscriber(participant, ddsEntities.subscriber_qos())
+    publisher   = dds.Publisher(participant, ddsEntities.publisher_qos())
 
     speed_topic = dds.Topic(participant, SpeedReportTypeTopic, SpeedReportType)
-    speed_reader = dds.DataReader(subscriber, speed_topic)
+    speed_reader = dds.DataReader(
+        subscriber, speed_topic, ddsEntities.datareader_qos(SpeedReportTypeTopic))
     speed_reader.set_listener(SpeedListener(), dds.StatusMask.DATA_AVAILABLE)
 
     pose_topic  = dds.Topic(participant, GlobalPoseReportTypeTopic, GlobalPoseReportType)
-    pose_reader = dds.DataReader(subscriber, pose_topic)
+    pose_reader = dds.DataReader(
+        subscriber, pose_topic, ddsEntities.datareader_qos(GlobalPoseReportTypeTopic))
     pose_reader.set_listener(PoseListener(), dds.StatusMask.DATA_AVAILABLE)
 
     # Speed command writer — published when slider moves (knots)
     speed_cmd_topic  = dds.Topic(participant, vn_constants.SPEED_COMMAND_TOPIC,
                                  vn_topics.SpeedCommand)
-    _speed_writer    = dds.DataWriter(dds.Publisher(participant), speed_cmd_topic)
+    _speed_writer    = dds.DataWriter(
+        publisher, speed_cmd_topic,
+        ddsEntities.datawriter_qos(vn_constants.SPEED_COMMAND_TOPIC))
     _speed_sample    = vn_topics.SpeedCommand()
 
     # Orbit command writer — published when orbit button is toggled
     orbit_cmd_topic  = dds.Topic(participant, vn_constants.ORBIT_COMMAND_TOPIC,
                                  vn_topics.OrbitCommand)
-    _orbit_writer    = dds.DataWriter(dds.Publisher(participant), orbit_cmd_topic)
+    _orbit_writer    = dds.DataWriter(
+        publisher, orbit_cmd_topic,
+        ddsEntities.datawriter_qos(vn_constants.ORBIT_COMMAND_TOPIC))
     _orbit_sample    = vn_topics.OrbitCommand()
 
     # Keep references alive for the process lifetime
-    _start_dds._refs = (participant, subscriber, speed_reader, pose_reader,
+    _start_dds._refs = (participant, subscriber, publisher, speed_reader, pose_reader,
                         _speed_writer, _orbit_writer)
 
 

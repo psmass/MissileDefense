@@ -49,12 +49,55 @@ Topic-specific logic belongs in ship_topics.py / vn_topics.py.
 from __future__ import annotations
 
 import logging
+from pathlib import Path
 from threading import Thread
 from typing import Any
 
 import application
 import shipConstants
 import rti.connextdds as dds
+
+
+QOS_LIBRARY = "MissileDefenseQosLibrary"
+QOS_PROFILE_NAME = "DefaultProfile"
+QOS_PROFILE = f"{QOS_LIBRARY}::{QOS_PROFILE_NAME}"
+QOS_XML_PATH = Path(__file__).with_name("USER_QOS_PROFILES.xml")
+
+
+def _load_qos_provider() -> dds.QosProvider:
+    default_provider = dds.QosProvider.default
+    if (
+        QOS_LIBRARY in default_provider.qos_profile_libraries
+        and QOS_PROFILE_NAME in default_provider.qos_profiles(QOS_LIBRARY)
+    ):
+        default_provider.default_profile = QOS_PROFILE
+        return default_provider
+    return dds.QosProvider(str(QOS_XML_PATH), QOS_PROFILE)
+
+
+QOS_PROVIDER = _load_qos_provider()
+
+
+def participant_qos(participant_name: str) -> dds.DomainParticipantQos:
+    qos = QOS_PROVIDER.participant_qos_from_profile(QOS_PROFILE)
+    qos.participant_name.name = participant_name
+    return qos
+
+
+def publisher_qos() -> dds.PublisherQos:
+    return QOS_PROVIDER.publisher_qos_from_profile(QOS_PROFILE)
+
+
+def subscriber_qos() -> dds.SubscriberQos:
+    return QOS_PROVIDER.subscriber_qos_from_profile(QOS_PROFILE)
+
+
+def datawriter_qos(topic_name: str) -> dds.DataWriterQos:
+    return QOS_PROVIDER.get_topic_datawriter_qos(topic_name)
+
+
+def datareader_qos(topic_name: str) -> dds.DataReaderQos:
+    return QOS_PROVIDER.get_topic_datareader_qos(topic_name)
 
 
 # ---------------------------------------------------------------------------
@@ -135,7 +178,9 @@ class Writer(Thread):
             topic_type_class = periodic_or_type
             topic_name       = period_or_name
             _topic           = dds.Topic(participant, topic_name, topic_type_class)
-            self._writer     = dds.DataWriter(dds.Publisher(participant), _topic)
+            publisher        = dds.Publisher(participant, publisher_qos())
+            self._writer     = dds.DataWriter(
+                publisher, _topic, datawriter_qos(topic_name))
         else:
             # ── Ship style ────────────────────────────────────────────────
             # (publisher, topic:dds.Topic, type_class, periodic=False, period=1.0)
@@ -144,7 +189,8 @@ class Writer(Thread):
             topic_type_class = type_class_or_period
             periodic         = bool(periodic_or_type) if periodic_or_type is not None else False
             period           = float(period_or_name)  if period_or_name   is not None else 1.0
-            self._writer     = dds.DataWriter(publisher, _topic)
+            self._writer     = dds.DataWriter(
+                publisher, _topic, datawriter_qos(_topic.name))
 
         self._topic_type_class = topic_type_class
         self._topic_type_name  = topic_type_class.__name__
@@ -229,7 +275,8 @@ class Reader(Thread):
             subscriber       = sub_or_part
             _topic           = topic_or_type
             topic_type_class = type_class_or_name
-            self._reader     = dds.DataReader(subscriber, _topic)
+            reader_qos       = datareader_qos(_topic.name)
+            self._reader     = dds.DataReader(subscriber, _topic, reader_qos)
         else:
             # ── VectorNav style ──────────────────────────────────────────
             # (participant, type_class, topic_name:str)
@@ -237,7 +284,9 @@ class Reader(Thread):
             topic_type_class = topic_or_type
             topic_name       = type_class_or_name
             _topic           = dds.Topic(participant, topic_name, topic_type_class)
-            self._reader     = dds.DataReader(dds.Subscriber(participant), _topic)
+            reader_qos       = datareader_qos(topic_name)
+            self._reader     = dds.DataReader(
+                dds.Subscriber(participant, subscriber_qos()), _topic, reader_qos)
 
         self._topic_type_class = topic_type_class
         self._topic_type_name  = topic_type_class.__name__

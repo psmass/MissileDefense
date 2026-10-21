@@ -65,8 +65,7 @@ def sensor_main(domain_id: int) -> None:
     ddsEntities.register_ship_types()
 
     # *** CREATE PARTICIPANT – named so it appears in Admin Console Logical View ***
-    _qos = dds.DomainParticipantQos()
-    _qos.participant_name.name = "sensor"
+    _qos = ddsEntities.participant_qos("sensor")
     participant = dds.DomainParticipant(domain_id, _qos)
 
     # *** CREATE TOPICS ***
@@ -76,8 +75,8 @@ def sensor_main(domain_id: int) -> None:
                                 shipConstants.SensorDetection)
 
     # *** CREATE PUBLISHER AND SUBSCRIBER ***
-    publisher  = dds.Publisher(participant)
-    subscriber = dds.Subscriber(participant)
+    publisher  = dds.Publisher(participant, ddsEntities.publisher_qos())
+    subscriber = dds.Subscriber(participant, ddsEntities.subscriber_qos())
 
     # *** DECLARE APP STATE ***
     app_state_obj = ship_topics.ApplicationStateObj("sensor")

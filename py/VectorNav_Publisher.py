@@ -35,8 +35,7 @@ def vecnav_main(domain_id: int) -> None:
     logging.info('VectorNav Component Starting Up')
 
     # *** CREATE PARTICIPANT  (named so Admin Console shows "VectorNav_Publisher")
-    qos = dds.DomainParticipantQos()
-    qos.participant_name.name = "VectorNav_Publisher"
+    qos = ddsEntities.participant_qos("VectorNav_Publisher")
     participant = dds.DomainParticipant(domain_id=domain_id, qos=qos)
 
     # *** DECLARE SENSOR STATE OBJECT

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dds xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://community.rti.com/schema/7.7.0/rti_dds_profiles.xsd"
+     version="7.7.0">
+    <qos_library name="MissileDefenseQosLibrary">
+        <!--
+            Empty entity blocks inherit the Connext built-in defaults.
+            Command-related readers override reliability below.
+        -->
+        <qos_profile name="DefaultProfile" is_default_qos="true">
+            <participant_qos/>
+            <publisher_qos/>
+            <subscriber_qos/>
+
+            <datawriter_qos topic_filter="ThreatTopic"/>
+            <datawriter_qos topic_filter="SensorDetectionTopic"/>
+            <datawriter_qos topic_filter="EffectorActionTopic"/>
+            <datawriter_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType"/>
+            <datawriter_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"/>
+            <datawriter_qos topic_filter="VectorNav::SpeedCommand"/>
+            <datawriter_qos topic_filter="VectorNav::OrbitCommand"/>
+
+            <datareader_qos topic_filter="ThreatTopic">
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+            </datareader_qos>
+            <datareader_qos topic_filter="SensorDetectionTopic">
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+            </datareader_qos>
+            <datareader_qos topic_filter="EffectorActionTopic">
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+            </datareader_qos>
+            <datareader_qos topic_filter="UMAA::SA::SpeedStatus::SpeedReportType"/>
+            <datareader_qos topic_filter="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"/>
+            <datareader_qos topic_filter="VectorNav::SpeedCommand">
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+            </datareader_qos>
+            <datareader_qos topic_filter="VectorNav::OrbitCommand">
+                <reliability>
+                    <kind>RELIABLE_RELIABILITY_QOS</kind>
+                </reliability>
+            </datareader_qos>
+        </qos_profile>
+    </qos_library>
+
+        <domain_library name="MissileDefenseDomainLibrary">
+         <domain name="MissileDefenseDomain" domain_id="0">
+             <register_type name="ship::Threat"/>
+             <register_type name="ship::SensorDetection"/>
+             <register_type name="ship::EffectorAction"/>
+            <register_type name="SpeedReportTypeRegistration"/>
+            <register_type name="GlobalPoseReportTypeRegistration"/>
+             <register_type name="SpeedCommand"/>
+             <register_type name="OrbitCommand"/>
+
+             <topic name="ThreatTopic" register_type_ref="ship::Threat"/>
+             <topic name="SensorDetectionTopic"
+                 register_type_ref="ship::SensorDetection"/>
+             <topic name="EffectorActionTopic"
+                 register_type_ref="ship::EffectorAction"/>
+             <topic name="UMAA::SA::SpeedStatus::SpeedReportType"
+                     register_type_ref="SpeedReportTypeRegistration"/>
+             <topic name="UMAA::SA::GlobalPoseStatus::GlobalPoseReportType"
+                     register_type_ref="GlobalPoseReportTypeRegistration"/>
+             <topic name="VectorNav::SpeedCommand"
+                 register_type_ref="SpeedCommand"/>
+             <topic name="VectorNav::OrbitCommand"
+                 register_type_ref="OrbitCommand"/>
+         </domain>
+        </domain_library>
+</dds>

@@ -624,14 +624,13 @@ def command_control_main(domain_id: int) -> None:
 
     # DDS ────────────────────────────────────────────────────────────────
     ddsEntities.register_ship_types()
-    _qos = dds.DomainParticipantQos()
-    _qos.participant_name.name = "command_control"
+    _qos = ddsEntities.participant_qos("command_control")
     participant  = dds.DomainParticipant(domain_id, _qos)
     thr_topic    = dds.Topic(participant, shipConstants.THREAT_TOPIC,           shipConstants.Threat)
     det_topic    = dds.Topic(participant, shipConstants.SENSOR_DETECTION_TOPIC, shipConstants.SensorDetection)
     efx_topic    = dds.Topic(participant, shipConstants.EFFECTOR_ACTION_TOPIC,  shipConstants.EffectorAction)
-    pub          = dds.Publisher(participant)
-    sub          = dds.Subscriber(participant)
+    pub          = dds.Publisher(participant, ddsEntities.publisher_qos())
+    sub          = dds.Subscriber(participant, ddsEntities.subscriber_qos())
     app_state    = ship_topics.ApplicationStateObj("command_control")
     gui_state    = GUISharedState()
     threat_w     = ship_topics.ThreatWtr(pub, thr_topic, app_state)

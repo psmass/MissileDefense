@@ -1,0 +1,39 @@
+{
+  "ui_projectName": "MisileDefenseSysDesView",
+  "ui_chatbot_last_session": 0,
+  "ui_settings": {
+    "confirmDelete": true,
+    "enableValuetypes": false,
+    "autosave": true,
+    "enforceSnippetSeparation": true,
+    "useAsSnippetIfName": false,
+    "enableValidation": false
+  },
+  "ui_lastSaveTime": "21/10/2026 @ 8:49:05",
+  "ui_creationDate": "21/10/2026 @ 8:33:58",
+  "ui_creationSysDVersion": "7.7.0",
+  "ui_projectNotes": "",
+  "ui_include": [
+    {
+      "path": "BaselineRoot.documentationONLY.xml",
+      "readonly": true,
+      "builtin": true
+    },
+    {
+      "path": "BuiltinProfiles.documentationONLY.xml",
+      "readonly": true,
+      "builtin": true
+    },
+    {
+      "path": "MisileDefenseSysDesView.xml",
+      "readonly": false,
+      "builtin": false
+    },
+    {
+      "path": "USER_QOS_PROFILES.xml",
+      "readonly": false,
+      "builtin": false
+    }
+  ],
+  "ui_projectGUID": "1658f33d-5f40-4fc0-b21c-ad928c05ce19"
+}

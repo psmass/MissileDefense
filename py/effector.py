@@ -60,8 +60,7 @@ def effector_main(domain_id: int) -> None:
     ddsEntities.register_ship_types()
 
     # *** CREATE PARTICIPANT – named so it appears in Admin Console Logical View ***
-    _qos = dds.DomainParticipantQos()
-    _qos.participant_name.name = "effector"
+    _qos = ddsEntities.participant_qos("effector")
     participant = dds.DomainParticipant(domain_id, _qos)
 
     # *** CREATE TOPICS ***
@@ -71,8 +70,8 @@ def effector_main(domain_id: int) -> None:
                                shipConstants.EffectorAction)
 
     # *** CREATE PUBLISHER AND SUBSCRIBER ***
-    publisher  = dds.Publisher(participant)
-    subscriber = dds.Subscriber(participant)
+    publisher  = dds.Publisher(participant, ddsEntities.publisher_qos())
+    subscriber = dds.Subscriber(participant, ddsEntities.subscriber_qos())
 
     # *** DECLARE APP STATE ***
     app_state_obj = ship_topics.ApplicationStateObj("effector")
